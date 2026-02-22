@@ -21,6 +21,7 @@ import SkillsScreen     from "./screens/SkillsScreen.jsx";
 import ShopScreen       from "./screens/ShopScreen.jsx";
 import SystemScreen     from "./screens/SystemScreen.jsx";
 import OptionsScreen    from "./screens/OptionsScreen.jsx";
+import RivalCard        from "./screens/RivalCard.jsx";
 
 // Temporary error display for debugging
 window.addEventListener('error', (e) => {
@@ -148,6 +149,42 @@ export default function App() {
   function handlePreview(overrides) { setPreviewOverride(overrides); }
   function handlePreviewEnd() { setPreviewOverride(null); }
 
+  async function generateRival() {
+    const { buildCharContext, buildSystemPrompt, callAIProxy } = await import("./lib/ai.js");
+    showToast("Generating your rival...", "info", 8000);
+    try {
+      const ctx = buildCharContext(game);
+      const prompt = `Based on this player's data, generate a rival character. The rival should be strong in areas the player is weak, and have a personality that contrasts theirs.
+
+Respond with ONLY a JSON object (no markdown, no explanation):
+{
+  "name": "rival's full name",
+  "personality": "one sentence description of their personality and style",
+  "taunt": "a short provocative quote from the rival directed at the player (max 15 words)",
+  "xpOffset": -200
+}
+
+xpOffset should be between -400 and +100 (negative means rival starts slightly behind, positive means ahead).`;
+
+      const reply = await callAIProxy(buildSystemPrompt(ctx), prompt, []);
+      const clean = reply.replace(/```json|```/g, "").trim();
+      const data  = JSON.parse(clean);
+      const rivalXP = Math.max(0, (game.xp || 0) + (data.xpOffset || -200));
+      update(s => ({
+        ...s,
+        rival: {
+          name:        data.name || "The Shadow",
+          personality: data.personality || "A ruthless competitor who never rests.",
+          taunt:       data.taunt || "You think consistency is enough? Think again.",
+          xp:          rivalXP,
+        }
+      }));
+      showToast(`Rival generated: ${data.name}`, "danger", 4000);
+    } catch(e) {
+      showToast("Failed to generate rival: " + e.message, "danger");
+    }
+  }
+
   async function signOut() {
     await supabase.auth.signOut();
     setGame(DEFAULT_GAME); setUser(null); setScreen("status");
@@ -164,7 +201,7 @@ export default function App() {
   const th = V.th;
 
   if(authLoading) return (
-    <div style={{background:T.bg0,minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center"}}>
+    <div style={{background:"var(--bg0)",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center"}}>
       <GlobalCSS V={V}/>
       <div style={{fontFamily:FONTS.display,fontSize:32,color:"#c9a84c",animation:"pulse 1.5s ease-in-out infinite"}}>◈</div>
     </div>
@@ -179,7 +216,7 @@ export default function App() {
   const allDone   = doneCount===(game.daily?.length||0)&&(game.daily?.length||0)>0;
 
   return (
-    <div className="app-wrapper" style={{fontFamily:FONTS.ui,background:T.bg0,minHeight:"100vh",color:T.text,position:"relative"}}>
+    <div className="app-wrapper" style={{fontFamily:"var(--font-ui)",color:"var(--text)",position:"relative"}}>
       <GlobalCSS V={V}/>
       <Toast toast={toast}/>
 
@@ -212,6 +249,7 @@ export default function App() {
       <Header game={displayGame} screen={screen} setScreen={setScreen} aiStatus={aiStatus} saving={saving}/>
 
       <div className="app-padding" style={{paddingTop:0,paddingBottom:0}}>
+        <RivalCard game={game} th={th}/>
         <ShadowMissionBar game={game}/>
         <BossBar game={game}/>
       </div>
@@ -223,7 +261,7 @@ export default function App() {
         {screen==="skills" &&<SkillsScreen game={game} update={update} th={th} V={V} showToast={showToast}/>}
         {screen==="shop"   &&<ShopScreen   game={game} th={th} V={V} buyItem={buyItem} showToast={showToast} onPreview={handlePreview} onPreviewEnd={handlePreviewEnd}/>}
         {screen==="system" &&<SystemScreen game={game} update={update} th={th} V={V} showToast={showToast} aiStatus={aiStatus} setAiStatus={setAiStatus} generateBriefing={generateBriefing} briefingLoading={briefingLoading}/>}
-        {screen==="options"&&<OptionsScreen game={game} update={update} th={th} V={V} showToast={showToast} onSignOut={signOut}/>}
+        {screen==="options"&&<OptionsScreen game={game} update={update} th={th} V={V} showToast={showToast} onSignOut={signOut} onGenerateRival={generateRival}/>}
       </div>
     </div>
   );

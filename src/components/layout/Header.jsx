@@ -23,7 +23,7 @@ export default function Header({ game, screen, setScreen, aiStatus, saving, V })
             <div style={{ fontFamily:FONTS.ui,fontSize:8,letterSpacing:2,color:T.silver }}>{cls.icon} {cls.name.toUpperCase()} · LVL {level}</div>
             <AIStatus status={aiStatus}/>
           </div>
-          <div style={{ marginTop:4,height:2,background:T.bg3,borderRadius:1 }}>
+          <div style={{ marginTop:4,height:2,background:"var(--bg3)",borderRadius:1 }}>
             <div style={{ height:"100%",width:`${getXPPct(game.xp)*100}%`,background:`linear-gradient(90deg,${th.accent}60,${th.accent})`,borderRadius:1,transition:"width 0.6s ease" }}/>
           </div>
         </div>
@@ -38,7 +38,7 @@ export default function Header({ game, screen, setScreen, aiStatus, saving, V })
         </div>
       )}
       <nav style={{ display:"flex",borderBottom:`1px solid ${V?.bg3||T.bg3}` }}>
-        {[{id:"status",l:"STATUS"},{id:"daily",l:"DAILY"},{id:"quests",l:"QUESTS"},{id:"skills",l:"SKILLS"},{id:"shop",l:"SHOP"},{id:"options",l:"⚙"}].map(t=>(
+        {[{id:"status",l:"STATUS"},{id:"daily",l:"DAILY"},{id:"quests",l:"QUESTS"},{id:"skills",l:"SKILLS"},{id:"shop",l:"SHOP"},{id:"system",l:"AI"},{id:"options",l:"⚙"}].map(t=>(
           <button key={t.id} onClick={()=>setScreen(t.id)} style={{ flex:1,padding:"9px 0",fontFamily:FONTS.ui,fontSize:"var(--nav-font)",letterSpacing:1,background:"none",border:"none",cursor:"pointer",color:screen===t.id?th.accent:T.dim,borderBottom:screen===t.id?`1px solid ${th.accent}`:"1px solid transparent",transition:"color 0.2s",whiteSpace:"nowrap" }}>
             {t.l}
           </button>

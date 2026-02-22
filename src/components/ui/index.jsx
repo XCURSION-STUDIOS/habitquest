@@ -2,14 +2,9 @@ import { useState } from "react";
 import { T, FONTS } from "../../constants/theme.js";
 import { DIFF } from "../../constants/gameData.js";
 
-export function Card({ children, style, accent, V }) {
-  const bg0 = V?.bg1 || "#0d0d1a";
-  const bg1 = V?.bg2 || "#111120";
-  const bd  = V?.bg3 || T.bg3;
-  const br  = V?.cards?.borderRadius ?? 10;
-  const shadow = V?.cards?.shadow && accent ? `${V.cards.shadow} ${accent}15` : "none";
+export function Card({ children, style, accent }) {
   return (
-    <div style={{ background:`linear-gradient(135deg,${bg0},${bg1})`,border:`1px solid ${accent?accent+"30":bd}`,borderRadius:br,padding:16,boxShadow:shadow,...style }}>
+    <div style={{ background:"linear-gradient(135deg,var(--bg1),var(--bg2))",border:`1px solid ${accent?accent+"30":"var(--bg3)"}`,borderRadius:10,padding:16,...style }}>
       {children}
     </div>
   );

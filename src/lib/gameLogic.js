@@ -99,6 +99,14 @@ export function rolloverDay(game, today) {
     };
   }
 
+  // Rival progression
+  let rival = game.rival;
+  if (game.rivalEnabled && rival) {
+    const rivalDailyXP = Math.round(avgCompletions * 60 * (0.85 + Math.random() * 0.3));
+    const newRivalXP   = (rival.xp || 0) + rivalDailyXP;
+    rival = { ...rival, xp: newRivalXP };
+  }
+
   return {
     ...game,
     daily,
@@ -111,13 +119,14 @@ export function rolloverDay(game, today) {
     questCompletedToday: 0,
     questExtraSlots: 0,
     penaltyMessage,
+    rival,
     memory: { recentActivity, totalDays, avgCompletions, mostSkipped:leastActive, longestStreak },
   };
 }
 
 export function applyCompleteDaily(game, id, today) {
   const todayDone = game.done?.[today] || {};
-  if (todayDone[id]) {
+  if (todayDone[id] && todayDone[id] !== false) {
     const q   = game.daily.find(q => q.id === id);
     const cfg = DIFF[q.diff];
     return {

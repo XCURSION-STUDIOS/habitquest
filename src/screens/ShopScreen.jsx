@@ -46,7 +46,7 @@ export default function ShopScreen({ game, th, buyItem, showToast, onPreview, on
           <span style={{ fontFamily:FONTS.ui,fontSize:9,letterSpacing:2,color:T.purple }}>PREVIEWING — REVERTS IN {countdown}s</span>
           <div style={{ display:"flex",gap:3 }}>
             {[1,2,3,4,5].map(i => (
-              <div key={i} style={{ width:8,height:8,borderRadius:2,background:i<=countdown?T.purple:T.bg3,transition:"background 0.3s" }}/>
+              <div key={i} style={{ width:8,height:8,borderRadius:2,background:i<=countdown?T.purple:"var(--bg3)",transition:"background 0.3s" }}/>
             ))}
           </div>
         </div>
@@ -58,8 +58,8 @@ export default function ShopScreen({ game, th, buyItem, showToast, onPreview, on
       </div>
 
       <div style={{ display:"flex",gap:5,marginBottom:12,flexWrap:"wrap" }}>
-        {[{id:"temp",l:"BOOSTS"},{id:"perm",l:"PERMANENT"},{id:"theme",l:"THEMES"},{id:"aesthetic",l:"AESTHETICS"},{id:"cosm",l:"COSMETIC"}].map(t=>(
-          <button key={t.id} onClick={()=>setShopTab(t.id)} style={{ flex:1,minWidth:60,padding:"7px 4px",background:shopTab===t.id?`${th.accent}15`:"transparent",border:`1px solid ${shopTab===t.id?th.accent:T.bg3}`,borderRadius:5,color:shopTab===t.id?th.accent:T.dim,fontFamily:FONTS.ui,fontSize:7,letterSpacing:1,cursor:"pointer",transition:"all 0.2s" }}>
+        {[{id:"temp",l:"BOOSTS"},{id:"perm",l:"PERMANENT"},{id:"aesthetic",l:"AESTHETICS"},{id:"cosm",l:"COSMETIC"}].map(t=>(
+          <button key={t.id} onClick={()=>setShopTab(t.id)} style={{ flex:1,minWidth:60,padding:"7px 4px",background:shopTab===t.id?`${th.accent}15`:"transparent",border:`1px solid ${shopTab===t.id?th.accent:"var(--bg3)"}`,borderRadius:5,color:shopTab===t.id?th.accent:T.dim,fontFamily:FONTS.ui,fontSize:7,letterSpacing:1,cursor:"pointer",transition:"all 0.2s" }}>
             {t.l}
           </button>
         ))}
@@ -73,12 +73,12 @@ export default function ShopScreen({ game, th, buyItem, showToast, onPreview, on
         const canPrev = ["theme","aesthetic","cosm"].includes(item.type);
 
         return (
-          <Card key={item.id} style={{ marginBottom:10,border:`1px solid ${isPrev?T.purple+"60":owned?"#27a06030":can?T.bg3:T.bg2}`,opacity:!owned&&!can?0.5:1,transition:"border 0.3s" }}>
+          <Card key={item.id} style={{ marginBottom:10,border:`1px solid ${isPrev?T.purple+"60":owned?"#27a06030":can?T.bg3:"var(--bg2)"}`,opacity:!owned&&!can?0.5:1,transition:"border 0.3s" }}>
             <div style={{ display:"flex",gap:12,alignItems:"flex-start" }}>
               <div style={{ fontSize:20,color:th.accent,flexShrink:0,marginTop:2 }}>{item.icon}</div>
               <div style={{ flex:1 }}>
                 <div style={{ display:"flex",gap:8,alignItems:"center",marginBottom:4,flexWrap:"wrap" }}>
-                  <span style={{ fontFamily:FONTS.display,fontSize:15,color:owned?"#40d090":T.text }}>{item.name}</span>
+                  <span style={{ fontFamily:FONTS.display,fontSize:15,color:owned?"#40d090":"var(--text)" }}>{item.name}</span>
                   {owned&&<span style={{ fontFamily:FONTS.ui,fontSize:7,letterSpacing:2,color:"#27a060",border:"1px solid #27a06040",padding:"1px 5px",borderRadius:3 }}>OWNED</span>}
                   {active&&!owned&&<span style={{ fontFamily:FONTS.ui,fontSize:7,color:th.accent,border:`1px solid ${th.accent}40`,padding:"1px 5px",borderRadius:3 }}>×{active.left}</span>}
                   {isPrev&&<span style={{ fontFamily:FONTS.ui,fontSize:7,color:T.purple,border:`1px solid ${T.purple}40`,padding:"1px 5px",borderRadius:3 }}>PREVIEWING</span>}
@@ -89,12 +89,12 @@ export default function ShopScreen({ game, th, buyItem, showToast, onPreview, on
             </div>
             <div style={{ display:"flex",gap:8,marginTop:10 }}>
               {canPrev && !owned && (
-                <button onClick={()=>startPreview(item)} style={{ flex:1,padding:"9px",background:isPrev?`${T.purple}15`:"transparent",border:`1px solid ${isPrev?T.purple:T.bg3}`,borderRadius:5,color:isPrev?T.purple:T.dim,fontFamily:FONTS.ui,fontSize:9,letterSpacing:2,cursor:"pointer",transition:"all 0.2s" }}>
+                <button onClick={()=>startPreview(item)} style={{ flex:1,padding:"9px",background:isPrev?`${T.purple}15`:"transparent",border:`1px solid ${isPrev?T.purple:"var(--bg3)"}`,borderRadius:5,color:isPrev?T.purple:T.dim,fontFamily:FONTS.ui,fontSize:9,letterSpacing:2,cursor:"pointer",transition:"all 0.2s" }}>
                   {isPrev?`REVERTING IN ${countdown}s`:"PREVIEW 5s"}
                 </button>
               )}
               {!owned && (
-                <button onClick={()=>buyItem(item)} style={{ flex:2,padding:"9px",background:can?`${th.accent}10`:"transparent",border:`1px solid ${can?th.accent+"40":T.bg3}`,borderRadius:5,color:can?th.accent:T.dim,fontFamily:FONTS.ui,fontSize:9,letterSpacing:2,cursor:can?"pointer":"not-allowed",transition:"background 0.2s" }}
+                <button onClick={()=>buyItem(item)} style={{ flex:2,padding:"9px",background:can?`${th.accent}10`:"transparent",border:`1px solid ${can?th.accent+"40":"var(--bg3)"}`,borderRadius:5,color:can?th.accent:T.dim,fontFamily:FONTS.ui,fontSize:9,letterSpacing:2,cursor:can?"pointer":"not-allowed",transition:"background 0.2s" }}
                   onMouseEnter={e=>{if(can)e.currentTarget.style.background=`${th.accent}20`;}}
                   onMouseLeave={e=>{if(can)e.currentTarget.style.background=`${th.accent}10`;}}>
                   {can?`◈ ${item.cost} — BUY`:`◈ ${item.cost} — NOT ENOUGH GEMS`}

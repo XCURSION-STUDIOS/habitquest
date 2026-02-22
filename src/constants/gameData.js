@@ -131,8 +131,119 @@ export const DEFAULT_GAME = {
   lastDay: new Date().toISOString().split("T")[0],
   briefing:null, briefingDate:null,
   penaltyMessage: null,
+  rivalEnabled: false,
+  rival: null,
+  weeklyReview: null,
+  lastReviewDate: null,
   memory: {
     recentActivity:[], totalDays:0,
     avgCompletions:0, mostSkipped:null, longestStreak:0,
   },
 };
+
+
+export const HABIT_TEMPLATES = [
+  {
+    id: "student",
+    name: "The Student",
+    icon: "◈",
+    desc: "Built for academic performance and deep learning.",
+    daily: [
+      { name:"Study / Deep Work",  type:"Mental",    diff:"C-Rank" },
+      { name:"Read 30 Minutes",    type:"Mental",    diff:"D-Rank" },
+      { name:"Review Notes",       type:"Mental",    diff:"E-Rank" },
+      { name:"Morning Walk",       type:"Physical",  diff:"E-Rank" },
+    ],
+    quests: [
+      { name:"Complete a full textbook chapter",    type:"Mental",    diff:"C-Rank" },
+      { name:"Score 90%+ on a practice test",       type:"Mental",    diff:"B-Rank" },
+      { name:"Build a study schedule for the week", type:"Mental",    diff:"D-Rank" },
+    ],
+  },
+  {
+    id: "athlete",
+    name: "The Athlete",
+    icon: "⚔",
+    desc: "Physical dominance and disciplined recovery.",
+    daily: [
+      { name:"Train / Work Out",       type:"Physical",  diff:"C-Rank" },
+      { name:"Mobility & Stretching",  type:"Physical",  diff:"E-Rank" },
+      { name:"Hit Protein Goal",       type:"Physical",  diff:"D-Rank" },
+      { name:"Sleep 8 Hours",          type:"Physical",  diff:"D-Rank" },
+    ],
+    quests: [
+      { name:"Run 5K without stopping",         type:"Physical", diff:"C-Rank" },
+      { name:"Complete a full week of training", type:"Physical", diff:"B-Rank" },
+      { name:"Set a new personal record",        type:"Physical", diff:"A-Rank" },
+    ],
+  },
+  {
+    id: "creative",
+    name: "The Creative",
+    icon: "✦",
+    desc: "Consistent creative output and artistic growth.",
+    daily: [
+      { name:"Create Something Daily",  type:"Emotional", diff:"C-Rank" },
+      { name:"Consume Inspiring Work",  type:"Mental",    diff:"E-Rank" },
+      { name:"Freewrite 10 Minutes",    type:"Emotional", diff:"D-Rank" },
+      { name:"No Doom Scrolling",       type:"Mental",    diff:"D-Rank" },
+    ],
+    quests: [
+      { name:"Finish a creative project end-to-end", type:"Emotional", diff:"B-Rank" },
+      { name:"Share your work publicly",              type:"Social",    diff:"C-Rank" },
+      { name:"Learn one new creative technique",      type:"Mental",    diff:"D-Rank" },
+    ],
+  },
+  {
+    id: "entrepreneur",
+    name: "The Entrepreneur",
+    icon: "⬡",
+    desc: "High output, networking, and relentless execution.",
+    daily: [
+      { name:"Deep Work Block (2hrs)",   type:"Mental",   diff:"B-Rank" },
+      { name:"Reach Out to Someone",     type:"Social",   diff:"D-Rank" },
+      { name:"Review Goals & Metrics",   type:"Mental",   diff:"E-Rank" },
+      { name:"Exercise",                 type:"Physical", diff:"D-Rank" },
+    ],
+    quests: [
+      { name:"Launch or ship something",             type:"Mental",  diff:"A-Rank" },
+      { name:"Have 3 meaningful conversations",      type:"Social",  diff:"C-Rank" },
+      { name:"Complete a course or skill module",    type:"Mental",  diff:"C-Rank" },
+    ],
+  },
+  {
+    id: "wellness",
+    name: "The Wellness Path",
+    icon: "★",
+    desc: "Mental health, spiritual grounding, and emotional balance.",
+    daily: [
+      { name:"Meditate",              type:"Spiritual", diff:"D-Rank" },
+      { name:"Journal",               type:"Emotional", diff:"D-Rank" },
+      { name:"Gratitude Practice",    type:"Spiritual", diff:"E-Rank" },
+      { name:"Time in Nature / Walk", type:"Physical",  diff:"E-Rank" },
+    ],
+    quests: [
+      { name:"Complete a 7-day meditation streak",  type:"Spiritual", diff:"B-Rank" },
+      { name:"Have a hard conversation you've been avoiding", type:"Emotional", diff:"C-Rank" },
+      { name:"Digital detox for a full day",        type:"Spiritual", diff:"C-Rank" },
+    ],
+  },
+  {
+    id: "balanced",
+    name: "The Balanced Build",
+    icon: "◆",
+    desc: "One habit per stat. Build everything simultaneously.",
+    daily: [
+      { name:"Exercise",     type:"Physical",  diff:"D-Rank" },
+      { name:"Read",         type:"Mental",    diff:"D-Rank" },
+      { name:"Meditate",     type:"Spiritual", diff:"E-Rank" },
+      { name:"Connect",      type:"Social",    diff:"E-Rank" },
+      { name:"Journal",      type:"Emotional", diff:"E-Rank" },
+    ],
+    quests: [
+      { name:"Complete a full week with all 5 habits done daily", type:"Physical",  diff:"A-Rank" },
+      { name:"Reach stat 10 in your weakest area",                type:"Mental",    diff:"B-Rank" },
+      { name:"Go one week without missing a single habit",        type:"Spiritual", diff:"B-Rank" },
+    ],
+  },
+];

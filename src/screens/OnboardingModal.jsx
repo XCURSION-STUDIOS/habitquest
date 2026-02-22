@@ -101,7 +101,7 @@ export default function OnboardingModal({ onClose, th }) {
     <div style={{ position:"fixed",inset:0,zIndex:2000,background:"rgba(6,6,15,0.92)",backdropFilter:"blur(12px)",display:"flex",alignItems:"center",justifyContent:"center",padding:20,boxSizing:"border-box" }}>
       <div style={{ maxWidth:440,width:"100%",background:"linear-gradient(135deg,#0d0d1a,#111120)",border:`1px solid ${th.accent}40`,borderRadius:14,overflow:"hidden",boxShadow:`0 0 60px ${th.glow}` }}>
         {/* Progress bar */}
-        <div style={{ height:2,background:T.bg3 }}>
+        <div style={{ height:2,background:"var(--bg3)" }}>
           <div style={{ height:"100%",width:`${((step+1)/STEPS.length)*100}%`,background:th.accent,transition:"width 0.4s ease" }}/>
         </div>
 
@@ -129,7 +129,7 @@ export default function OnboardingModal({ onClose, th }) {
           {/* Navigation */}
           <div style={{ display:"flex",gap:10,alignItems:"center" }}>
             {step > 0 && (
-              <button onClick={()=>setStep(s=>s-1)} style={{ padding:"10px 16px",background:"transparent",border:`1px solid ${T.bg3}`,borderRadius:6,color:T.dim,fontFamily:FONTS.ui,fontSize:9,letterSpacing:2,cursor:"pointer" }}>
+              <button onClick={()=>setStep(s=>s-1)} style={{ padding:"10px 16px",background:"transparent",border:`1px solid var(--bg3)`,borderRadius:6,color:T.dim,fontFamily:FONTS.ui,fontSize:9,letterSpacing:2,cursor:"pointer" }}>
                 BACK
               </button>
             )}
@@ -137,7 +137,7 @@ export default function OnboardingModal({ onClose, th }) {
             {/* Dot indicators */}
             <div style={{ display:"flex",gap:5 }}>
               {STEPS.map((_,i)=>(
-                <div key={i} onClick={()=>setStep(i)} style={{ width:i===step?16:6,height:6,borderRadius:3,background:i===step?th.accent:T.bg3,transition:"all 0.3s",cursor:"pointer" }}/>
+                <div key={i} onClick={()=>setStep(i)} style={{ width:i===step?16:6,height:6,borderRadius:3,background:i===step?th.accent:"var(--bg3)",transition:"all 0.3s",cursor:"pointer" }}/>
               ))}
             </div>
             <div style={{ flex:1 }}/>

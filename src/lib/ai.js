@@ -65,3 +65,136 @@ export function parseSuggestedQuests(text) {
     name:m[1].trim(), diff:m[2].trim(), type:m[3].trim(), reason:m[4].trim(),
   }));
 }
+
+// ── Weekly Review Data Builder ────────────────────────────────
+export async function buildWeeklyData(game) {
+  const days  = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  const today = new Date();
+  const week  = [];
+
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const dateStr  = d.toISOString().split("T")[0];
+    const dayName  = days[d.getDay()];
+    const doneThat = game.done?.[dateStr] || {};
+    const completed = game.daily.filter(h => doneThat[h.id] && doneThat[h.id] !== false);
+    const total     = game.daily.length;
+
+    // Time-of-day analysis from timestamps
+    const times = completed.map(h => {
+      const ts = doneThat[h.id];
+      if (typeof ts === "string" && ts !== "true") {
+        return new Date(ts).getHours();
+      }
+      return null;
+    }).filter(t => t !== null);
+
+    const avgHour = times.length > 0
+      ? Math.round(times.reduce((a,b) => a+b, 0) / times.length)
+      : null;
+
+    week.push({
+      date: dateStr,
+      day: dayName,
+      completed: completed.length,
+      total,
+      rate: total > 0 ? Math.round((completed.length / total) * 100) : 0,
+      avgHour,
+      mood: game.done?.[dateStr]?.mood || null,
+      completedNames: completed.map(h => h.name),
+    });
+  }
+
+  // Per-stat breakdown
+  const statRates = {};
+  const statList = ["Physical","Mental","Spiritual","Social","Emotional"];
+  statList.forEach(stat => {
+    const habitsOfStat = game.daily.filter(h => h.type === stat);
+    if (habitsOfStat.length === 0) { statRates[stat] = null; return; }
+    let totalDone = 0, totalPossible = 0;
+    week.forEach(day => {
+      habitsOfStat.forEach(h => {
+        totalPossible++;
+        const ts = game.done?.[day.date]?.[h.id];
+        if (ts && ts !== false) totalDone++;
+      });
+    });
+    statRates[stat] = Math.round((totalDone / totalPossible) * 100);
+  });
+
+  // Day-of-week performance
+  const dayRates = {};
+  week.forEach(d => { dayRates[d.day] = d.rate; });
+
+  // Best/worst day
+  const bestDay  = week.reduce((a,b) => a.rate >= b.rate ? a : b);
+  const worstDay = week.reduce((a,b) => a.rate <= b.rate ? a : b);
+
+  // Time pattern
+  const allHours = week.flatMap(d => {
+    const doneThat = game.done?.[d.date] || {};
+    return game.daily.map(h => {
+      const ts = doneThat[h.id];
+      if (typeof ts === "string" && ts.length > 4) return new Date(ts).getHours();
+      return null;
+    }).filter(t => t !== null);
+  });
+  const avgCompletionHour = allHours.length > 0
+    ? Math.round(allHours.reduce((a,b) => a+b, 0) / allHours.length)
+    : null;
+
+  const weekScore = Math.round(week.reduce((a,b) => a + b.rate, 0) / 7);
+
+  return { week, statRates, dayRates, bestDay, worstDay, avgCompletionHour, weekScore };
+}
+
+export function buildArchitectPrompt(game, weekData) {
+  const { week, statRates, dayRates, bestDay, worstDay, avgCompletionHour, weekScore } = weekData;
+
+  const dayTable = week.map(d =>
+    `${d.day} ${d.date}: ${d.completed}/${d.total} (${d.rate}%) | mood:${d.mood||"unset"}${d.avgHour!==null?` | avg time: ${d.avgHour}:00`:""}`
+  ).join("\n");
+
+  const statTable = Object.entries(statRates)
+    .filter(([,v]) => v !== null)
+    .map(([k,v]) => `${k}: ${v}%`)
+    .join(", ");
+
+  const timeNote = avgCompletionHour !== null
+    ? `Average completion time this week: ${avgCompletionHour}:00 (${avgCompletionHour < 12 ? "morning" : avgCompletionHour < 17 ? "afternoon" : "evening"})`
+    : "No timestamp data available yet for time analysis";
+
+  return `You are The Architect — an executive AI coach conducting a formal weekly performance review. You are analytical, precise, and direct. You identify patterns humans miss. You do not motivate — you analyse and prescribe.
+
+Player: ${game.char?.name || "Unknown"} | Level ${Math.floor((game.xp||0)/400)+1} | Abyss Depth: ${game.abyssDepth||0}
+
+WEEKLY DATA:
+${dayTable}
+
+Stat completion rates: ${statTable}
+Best day: ${bestDay.day} (${bestDay.rate}%) | Worst day: ${worstDay.day} (${worstDay.rate}%)
+${timeNote}
+Week score: ${weekScore}/100
+
+Habits tracked: ${game.daily.map(h => `${h.name}(${h.type},${h.diff})`).join(", ")}
+
+Conduct a structured weekly review with these exact sections:
+
+## WEEK SCORE: ${weekScore}/100
+[One sentence verdict on the week]
+
+## PATTERNS IDENTIFIED
+[2-3 specific patterns from the data — day-of-week trends, stat weaknesses, time patterns, mood correlations. Be specific with numbers.]
+
+## CRITICAL FINDING
+[The single most important insight from this week's data. What is the player not seeing?]
+
+## RECOMMENDATIONS
+[3 specific, actionable changes. Reference actual habits by name. If time data is available, suggest optimal scheduling times.]
+
+## NEXT WEEK DIRECTIVE
+[One clear primary focus for next week. One sentence.]
+
+Be analytical. Use the actual numbers. Do not be vague or motivational. Max 280 words.`;
+}

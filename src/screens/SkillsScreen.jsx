@@ -12,10 +12,10 @@ function NodeCard({ node, unlocked, canUnlock, onUnlock, th }) {
   const opacity   = unlocked ? 1 : canUnlock ? 1 : 0.45;
   return (
     <div onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
-      style={{ padding:"10px 12px",background:unlocked?`${T.success}10`:hov&&canUnlock?`${th.accent}08`:T.bg2,border:`1px solid ${borderCol}${unlocked?"60":"40"}`,borderRadius:8,transition:"all 0.2s",opacity,cursor:canUnlock&&!unlocked?"pointer":"default" }}>
+      style={{ padding:"10px 12px",background:unlocked?`${T.success}10`:hov&&canUnlock?`${th.accent}08`:"var(--bg2)",border:`1px solid ${borderCol}${unlocked?"60":"40"}`,borderRadius:8,transition:"all 0.2s",opacity,cursor:canUnlock&&!unlocked?"pointer":"default" }}>
       <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4 }}>
-        <span style={{ fontFamily:FONTS.display,fontSize:14,color:unlocked?"#40d090":T.text }}>{node.name}</span>
-        <span style={{ fontFamily:FONTS.ui,fontSize:8,letterSpacing:1,color:unlocked?T.success:canUnlock?th.accent:T.dim,border:`1px solid ${unlocked?T.success+"40":canUnlock?th.accent+"40":T.bg3}`,padding:"2px 6px",borderRadius:3 }}>
+        <span style={{ fontFamily:FONTS.display,fontSize:14,color:unlocked?"#40d090":"var(--text)" }}>{node.name}</span>
+        <span style={{ fontFamily:FONTS.ui,fontSize:8,letterSpacing:1,color:unlocked?T.success:canUnlock?th.accent:T.dim,border:`1px solid ${unlocked?T.success+"40":canUnlock?th.accent+"40":"var(--bg3)"}`,padding:"2px 6px",borderRadius:3 }}>
           {unlocked?"UNLOCKED":`${node.cost} SP`}
         </span>
       </div>
@@ -77,7 +77,7 @@ export default function SkillsScreen({ game, update, th, showToast }) {
           const branchUnlocked = SKILL_TREE[s].filter(n=>unlocked.includes(n.id)).length;
           const isActive = activeBranch===s;
           return (
-            <button key={s} onClick={()=>setActiveBranch(s)} style={{ flex:1,minWidth:60,padding:"8px 4px",background:isActive?`${STAT_COL[s]}18`:"transparent",border:`1px solid ${isActive?STAT_COL[s]:T.bg3}`,borderRadius:6,color:isActive?STAT_COL[s]:T.dim,fontFamily:FONTS.ui,fontSize:8,letterSpacing:1,cursor:"pointer",transition:"all 0.2s",display:"flex",flexDirection:"column",alignItems:"center",gap:2 }}>
+            <button key={s} onClick={()=>setActiveBranch(s)} style={{ flex:1,minWidth:60,padding:"8px 4px",background:isActive?`${STAT_COL[s]}18`:"transparent",border:`1px solid ${isActive?STAT_COL[s]:"var(--bg3)"}`,borderRadius:6,color:isActive?STAT_COL[s]:T.dim,fontFamily:FONTS.ui,fontSize:8,letterSpacing:1,cursor:"pointer",transition:"all 0.2s",display:"flex",flexDirection:"column",alignItems:"center",gap:2 }}>
               <span style={{ fontSize:14 }}>{STAT_ICO[s]}</span>
               <span>{s.toUpperCase()}</span>
               <span style={{ fontSize:7,color:T.dim }}>{branchUnlocked}/4</span>
@@ -98,7 +98,7 @@ export default function SkillsScreen({ game, update, th, showToast }) {
               <div key={node.id}>
                 {i>0&&(
                   <div style={{ display:"flex",justifyContent:"center",margin:"2px 0" }}>
-                    <div style={{ width:1,height:16,background:unlocked.includes(branchNodes[i-1].id)?STAT_COL[activeBranch]:T.bg3,transition:"background 0.3s" }}/>
+                    <div style={{ width:1,height:16,background:unlocked.includes(branchNodes[i-1].id)?STAT_COL[activeBranch]:"var(--bg3)",transition:"background 0.3s" }}/>
                   </div>
                 )}
                 <div style={{ display:"flex",alignItems:"center",gap:8 }}>

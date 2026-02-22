@@ -1,3 +1,24 @@
+#!/bin/bash
+# Fix: Themes actually change backgrounds + remove shop themes tab
+
+# ── 1. Remove themes tab from Shop ──────────────────────────
+python3 << 'PYEOF'
+with open('src/screens/ShopScreen.jsx', 'r') as f:
+    content = f.read()
+
+content = content.replace(
+    '[{id:"temp",l:"BOOSTS"},{id:"perm",l:"PERMANENT"},{id:"theme",l:"THEMES"},{id:"aesthetic",l:"AESTHETICS"},{id:"cosm",l:"COSMETIC"}]',
+    '[{id:"temp",l:"BOOSTS"},{id:"perm",l:"PERMANENT"},{id:"aesthetic",l:"AESTHETICS"},{id:"cosm",l:"COSMETIC"}]'
+)
+
+with open('src/screens/ShopScreen.jsx', 'w') as f:
+    f.write(content)
+print("Shop themes tab removed")
+PYEOF
+
+# ── 2. The real fix: pass V colors into CSS variables via GlobalCSS
+# Then use CSS variables for ALL backgrounds across the app
+cat > src/components/ui/GlobalCSS.jsx << 'FILEOF'
 export default function GlobalCSS({ V }) {
   const accent = V?.accent || "#c9a84c";
   const bg0    = V?.bg0    || "#06060f";
@@ -163,3 +184,125 @@ export default function GlobalCSS({ V }) {
     `}</style>
   );
 }
+FILEOF
+
+# ── 3. Update Card component to use CSS vars ─────────────────
+python3 << 'PYEOF'
+with open('src/components/ui/index.jsx', 'r') as f:
+    content = f.read()
+
+old = '''export function Card({ children, style, accent, V }) {
+  const bg0 = V?.bg1 || "#0d0d1a";
+  const bg1 = V?.bg2 || "#111120";
+  const bd  = V?.bg3 || T.bg3;
+  const br  = V?.cards?.borderRadius ?? 10;
+  const shadow = V?.cards?.shadow && accent ? `${V.cards.shadow} ${accent}15` : "none";
+  return (
+    <div style={{ background:`linear-gradient(135deg,${bg0},${bg1})`,border:`1px solid ${accent?accent+"30":bd}`,borderRadius:br,padding:16,boxShadow:shadow,...style }}>
+      {children}
+    </div>
+  );
+}'''
+
+new = '''export function Card({ children, style, accent }) {
+  return (
+    <div style={{ background:"linear-gradient(135deg,var(--bg1),var(--bg2))",border:`1px solid ${accent?accent+"30":"var(--bg3)"}`,borderRadius:10,padding:16,...style }}>
+      {children}
+    </div>
+  );
+}'''
+
+content = content.replace(old, new)
+with open('src/components/ui/index.jsx', 'w') as f:
+    f.write(content)
+print("Card updated to use CSS vars")
+PYEOF
+
+# ── 4. Update App.jsx main wrapper + screen backgrounds ──────
+python3 << 'PYEOF'
+with open('src/App.jsx', 'r') as f:
+    content = f.read()
+
+# Main wrapper — use CSS var for background
+content = content.replace(
+    'className="app-wrapper" style={{fontFamily:FONTS.ui,background:T.bg0,minHeight:"100vh",color:T.text,position:"relative"}}',
+    'className="app-wrapper" style={{fontFamily:"var(--font-ui)",color:"var(--text)",position:"relative"}}'
+)
+
+# Loading screen bg
+content = content.replace(
+    'background:T.bg0,minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center"',
+    'background:"var(--bg0)",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center"'
+)
+
+with open('src/App.jsx', 'w') as f:
+    f.write(content)
+print("App.jsx wrapper updated")
+PYEOF
+
+# ── 5. Global sed to replace T.bg0/1/2/3 with CSS vars in all screens ──
+python3 << 'PYEOF'
+import os, re
+
+screens = [
+    'src/screens/StatusScreen.jsx',
+    'src/screens/DailyScreen.jsx',
+    'src/screens/QuestsScreen.jsx',
+    'src/screens/SkillsScreen.jsx',
+    'src/screens/ShopScreen.jsx',
+    'src/screens/SystemScreen.jsx',
+    'src/screens/OptionsScreen.jsx',
+    'src/screens/OnboardingModal.jsx',
+    'src/screens/WeeklyReviewModal.jsx',
+    'src/screens/HabitTemplatesModal.jsx',
+    'src/components/layout/Header.jsx',
+]
+
+replacements = [
+    # String concatenation patterns first (most specific)
+    (r'`\$\{T\.bg0\}`',  '"var(--bg0)"'),
+    (r'`\$\{T\.bg1\}`',  '"var(--bg1)"'),
+    (r'`\$\{T\.bg2\}`',  '"var(--bg2)"'),
+    (r'`\$\{T\.bg3\}`',  '"var(--bg3)"'),
+    # Inside template literals
+    (r'\$\{T\.bg0\}',    'var(--bg0)'),
+    (r'\$\{T\.bg1\}',    'var(--bg1)'),
+    (r'\$\{T\.bg2\}',    'var(--bg2)'),
+    (r'\$\{T\.bg3\}',    'var(--bg3)'),
+    # Direct style prop values
+    (r':T\.bg0([,}\s])',  r':"var(--bg0)"\1'),
+    (r':T\.bg1([,}\s])',  r':"var(--bg1)"\1'),
+    (r':T\.bg2([,}\s])',  r':"var(--bg2)"\1'),
+    (r':T\.bg3([,}\s])',  r':"var(--bg3)"\1'),
+    # T.text
+    (r':T\.text([,}\s])', r':"var(--text)"\1'),
+    (r'\$\{T\.text\}',    'var(--text)'),
+]
+
+for filepath in screens:
+    if not os.path.exists(filepath):
+        print(f"SKIP: {filepath}")
+        continue
+    with open(filepath, 'r') as f:
+        original = f.read()
+    content = original
+    for pattern, replacement in replacements:
+        content = re.sub(pattern, replacement, content)
+    if content != original:
+        with open(filepath, 'w') as f:
+            f.write(content)
+        print(f"UPDATED: {filepath}")
+    else:
+        print(f"unchanged: {filepath}")
+PYEOF
+
+echo ""
+echo "✅ Theme backgrounds now apply correctly!"
+echo ""
+echo "What changed:"
+echo "  - All bg0/bg1/bg2/bg3 are now CSS variables that update when theme changes"
+echo "  - body background, app wrapper, cards, nav all respond to theme"
+echo "  - Themes tab removed from Shop (use Options > Appearance instead)"
+echo "  - 0.4s smooth transition when switching themes"
+echo ""
+echo "Run: npm run build 2>&1 | head -20"

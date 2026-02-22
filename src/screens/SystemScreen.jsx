@@ -66,14 +66,14 @@ export default function SystemScreen({ game, update, th, showToast, aiStatus, se
       </Card>
 
       <Card style={{ padding:0,overflow:"hidden" }}>
-        <div style={{ padding:"10px 14px",borderBottom:`1px solid ${T.bg3}`,fontFamily:FONTS.ui,fontSize:8,letterSpacing:4,color:T.sg,display:"flex",justifyContent:"space-between",alignItems:"center" }}>
+        <div style={{ padding:"10px 14px",borderBottom:`1px solid var(--bg3)`,fontFamily:FONTS.ui,fontSize:8,letterSpacing:4,color:T.sg,display:"flex",justifyContent:"space-between",alignItems:"center" }}>
           <span>AI COACH CHAT</span>
           <AIStatus status={loading?"working":aiStatus}/>
         </div>
         <div style={{ height:340,overflowY:"auto",padding:14,display:"flex",flexDirection:"column",gap:12 }}>
           {messages.map((m,i)=>(
             <div key={i} style={{ display:"flex",flexDirection:"column",gap:6,alignItems:m.role==="user"?"flex-end":"flex-start" }}>
-              <div style={{ maxWidth:"88%",padding:"10px 14px",borderRadius:8,background:m.role==="user"?`${th.accent}15`:m.error?"#1a0000":T.bg2,border:`1px solid ${m.role==="user"?`${th.accent}40`:m.error?`${T.danger}40`:T.bg3}`,fontFamily:m.role==="system"?FONTS.display:FONTS.ui,fontSize:m.role==="system"?13:12,color:T.text,lineHeight:1.7,whiteSpace:"pre-wrap" }}>
+              <div style={{ maxWidth:"88%",padding:"10px 14px",borderRadius:8,background:m.role==="user"?`${th.accent}15`:m.error?"#1a0000":"var(--bg2)",border:`1px solid ${m.role==="user"?`${th.accent}40`:m.error?`${T.danger}40`:"var(--bg3)"}`,fontFamily:m.role==="system"?FONTS.display:FONTS.ui,fontSize:m.role==="system"?13:12,color:"var(--text)",lineHeight:1.7,whiteSpace:"pre-wrap" }}>
                 {m.role==="system"&&<span style={{ fontFamily:FONTS.ui,fontSize:7,letterSpacing:3,color:T.sg,display:"block",marginBottom:6 }}>AI COACH</span>}
                 {m.text}
               </div>
@@ -92,17 +92,17 @@ export default function SystemScreen({ game, update, th, showToast, aiStatus, se
           {loading&&<div style={{ fontFamily:FONTS.ui,fontSize:10,color:T.sg,animation:"pulse 1.2s ease-in-out infinite" }}>Thinking...</div>}
           <div ref={bottomRef}/>
         </div>
-        <div style={{ padding:"8px 14px",borderTop:`1px solid ${T.bg3}`,display:"flex",gap:5,flexWrap:"wrap" }}>
+        <div style={{ padding:"8px 14px",borderTop:`1px solid var(--bg3)`,display:"flex",gap:5,flexWrap:"wrap" }}>
           {QUICK.map((q,i)=>(
-            <button key={i} onClick={()=>setInput(q)} style={{ fontFamily:FONTS.ui,fontSize:8,padding:"4px 9px",background:"transparent",border:`1px solid ${T.bg3}`,borderRadius:4,color:T.dim,cursor:"pointer",transition:"all 0.2s" }}
+            <button key={i} onClick={()=>setInput(q)} style={{ fontFamily:FONTS.ui,fontSize:8,padding:"4px 9px",background:"transparent",border:`1px solid var(--bg3)`,borderRadius:4,color:T.dim,cursor:"pointer",transition:"all 0.2s" }}
               onMouseEnter={e=>{e.target.style.borderColor=th.accent;e.target.style.color=th.accent;}} onMouseLeave={e=>{e.target.style.borderColor=T.bg3;e.target.style.color=T.dim;}}>
               {q}
             </button>
           ))}
         </div>
-        <div style={{ display:"flex",borderTop:`1px solid ${T.bg3}` }}>
-          <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&!e.shiftKey&&send()} placeholder="Ask the AI coach..." style={{ flex:1,background:T.bg1,border:"none",color:T.text,padding:"12px 16px",fontFamily:FONTS.ui,fontSize:12,outline:"none" }}/>
-          <button onClick={send} disabled={loading||!input.trim()} style={{ padding:"12px 18px",background:loading||!input.trim()?"transparent":`${th.accent}15`,border:"none",borderLeft:`1px solid ${T.bg3}`,color:loading||!input.trim()?T.dim:th.accent,fontFamily:FONTS.ui,fontSize:10,letterSpacing:1,cursor:loading||!input.trim()?"not-allowed":"pointer",transition:"all 0.2s" }}>
+        <div style={{ display:"flex",borderTop:`1px solid var(--bg3)` }}>
+          <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&!e.shiftKey&&send()} placeholder="Ask the AI coach..." style={{ flex:1,background:"var(--bg1)",border:"none",color:"var(--text)",padding:"12px 16px",fontFamily:FONTS.ui,fontSize:12,outline:"none" }}/>
+          <button onClick={send} disabled={loading||!input.trim()} style={{ padding:"12px 18px",background:loading||!input.trim()?"transparent":`${th.accent}15`,border:"none",borderLeft:`1px solid var(--bg3)`,color:loading||!input.trim()?T.dim:th.accent,fontFamily:FONTS.ui,fontSize:10,letterSpacing:1,cursor:loading||!input.trim()?"not-allowed":"pointer",transition:"all 0.2s" }}>
             {loading?"...":"SEND"}
           </button>
         </div>
