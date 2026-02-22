@@ -1,3 +1,9 @@
+export const FONTS = {
+  display: "'Cormorant Garamond','Georgia',serif",
+  ui:      "'DM Mono','Courier New',monospace",
+};
+
+// Base dark palette (used when no aesthetic active)
 export const T = {
   bg0:"#06060f", bg1:"#0d0d1a", bg2:"#111120", bg3:"#1c1c30",
   gold:"#c9a84c", silver:"#7a8aaa", dim:"#3a4060",
@@ -6,57 +12,131 @@ export const T = {
   abyss:"#3a0000", sg:"#00cc88",
 };
 
-export const FONTS = {
-  display: "'Cormorant Garamond','Georgia',serif",
-  ui:      "'DM Mono','Courier New',monospace",
-};
-
+// Themes: each defines accent + full background palette
 export const THEMES = {
-  default: { accent:"#c9a84c", glow:"#c9a84c20", text:"#e8d090", name:"Classic Gold" },
-  blood:   { accent:"#b03030", glow:"#b0303020", text:"#e07070", name:"Crimson"       },
-  void:    { accent:"#6b4fb0", glow:"#6b4fb020", text:"#b090e0", name:"Void Purple"   },
-  jade:    { accent:"#20a060", glow:"#20a06020", text:"#70d0a0", name:"Jade"          },
-  iron:    { accent:"#7a8aaa", glow:"#7a8aaa20", text:"#b0c0d8", name:"Iron"          },
-  ember:   { accent:"#e07020", glow:"#e0702020", text:"#f0a060", name:"Ember"         },
-  frost:   { accent:"#40a0d0", glow:"#40a0d020", text:"#80c8e8", name:"Frost"         },
-  toxic:   { accent:"#80c020", glow:"#80c02020", text:"#b0e060", name:"Toxic"         },
+  default: {
+    name:"Classic Gold",
+    accent:"#c9a84c", glow:"#c9a84c20", text:"#e8d090",
+    bg0:"#06060f", bg1:"#0d0d1a", bg2:"#111120", bg3:"#1c1c30",
+  },
+  blood: {
+    name:"Crimson",
+    accent:"#c03030", glow:"#c0303020", text:"#e07070",
+    bg0:"#0a0000", bg1:"#120004", bg2:"#180008", bg3:"#28000e",
+  },
+  void: {
+    name:"Void Purple",
+    accent:"#7b5fc0", glow:"#7b5fc020", text:"#c0a0f0",
+    bg0:"#04020e", bg1:"#080418", bg2:"#0c0820", bg3:"#18102e",
+  },
+  jade: {
+    name:"Jade",
+    accent:"#20b060", glow:"#20b06020", text:"#70d8a0",
+    bg0:"#020a04", bg1:"#041008", bg2:"#06160a", bg3:"#0e2414",
+  },
+  iron: {
+    name:"Iron",
+    accent:"#8a9ab8", glow:"#8a9ab820", text:"#b8c8e0",
+    bg0:"#060810", bg1:"#0c1018", bg2:"#101520", bg3:"#1a2030",
+  },
+  ember: {
+    name:"Ember",
+    accent:"#e07828", glow:"#e0782820", text:"#f0a868",
+    bg0:"#0a0400", bg1:"#120800", bg2:"#180c00", bg3:"#281800",
+  },
+  frost: {
+    name:"Frost",
+    accent:"#48b0e0", glow:"#48b0e020", text:"#90d0f0",
+    bg0:"#00080e", bg1:"#000e18", bg2:"#001220", bg3:"#001c30",
+  },
+  toxic: {
+    name:"Toxic",
+    accent:"#88d020", glow:"#88d02020", text:"#b8f060",
+    bg0:"#020800", bg1:"#040e00", bg2:"#061200", bg3:"#0e1e00",
+  },
 };
 
+// Aesthetics: complete visual overhauls (override theme entirely)
 export const AESTHETICS = {
   default: {
-    name: "Standard",
-    desc: "Clean dark interface with gold accents.",
-    cost: 0,
-    preview: { bg:"#06060f", card:"#0d0d1a", accent:"#c9a84c", text:"#d8e0f0" },
+    name:"Standard",
+    desc:"The default HabitQuest look.",
+    cost:0,
+    fonts: { display:"'Cormorant Garamond','Georgia',serif", ui:"'DM Mono','Courier New',monospace" },
+    colors: null, // uses theme
+    cards: { borderRadius:10, borderStyle:"1px solid", shadow:"none" },
+    preview: { bg:"#06060f", card:"#0d0d1a", accent:"#c9a84c", text:"#d8e0f0", font:"serif" },
   },
   neon: {
-    name: "Neon City",
-    desc: "Cyberpunk-inspired neon glow aesthetic.",
-    cost: 500,
-    preview: { bg:"#020010", card:"#080018", accent:"#00ffcc", text:"#c0f0ff" },
-    overrides: {
-      bg0:"#020010", bg1:"#080018", bg2:"#0a0020", bg3:"#140030",
-      accent:"#00ffcc", glow:"#00ffcc20", text:"#c0f0ff",
+    name:"Neon City",
+    desc:"Cyberpunk streets. Neon lights. Everything glows.",
+    cost:500,
+    fonts: { display:"'DM Mono','Courier New',monospace", ui:"'DM Mono','Courier New',monospace" },
+    colors: {
+      bg0:"#010008", bg1:"#04000f", bg2:"#060014", bg3:"#0c0028",
+      accent:"#00ffcc", glow:"#00ffcc25", text:"#b0fff0",
+      silver:"#40c0b0", dim:"#206050", textBright:"#e0fffa",
+      success:"#00ff88", danger:"#ff2060", purple:"#cc00ff", sg:"#00ffcc",
     },
+    cards: { borderRadius:4, borderStyle:"1px solid", shadow:"0 0 12px" },
+    preview: { bg:"#010008", card:"#060014", accent:"#00ffcc", text:"#b0fff0", font:"mono" },
   },
   parchment: {
-    name: "Ancient Scroll",
-    desc: "Worn parchment and aged ink. Old-world feel.",
-    cost: 400,
-    preview: { bg:"#1a1408", card:"#231c0e", accent:"#c8a040", text:"#e8d8a0" },
-    overrides: {
-      bg0:"#1a1408", bg1:"#231c0e", bg2:"#2a2210", bg3:"#362c18",
-      accent:"#c8a040", glow:"#c8a04020", text:"#e8d8a0",
+    name:"Ancient Scroll",
+    desc:"Worn parchment. Aged ink. Knowledge from another age.",
+    cost:400,
+    fonts: { display:"'Cormorant Garamond','Georgia',serif", ui:"'Cormorant Garamond','Georgia',serif" },
+    colors: {
+      bg0:"#1a1208", bg1:"#22180a", bg2:"#2a1e0e", bg3:"#382a16",
+      accent:"#c8941c", glow:"#c8941c20", text:"#e8d494",
+      silver:"#a89060", dim:"#806840", textBright:"#f4e8b0",
+      success:"#507830", danger:"#8b2020", purple:"#604878", sg:"#507830",
     },
+    cards: { borderRadius:2, borderStyle:"1px solid", shadow:"none" },
+    preview: { bg:"#1a1208", card:"#2a1e0e", accent:"#c8941c", text:"#e8d494", font:"serif" },
   },
   void_realm: {
-    name: "Void Realm",
-    desc: "Deep space aesthetic with cosmic accents.",
-    cost: 600,
-    preview: { bg:"#00000f", card:"#05050f", accent:"#8060ff", text:"#c0b0ff" },
-    overrides: {
-      bg0:"#00000f", bg1:"#05050f", bg2:"#080818", bg3:"#10102a",
-      accent:"#8060ff", glow:"#8060ff20", text:"#c0b0ff",
+    name:"Void Realm",
+    desc:"The space between stars. Cosmic and infinite.",
+    cost:600,
+    fonts: { display:"'Cormorant Garamond','Georgia',serif", ui:"'DM Mono','Courier New',monospace" },
+    colors: {
+      bg0:"#00000a", bg1:"#02000f", bg2:"#040014", bg3:"#08001e",
+      accent:"#9060ff", glow:"#9060ff30", text:"#c8b0ff",
+      silver:"#7060a0", dim:"#302060", textBright:"#e8d8ff",
+      success:"#4060ff", danger:"#ff3060", purple:"#c040ff", sg:"#6080ff",
     },
+    cards: { borderRadius:16, borderStyle:"1px solid", shadow:"0 0 20px" },
+    preview: { bg:"#00000a", card:"#040014", accent:"#9060ff", text:"#c8b0ff", font:"serif" },
   },
 };
+
+// Get the active visual config (aesthetic overrides theme)
+export function getVisuals(game) {
+  const aesthetic = AESTHETICS[game.aesthetic] || AESTHETICS.default;
+  const theme     = THEMES[game.theme] || THEMES.default;
+
+  if (aesthetic.colors) {
+    // Aesthetic overrides everything
+    return {
+      ...T,
+      ...aesthetic.colors,
+      accent: aesthetic.colors.accent,
+      glow:   aesthetic.colors.glow,
+      fonts:  aesthetic.fonts,
+      cards:  aesthetic.cards,
+      th: { accent: aesthetic.colors.accent, glow: aesthetic.colors.glow, text: aesthetic.colors.text, name: aesthetic.name },
+    };
+  }
+
+  // No aesthetic — use theme backgrounds
+  return {
+    ...T,
+    bg0: theme.bg0, bg1: theme.bg1, bg2: theme.bg2, bg3: theme.bg3,
+    accent: theme.accent,
+    glow:   theme.glow,
+    fonts:  aesthetic.fonts,
+    cards:  aesthetic.cards,
+    th: { accent: theme.accent, glow: theme.glow, text: theme.text, name: theme.name },
+  };
+}

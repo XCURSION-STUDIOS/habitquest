@@ -1,15 +1,16 @@
-import { T, FONTS, THEMES } from "../../constants/theme.js";
+import { T, FONTS, THEMES, getVisuals } from "../../constants/theme.js";
 import { getLevel, getXPPct, getClass } from "../../lib/gameLogic.js";
 import { AIStatus } from "../ui/index.jsx";
 
-export default function Header({ game, screen, setScreen, aiStatus, saving }) {
-  const th    = THEMES[game.theme]||THEMES.default;
+export default function Header({ game, screen, setScreen, aiStatus, saving, V }) {
+  const th    = V?.th || THEMES[game.theme] || THEMES.default;
+  const fonts = V?.fonts || { display: T.display, ui: T.ui };
   const level = getLevel(game.xp);
   const cls   = getClass(level);
   return (
     <div style={{ padding:"14px 16px 0" }}>
       <div style={{ display:"flex",alignItems:"center",gap:12,marginBottom:10 }}>
-        <div onClick={()=>setScreen("status")} style={{ width:48,height:48,borderRadius:"50%",background:T.bg1,border:`1px solid ${th.accent}40`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,cursor:"pointer",flexShrink:0,animation:game.aura?"auraAnim 2.5s linear infinite":"none" }}>
+        <div onClick={()=>setScreen("status")} style={{ width:48,height:48,borderRadius:"50%",background:V?.bg1||T.bg1,border:`1px solid ${th.accent}40`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,cursor:"pointer",flexShrink:0,animation:game.aura?"auraAnim 2.5s linear infinite":"none" }}>
           {cls.icon}
         </div>
         <div style={{ flex:1 }}>
@@ -36,7 +37,7 @@ export default function Header({ game, screen, setScreen, aiStatus, saving }) {
           {game.actives.map(p=><span key={p.id} style={{ fontFamily:FONTS.ui,fontSize:8,letterSpacing:1,padding:"2px 8px",border:`1px solid ${th.accent}40`,borderRadius:20,color:th.accent }}>{p.icon} {p.name} ×{p.left}</span>)}
         </div>
       )}
-      <nav style={{ display:"flex",borderBottom:`1px solid ${T.bg3}` }}>
+      <nav style={{ display:"flex",borderBottom:`1px solid ${V?.bg3||T.bg3}` }}>
         {[{id:"status",l:"STATUS"},{id:"daily",l:"DAILY"},{id:"quests",l:"QUESTS"},{id:"skills",l:"SKILLS"},{id:"shop",l:"SHOP"},{id:"options",l:"⚙"}].map(t=>(
           <button key={t.id} onClick={()=>setScreen(t.id)} style={{ flex:1,padding:"9px 0",fontFamily:FONTS.ui,fontSize:8,letterSpacing:1,background:"none",border:"none",cursor:"pointer",color:screen===t.id?th.accent:T.dim,borderBottom:screen===t.id?`1px solid ${th.accent}`:"1px solid transparent",transition:"color 0.2s",whiteSpace:"nowrap" }}>
             {t.l}

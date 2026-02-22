@@ -3,7 +3,7 @@ import { supabase } from "./lib/supabase.js";
 import { buildCharContext, buildSystemPrompt, callAIProxy } from "./lib/ai.js";
 import { TODAY, getLevel, getClass, rolloverDay, applyCompleteDaily, applyCompleteQuest, applyBuyItem } from "./lib/gameLogic.js";
 import { DEFAULT_GAME } from "./constants/gameData.js";
-import { T, FONTS, THEMES } from "./constants/theme.js";
+import { T, FONTS, THEMES, AESTHETICS, getVisuals } from "./constants/theme.js";
 
 import GlobalCSS        from "./components/ui/GlobalCSS.jsx";
 import Toast            from "./components/ui/Toast.jsx";
@@ -40,6 +40,7 @@ export default function App() {
   const [lvlAnim,setLvlAnim]         = useState(null);
   const [aiStatus,setAiStatus]       = useState("idle");
   const [briefingLoading,setBriefingLoading] = useState(false);
+  const [previewOverride,setPreviewOverride] = useState(null);
   const [showOnboarding,setShowOnboarding]   = useState(false);
 
   const showToast = useCallback((msg,type="gold",dur=3000)=>{
@@ -144,16 +145,27 @@ export default function App() {
     update(()=>next);
   }
 
+  function handlePreview(overrides) { setPreviewOverride(overrides); }
+  function handlePreviewEnd() { setPreviewOverride(null); }
+
   async function signOut() {
     await supabase.auth.signOut();
     setGame(DEFAULT_GAME); setUser(null); setScreen("status");
   }
 
-  const th = THEMES[game.theme]||THEMES.default;
+  const previewTheme = previewOverride?.theme || game.theme;
+  const previewAesthetic = previewOverride?.aesthetic || game.aesthetic;
+  const previewAura = previewOverride?.aura ?? game.aura;
+  const previewTitle = previewOverride?.title ?? game.title;
+  const displayGame = previewOverride
+    ? { ...game, theme:previewTheme, aesthetic:previewAesthetic, aura:previewAura, title:previewTitle }
+    : game;
+  const V  = getVisuals(displayGame);
+  const th = V.th;
 
   if(authLoading) return (
     <div style={{background:T.bg0,minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center"}}>
-      <GlobalCSS accent="#c9a84c"/>
+      <GlobalCSS V={V}/>
       <div style={{fontFamily:FONTS.display,fontSize:32,color:"#c9a84c",animation:"pulse 1.5s ease-in-out infinite"}}>◈</div>
     </div>
   );
@@ -168,7 +180,7 @@ export default function App() {
 
   return (
     <div style={{fontFamily:FONTS.ui,background:T.bg0,minHeight:"100vh",color:T.text,maxWidth:480,margin:"0 auto",position:"relative"}}>
-      <GlobalCSS accent={th.accent}/>
+      <GlobalCSS V={V}/>
       <Toast toast={toast}/>
 
       {showOnboarding&&(
@@ -197,7 +209,7 @@ export default function App() {
         </div>
       )}
 
-      <Header game={game} screen={screen} setScreen={setScreen} aiStatus={aiStatus} saving={saving}/>
+      <Header game={displayGame} screen={screen} setScreen={setScreen} aiStatus={aiStatus} saving={saving}/>
 
       <div style={{padding:"0 16px"}}>
         <ShadowMissionBar game={game}/>
@@ -205,13 +217,13 @@ export default function App() {
       </div>
 
       <div style={{padding:"16px 16px 60px"}}>
-        {screen==="status" &&<StatusScreen game={game} update={update} th={th} showToast={showToast} briefingLoading={briefingLoading} generateBriefing={generateBriefing} onSignOut={signOut}/>}
-        {screen==="daily"  &&<DailyScreen  game={game} update={update} th={th} today={today2} todayDone={todayDone} doneCount={doneCount} allDone={allDone} completeDaily={completeDaily} showToast={showToast}/>}
-        {screen==="quests" &&<QuestsScreen game={game} update={update} th={th} completeQuest={completeQuest} showToast={showToast}/>}
-        {screen==="skills" &&<SkillsScreen game={game} update={update} th={th} showToast={showToast}/>}
-        {screen==="shop"   &&<ShopScreen   game={game} th={th} buyItem={buyItem} showToast={showToast}/>}
-        {screen==="system" &&<SystemScreen game={game} update={update} th={th} showToast={showToast} aiStatus={aiStatus} setAiStatus={setAiStatus} generateBriefing={generateBriefing} briefingLoading={briefingLoading}/>}
-        {screen==="options"&&<OptionsScreen game={game} update={update} th={th} showToast={showToast} onSignOut={signOut}/>}
+        {screen==="status" &&<StatusScreen game={game} update={update} th={th} V={V} showToast={showToast} briefingLoading={briefingLoading} generateBriefing={generateBriefing} onSignOut={signOut}/>}
+        {screen==="daily"  &&<DailyScreen  game={game} update={update} th={th} V={V} today={today2} todayDone={todayDone} doneCount={doneCount} allDone={allDone} completeDaily={completeDaily} showToast={showToast}/>}
+        {screen==="quests" &&<QuestsScreen game={game} update={update} th={th} V={V} completeQuest={completeQuest} showToast={showToast}/>}
+        {screen==="skills" &&<SkillsScreen game={game} update={update} th={th} V={V} showToast={showToast}/>}
+        {screen==="shop"   &&<ShopScreen   game={game} th={th} V={V} buyItem={buyItem} showToast={showToast} onPreview={handlePreview} onPreviewEnd={handlePreviewEnd}/>}
+        {screen==="system" &&<SystemScreen game={game} update={update} th={th} V={V} showToast={showToast} aiStatus={aiStatus} setAiStatus={setAiStatus} generateBriefing={generateBriefing} briefingLoading={briefingLoading}/>}
+        {screen==="options"&&<OptionsScreen game={game} update={update} th={th} V={V} showToast={showToast} onSignOut={signOut}/>}
       </div>
     </div>
   );
