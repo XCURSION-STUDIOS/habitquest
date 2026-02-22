@@ -179,7 +179,7 @@ export default function App() {
   const allDone   = doneCount===(game.daily?.length||0)&&(game.daily?.length||0)>0;
 
   return (
-    <div style={{fontFamily:FONTS.ui,background:T.bg0,minHeight:"100vh",color:T.text,maxWidth:480,margin:"0 auto",position:"relative"}}>
+    <div className="app-wrapper" style={{fontFamily:FONTS.ui,background:T.bg0,minHeight:"100vh",color:T.text,position:"relative"}}>
       <GlobalCSS V={V}/>
       <Toast toast={toast}/>
 
@@ -211,12 +211,12 @@ export default function App() {
 
       <Header game={displayGame} screen={screen} setScreen={setScreen} aiStatus={aiStatus} saving={saving}/>
 
-      <div style={{padding:"0 16px"}}>
+      <div className="app-padding" style={{paddingTop:0,paddingBottom:0}}>
         <ShadowMissionBar game={game}/>
         <BossBar game={game}/>
       </div>
 
-      <div style={{padding:"16px 16px 60px"}}>
+      <div className="screen-padding">
         {screen==="status" &&<StatusScreen game={game} update={update} th={th} V={V} showToast={showToast} briefingLoading={briefingLoading} generateBriefing={generateBriefing} onSignOut={signOut}/>}
         {screen==="daily"  &&<DailyScreen  game={game} update={update} th={th} V={V} today={today2} todayDone={todayDone} doneCount={doneCount} allDone={allDone} completeDaily={completeDaily} showToast={showToast}/>}
         {screen==="quests" &&<QuestsScreen game={game} update={update} th={th} V={V} completeQuest={completeQuest} showToast={showToast}/>}

@@ -210,13 +210,13 @@ export default function AuthScreen({ onAuth }) {
       </div>
 
       {/* Login */}
-      <div style={{ maxWidth:380,width:"100%",textAlign:"center",position:"relative",zIndex:20,opacity:phase>=3?1:0,transition:"opacity 0.1s" }}>
+      <div style={{ maxWidth:"min(380px, 90vw)",width:"100%",textAlign:"center",position:"relative",zIndex:20,opacity:phase>=3?1:0,transition:"opacity 0.1s" }}>
         {phase>=3&&(
           <>
             <div style={{ fontFamily:FONTS.ui,fontSize:7,letterSpacing:5,color:T.dim,marginBottom:32,animation:"fadeIn 0.8s ease forwards" }}>
               AN XCURSION STUDIOS APP
             </div>
-            <div style={{ fontFamily:FONTS.display,fontSize:72,color:accent,lineHeight:0.9,marginBottom:6,textShadow:`0 0 80px ${accent}40,0 0 20px ${accent}20`,animation:"titleCrash 0.9s cubic-bezier(0.16,1,0.3,1) forwards",transformOrigin:"center bottom" }}>
+            <div style={{ fontFamily:FONTS.display,fontSize:"clamp(48px, 10vw, 88px)",color:accent,lineHeight:0.9,marginBottom:6,textShadow:`0 0 80px ${accent}40,0 0 20px ${accent}20`,animation:"titleCrash 0.9s cubic-bezier(0.16,1,0.3,1) forwards",transformOrigin:"center bottom" }}>
               HabitQuest
             </div>
             <div style={{ fontFamily:FONTS.ui,fontSize:8,letterSpacing:6,color:T.dim,marginBottom:48,animation:"fadeIn 0.8s ease 0.5s both" }}>

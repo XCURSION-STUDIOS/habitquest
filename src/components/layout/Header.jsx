@@ -10,7 +10,7 @@ export default function Header({ game, screen, setScreen, aiStatus, saving, V })
   return (
     <div style={{ padding:"14px 16px 0" }}>
       <div style={{ display:"flex",alignItems:"center",gap:12,marginBottom:10 }}>
-        <div onClick={()=>setScreen("status")} style={{ width:48,height:48,borderRadius:"50%",background:V?.bg1||T.bg1,border:`1px solid ${th.accent}40`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,cursor:"pointer",flexShrink:0,animation:game.aura?"auraAnim 2.5s linear infinite":"none" }}>
+        <div onClick={()=>setScreen("status")} className="header-avatar" style={{ borderRadius:"50%",background:V?.bg1||T.bg1,border:`1px solid ${th.accent}40`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,cursor:"pointer",flexShrink:0,animation:game.aura?"auraAnim 2.5s linear infinite":"none" }}>
           {cls.icon}
         </div>
         <div style={{ flex:1 }}>
@@ -39,7 +39,7 @@ export default function Header({ game, screen, setScreen, aiStatus, saving, V })
       )}
       <nav style={{ display:"flex",borderBottom:`1px solid ${V?.bg3||T.bg3}` }}>
         {[{id:"status",l:"STATUS"},{id:"daily",l:"DAILY"},{id:"quests",l:"QUESTS"},{id:"skills",l:"SKILLS"},{id:"shop",l:"SHOP"},{id:"options",l:"⚙"}].map(t=>(
-          <button key={t.id} onClick={()=>setScreen(t.id)} style={{ flex:1,padding:"9px 0",fontFamily:FONTS.ui,fontSize:8,letterSpacing:1,background:"none",border:"none",cursor:"pointer",color:screen===t.id?th.accent:T.dim,borderBottom:screen===t.id?`1px solid ${th.accent}`:"1px solid transparent",transition:"color 0.2s",whiteSpace:"nowrap" }}>
+          <button key={t.id} onClick={()=>setScreen(t.id)} style={{ flex:1,padding:"9px 0",fontFamily:FONTS.ui,fontSize:"var(--nav-font)",letterSpacing:1,background:"none",border:"none",cursor:"pointer",color:screen===t.id?th.accent:T.dim,borderBottom:screen===t.id?`1px solid ${th.accent}`:"1px solid transparent",transition:"color 0.2s",whiteSpace:"nowrap" }}>
             {t.l}
           </button>
         ))}
