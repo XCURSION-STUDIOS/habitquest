@@ -124,7 +124,7 @@ export const DEFAULT_GAME = {
   questExtraSlots: 0,
   perms:[], actives:[], cosmetics:[], titles:[],
   title:null, theme:"default", aesthetic:"default", aura:false,
-  shadowMission:null, shadowProgress:0,
+  bonusMission:null, bonusProgress:0,
   boss:null, bossHPLeft:0,
   abyssDepth:0, abyssActive:false,
   mood:null, lastMoodDate:null,

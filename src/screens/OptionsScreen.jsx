@@ -89,7 +89,7 @@ export default function OptionsScreen({ game, update, th, showToast, onSignOut, 
         </div>
         <Btn onClick={()=>{
           if(window.confirm("Are you sure? This cannot be undone."))
-            update(()=>({ char:game.char,setup:true,onboardingDone:true,xp:0,gems:0,stats:{Physical:1,Mental:1,Spiritual:1,Social:1,Emotional:1},skillPoints:0,unlockedNodes:[],daily:[],quests:[],done:{},perms:[],actives:[],cosmetics:[],titles:[],title:null,theme:"default",aesthetic:"default",aura:false,shadowMission:null,shadowProgress:0,boss:null,bossHPLeft:0,abyssDepth:0,abyssActive:false,mood:null,lastMoodDate:null,lastDay:new Date().toISOString().split("T")[0],briefing:null,briefingDate:null,penaltyMessage:null,rivalEnabled:false,rival:null,weeklyReview:null,lastReviewDate:null,memory:{recentActivity:[],totalDays:0,avgCompletions:0,mostSkipped:null,longestStreak:0} }));
+            update(()=>({ char:game.char,setup:true,onboardingDone:true,xp:0,gems:0,stats:{Physical:1,Mental:1,Spiritual:1,Social:1,Emotional:1},skillPoints:0,unlockedNodes:[],daily:[],quests:[],done:{},perms:[],actives:[],cosmetics:[],titles:[],title:null,theme:"default",aesthetic:"default",aura:false,bonusMission:null,bonusProgress:0,boss:null,bossHPLeft:0,abyssDepth:0,abyssActive:false,mood:null,lastMoodDate:null,lastDay:new Date().toISOString().split("T")[0],briefing:null,briefingDate:null,penaltyMessage:null,rivalEnabled:false,rival:null,weeklyReview:null,lastReviewDate:null,memory:{recentActivity:[],totalDays:0,avgCompletions:0,mostSkipped:null,longestStreak:0} }));
         }} danger>RESET ALL PROGRESS</Btn>
       </Card>
 

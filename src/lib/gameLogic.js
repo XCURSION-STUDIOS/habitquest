@@ -154,7 +154,7 @@ export function applyCompleteDaily(game, id, today) {
   const newLevel    = getLevel(newXP);
   const newSP       = (game.skillPoints||0) + (newLevel - oldLevel);
 
-  let sp=game.shadowProgress||0, sm=game.shadowMission;
+  let sp=game.bonusProgress||0, sm=game.bonusMission;
   let shadowBonus=0, shadowGemBonus=0, clearShadow=false;
   if (sm) { sp+=1; if(sp>=sm.req.count){ shadowBonus=sm.xp; shadowGemBonus=sm.gems||0; clearShadow=true; } }
 
@@ -175,8 +175,8 @@ export function applyCompleteDaily(game, id, today) {
     done:  { ...game.done, [today]:{ ...(game.done[today]||{}), [id]:true } },
     stats: { ...game.stats, [q.type]:Math.min((game.stats[q.type]||1)+statGain, 100) },
     daily: game.daily.map(d => d.id===id ? { ...d, streak:d.streak+1, best:Math.max(d.best||0,d.streak+1) } : d),
-    shadowMission:  clearShadow ? null : sm,
-    shadowProgress: clearShadow ? 0 : sp,
+    bonusMission:  clearShadow ? null : sm,
+    bonusProgress: clearShadow ? 0 : sp,
     boss:       clearBoss ? null : boss,
     bossHPLeft: clearBoss ? 0 : bossHPLeft,
     abyssDepth: newAbyssDepth,

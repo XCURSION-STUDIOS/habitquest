@@ -8,7 +8,7 @@ import { T, FONTS, THEMES, AESTHETICS, getVisuals } from "./constants/theme.js";
 import GlobalCSS        from "./components/ui/GlobalCSS.jsx";
 import Toast            from "./components/ui/Toast.jsx";
 import Header           from "./components/layout/Header.jsx";
-import ShadowMissionBar from "./components/layout/ShadowMissionBar.jsx";
+import BonusMissionBar from "./components/layout/BonusMissionBar.jsx";
 import BossBar          from "./components/layout/BossBar.jsx";
 
 import AuthScreen       from "./screens/AuthScreen.jsx";
@@ -104,13 +104,13 @@ export default function App() {
       const ctx=buildCharContext(game),sys=buildSystemPrompt(ctx);
       const prompt=`Give this player a morning briefing. 3-4 sentences: note yesterday's performance, identify their most critical weak area, give a clear directive for today. End with one specific bonus mission based on their actual habits. Label it: BONUS MISSION: [mission description]`;
       const text=await callAIProxy(sys,prompt);
-      let briefingText=text,shadowMission=game.shadowMission;
+      let briefingText=text,bonusMission=game.bonusMission;
       const match=text.match(/BONUS MISSION:\s*(.+?)(?:\n|$)/i);
-      if(match&&!game.shadowMission){
-        shadowMission={id:`ai_${Date.now()}`,name:"Daily Bonus Mission",desc:match[1].trim(),req:{type:"Any",count:1},xp:180,gems:18,aiGenerated:true};
+      if(match&&!game.bonusMission){
+        bonusMission={id:`ai_${Date.now()}`,name:"Daily Bonus Mission",desc:match[1].trim(),req:{type:"Any",count:1},xp:180,gems:18,aiGenerated:true};
         briefingText=text.replace(/BONUS MISSION:.*$/im,"").trim();
       }
-      update(s=>({...s,briefing:briefingText,briefingDate:today,shadowMission}));
+      update(s=>({...s,briefing:briefingText,briefingDate:today,bonusMission}));
       setAiStatus("ok");
     } catch(e) {
       console.warn("Briefing failed:",e.message);
@@ -250,7 +250,7 @@ xpOffset should be between -400 and +100 (negative means rival starts slightly b
 
       <div className="app-padding" style={{paddingTop:0,paddingBottom:0}}>
         <RivalCard game={game} th={th}/>
-        <ShadowMissionBar game={game}/>
+        <BonusMissionBar game={game}/>
         <BossBar game={game}/>
       </div>
 

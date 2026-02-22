@@ -12,7 +12,6 @@ export default function RadarChart({ stats, accent, size=210 }) {
       {[.25,.5,.75,1].map(p=>{const rp=ang.map(a=>pt(a,p));const rpath=rp.map((x,i)=>`${i===0?"M":"L"}${x.x.toFixed(1)},${x.y.toFixed(1)}`).join(" ")+"Z";return <path key={p} d={rpath} fill="none" stroke={T.bg3} strokeWidth={1}/>;  })}
       {ang.map((a,i)=>{const o=pt(a,1);return <line key={i} x1={cx} y1={cy} x2={o.x.toFixed(1)} y2={o.y.toFixed(1)} stroke={T.bg3} strokeWidth={1}/>;  })}
       <path d={dpath} fill="url(#rg)" stroke={accent} strokeWidth={1.5}/>
-      {dpts.map((p,i)=><circle key={i} cx={p.x} cy={p.y} r={3.5} fill={STAT_COL[STATS[i]]} stroke={T.bg0} strokeWidth={1.5}/>)}
       {STATS.map((s,i)=>{const lp=pt(ang[i],1.28);return <text key={s} x={lp.x.toFixed(1)} y={lp.y.toFixed(1)} textAnchor="middle" dominantBaseline="middle" fill={STAT_COL[s]} fontSize={9} fontFamily={FONTS.ui} fontWeight="700">{s.toUpperCase()}</text>;})}
     </svg>
   );

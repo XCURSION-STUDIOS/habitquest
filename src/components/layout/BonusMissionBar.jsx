@@ -4,7 +4,7 @@ export default function BonusMissionBar({ game }) {
   return (
     <div style={{ padding:"10px 14px",background:"#080018",border:`1px solid ${T.purple}40`,borderRadius:8,marginBottom:10 }}>
       <div style={{ fontFamily:FONTS.ui,fontSize:8,letterSpacing:3,color:T.purple,marginBottom:4 }}>
-        BONUS MISSION{game.bonusMission.aiGenerated?" · AI GENERATED":""}
+        BONUS MISSION · OPTIONAL{game.bonusMission.aiGenerated?" · AI GENERATED":""}
       </div>
       <div style={{ fontFamily:FONTS.display,fontSize:14,color:T.text,marginBottom:3 }}>{game.bonusMission.name}</div>
       <div style={{ fontFamily:FONTS.ui,fontSize:10,color:T.silver,lineHeight:1.5 }}>{game.bonusMission.desc}</div>
