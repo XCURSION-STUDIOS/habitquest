@@ -123,7 +123,7 @@ export default function StatusScreen({ game, update, th, showToast, briefingLoad
           </div>
           <div style={{ fontFamily:FONTS.ui,fontSize:10,color:T.silver,lineHeight:1.7,marginBottom:8 }}>
             Missed: {game.penaltyMessage.missed.join(", ")}<br/>
-            Abyss depth increased by {game.penaltyMessage.abyssChange}.
+            Habit Decay increased by {game.penaltyMessage.abyssChange}.
           </div>
           <button onClick={()=>update(s=>({...s,penaltyMessage:null}))} style={{ fontFamily:FONTS.ui,fontSize:8,letterSpacing:2,padding:"6px 12px",background:"transparent",border:`1px solid ${T.danger}40`,borderRadius:4,color:T.danger,cursor:"pointer" }}>
             ACKNOWLEDGE
@@ -202,14 +202,14 @@ export default function StatusScreen({ game, update, th, showToast, briefingLoad
         </button>
       )}
 
-      {/* Abyss depth */}
-      {game.abyssDepth>0&&(
+      {/* Habit Decay */}
+      {game.decayDepth>0&&(
         <Card style={{ marginBottom:12,border:"1px solid #6a000050" }}>
-          <SecTitle col="#b03030">Recovery Needed</SecTitle>
+          <SecTitle col="#b03030">Habit Decay</SecTitle>
           <div style={{ height:4,background:"var(--bg3)",borderRadius:3 }}>
-            <div style={{ height:"100%",width:`${(game.abyssDepth/20)*100}%`,background:"linear-gradient(90deg,#3a0000,#b03030)",borderRadius:3 }}/>
+            <div style={{ height:"100%",width:`${(game.decayDepth/20)*100}%`,background:"linear-gradient(90deg,#3a0000,#b03030)",borderRadius:3 }}/>
           </div>
-          <div style={{ fontFamily:FONTS.ui,fontSize:9,color:T.dim,marginTop:5 }}>Depth {game.abyssDepth}/20 — complete daily habits to recover</div>
+          <div style={{ fontFamily:FONTS.ui,fontSize:9,color:T.dim,marginTop:5 }}>Decay {game.decayDepth}/20 — complete habits to reduce decay</div>
         </Card>
       )}
 

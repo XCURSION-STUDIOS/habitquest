@@ -12,81 +12,93 @@ Complete habits every day to earn XP and gems. Level up to unlock new class titl
 Everything is tied to what you actually do — not what you plan to do.`,
   },
   {
-    title: "Daily Habits",
+    title: "Daily Habits & Mood",
     icon: "⚔",
-    body: `Daily habits are the core of HabitQuest. Tasks you want to complete every single day — working out, reading, studying, whatever matters to you.
+    body: `Daily habits are the core of HabitQuest — tasks you want to complete every single day. Each habit has a difficulty rank (F through S) and a stat type (Physical, Mental, Spiritual, Social, or Emotional). Completing it earns XP and gems based on difficulty.
 
-Each habit has a difficulty rank (F through S) and a stat type (Physical, Mental, Spiritual, Social, or Emotional). Completing it earns XP and gems based on difficulty.
+Build streaks by completing habits on consecutive days. Miss a day and your streak resets — so consistency matters.
 
-Tap SET MOOD at the top of the Daily screen each morning — High Energy gives +25% XP, Low Energy reduces your penalty if you miss habits. You can only set it once per day.
+Each morning, tap SET MOOD on the Daily screen. High Energy gives +25% XP for the day. Low Energy softens your penalty if you miss habits. You can only set it once per day.
 
-Build streaks by completing habits on consecutive days. Miss a day and your streak resets.`,
+Use HABIT TEMPLATES to load a curated starter set if you're not sure where to begin.`,
   },
   {
     title: "Stats & The Radar Chart",
     icon: "✦",
-    body: `Your character has 5 stats: Physical, Mental, Spiritual, Social, and Emotional.
+    body: `Your character has 5 stats: Physical, Mental, Spiritual, Social, and Emotional. Each grows when you complete habits assigned to it.
 
-Each stat grows when you complete habits assigned to it. The radar chart on your Status screen shows your balance at a glance — a well-rounded chart means you're developing across all areas.
+The radar chart on your Status screen shows your balance at a glance. Tap SHOW BARS to see the detailed breakdown beneath it.
 
-Tap SHOW BARS on the Status screen to see the detailed breakdown beneath the radar chart.
-
-Stats are used by the AI to identify your weaknesses and give personalised recommendations. A lopsided chart means the AI will push you to address the neglected areas.`,
+Stats are used by the AI to identify your weaknesses and give personalised recommendations. A lopsided chart means the AI will push you to address the areas you're neglecting.`,
   },
   {
     title: "Quests",
     icon: "◆",
-    body: `Quests are larger one-off goals — things that take more than a single day. Write a project proposal. Run a 5K. Finish a course.
+    body: `Quests are larger one-off goals — things that take real effort. Write a project proposal. Run a 5K. Finish a course.
 
-Each quest has a difficulty rank and a stat type. Completing a quest gives significantly more XP and gems than a daily habit, and boosts your stat by 3 points.
+Each quest has a difficulty rank and stat type. Completing one gives significantly more XP and gems than a daily habit, and boosts your stat by 3 points.
 
-You can complete up to 5 quests per day. If you need more, buy extra quest slots in the shop using gems.
-
-Quests can have notes attached — use these for context, sub-tasks, or anything relevant.`,
+You can complete up to 5 quests per day. Buy extra quest slots in the Shop if you need more. Attach notes to quests for context or sub-tasks.`,
   },
   {
     title: "Skill Tree",
     icon: "🌿",
-    body: `The skill tree lets you specialise your character. Every time you gain a level, you earn 1 Skill Point.
+    body: `Every time you level up, you earn 1 Skill Point — shown in the header when you have some to spend.
 
-Spend Skill Points to unlock nodes — one branch per stat, each with 4 tiers. Invest heavily in one branch to unlock powerful perks for that stat. Cross-branch nodes unlock when you've invested in two different branches.
+The skill tree has one branch per stat, each with 4 tiers. Unlock nodes to gain permanent passive bonuses: faster XP, gem multipliers, streak protection, and more.
 
-Your available Skill Points are shown in the header whenever you have some to spend.
+Cross-branch nodes unlock when you've invested in two different branches, rewarding balanced development.
 
 Access the skill tree from the SKILLS tab.`,
   },
   {
-    title: "The Penalty System",
+    title: "Habit Decay",
     icon: "◌",
-    body: `If you don't complete all your daily habits by midnight, you'll receive a penalty report the next morning — shown as a collapsible card at the top of your Status screen.
+    body: `Miss habits and your Habit Decay increases — 1 point per missed habit at the end of each day. The deeper it gets, the more it hurts.
 
-Missed habits increase your Abyss Depth. At depth 5+ you enter an active Abyss state shown at the top of the screen. Every habit you complete reduces your depth by 1.
+At depth 5+ a warning bar appears at the top of the app. Your gem income is penalised based on how deep you've fallen: depth 5 = -20% gems, depth 10 = -35%, depth 15 = -50%. The deeper you go, the harder it is to rebuild your economy and buy boosts.
 
-The penalty system makes consistency feel meaningful — not to punish you for having a bad day. Life happens. The goal is to get back on track quickly.`,
+Recovery: every habit you complete reduces decay by 1. Miss 3 habits and you need 3 completions just to break even. Bonus Missions reduce decay faster — use them when you're in the hole.
+
+You'll receive a penalty report each morning after a missed day. Acknowledge it and get back on track.`,
   },
   {
-    title: "AI Coaching",
+    title: "Bonus Missions & AI Briefing",
     icon: "◈",
-    body: `HabitQuest has a built-in AI coach that analyses your actual data — stats, streaks, habits, mood, and history.
+    body: `Every morning your AI generates a personalised Briefing on your Status screen — a short analysis of recent performance with a specific focus area for the day.
 
-Every morning you receive a personalised briefing on your Status screen: a short analysis of recent performance with a focus area for the day. It also generates a Bonus Mission tailored to your weak points — visible as a collapsible card on Status.
+It also generates a Bonus Mission: a targeted challenge built around your weak points. Complete it for a big XP reward and accelerated Habit Decay recovery. Find it as a collapsible card on your Status screen.
 
-The AI tab lets you chat directly with the coach. Ask it to suggest quests, analyse your progress, or recommend what to focus on next.
-
-You can also generate an AI Rival in Options — a character built around your weaknesses who levels up every day you play.`,
+The AI tab lets you chat directly with your coach. Ask it to suggest quests, analyse your stats, or tell you what to focus on next. The more data you build up, the sharper its advice becomes.`,
   },
   {
-    title: "Navigation & Settings",
+    title: "The Rival System",
+    icon: "⚔",
+    body: `Enable the Rival System in Options. The AI generates a rival character built around your weaknesses — stronger where you are weak.
+
+Your rival gains XP every day at midnight, calculated from your own average daily completions over the last 30 days. Average 3 habits a day and they gain roughly 180 XP per day. They start behind you, but that head start won't last if you slack off.
+
+When your rival overtakes you, they begin siphoning your XP — every habit earns less until you pull back ahead:
+· 1 level behind = -10% XP
+· 3 levels behind = -25% XP
+· 5+ levels behind = -40% XP
+
+Disable the rival in Options at any time to remove the siphon. Check the Rival card on Status to track the gap.`,
+  },
+  {
+    title: "Shop, Settings & You're Ready",
     icon: "★",
-    body: `The nav bar has 7 tabs: STATUS, DAILY, QUESTS, SKILLS, SHOP, AI, and Options.
+    body: `The Shop lets you spend gems on temporary boosts (XP Boost, Gem Boost, Streak Shield), permanent upgrades, and cosmetics like titles and the avatar glow effect. Active boosts are shown under the BOOSTS button in the header.
 
-STATUS is your home screen — XP progress, today's completion, radar chart, briefing, and collapsible sections for rival and bonus mission.
+Your character profile — name, bio, occupation — can be edited any time in Options. Themes are there too.
 
-Active boosts from the shop are hidden behind the BOOSTS button in the header to keep things clean.
+A few tips to get started:
+· Set your mood every morning in the Daily tab
+· Check your AI briefing on Status each day
+· Visit Skills once you've levelled up a few times
+· Use the Shop when you've saved enough gems
 
-Your character profile (name, bio, occupation) can be edited any time in Options at the top of the page. Themes and appearance are also in Options.
-
-You can reopen this guide any time from Options.`,
+You can reopen this guide any time from Options. Good luck.`,
   },
 ];
 

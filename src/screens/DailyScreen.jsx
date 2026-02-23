@@ -31,6 +31,16 @@ export default function DailyScreen({ game, update, th, today, todayDone, doneCo
 
   return (
     <div>
+      {!moodAlreadySet&&(
+        <div style={{ display:"flex",alignItems:"center",gap:10,padding:"10px 14px",marginBottom:12,background:`${th.accent}08`,border:`1px solid ${th.accent}30`,borderRadius:8,cursor:"pointer" }} onClick={()=>setShowMood(true)}>
+          <span style={{ fontSize:16 }}>🌤</span>
+          <div style={{ flex:1 }}>
+            <div style={{ fontFamily:FONTS.ui,fontSize:8,letterSpacing:2,color:th.accent }}>SET YOUR MOOD</div>
+            <div style={{ fontFamily:FONTS.ui,fontSize:9,color:T.dim,marginTop:1 }}>Affects your XP for the day — tap to set</div>
+          </div>
+          <span style={{ fontFamily:FONTS.ui,fontSize:9,color:th.accent }}>→</span>
+        </div>
+      )}
       {showTemplates && (
         <HabitTemplatesModal
           game={game} th={th}

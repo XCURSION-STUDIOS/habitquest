@@ -39,7 +39,7 @@ export const CLASSES = [
 export const SKILL_TREE = {
   Physical: [
     { id:"ph1", tier:1, name:"Iron Body",         desc:"+10% XP from physical habits.",             effect:{ type:"xp_bonus", stat:"Physical", val:0.10 }, cost:1, requires:null },
-    { id:"ph2", tier:2, name:"Endurance",          desc:"Physical streak breaks cost -1 Abyss depth instead of -2.", effect:{ type:"abyss_reduction", stat:"Physical" }, cost:2, requires:"ph1" },
+    { id:"ph2", tier:2, name:"Endurance",          desc:"Physical streak breaks cost -1 Decay depth instead of -2.", effect:{ type:"decay_reduction", stat:"Physical" }, cost:2, requires:"ph1" },
     { id:"ph3", tier:3, name:"Peak Condition",     desc:"+20% XP from all habits on days you complete every physical task.", effect:{ type:"full_day_bonus", stat:"Physical", val:0.20 }, cost:3, requires:"ph2" },
     { id:"ph4", tier:4, name:"Elite Physique",     desc:"Physical stat gains count double permanently.", effect:{ type:"stat_double", stat:"Physical" }, cost:4, requires:"ph3" },
   ],
@@ -52,7 +52,7 @@ export const SKILL_TREE = {
   Spiritual: [
     { id:"sp1", tier:1, name:"Inner Calm",         desc:"+10% XP from spiritual habits.",            effect:{ type:"xp_bonus", stat:"Spiritual", val:0.10 }, cost:1, requires:null },
     { id:"sp2", tier:2, name:"Mindfulness",        desc:"Low mood penalty reduced from -15% to -5% XP.", effect:{ type:"mood_penalty_reduction" }, cost:2, requires:"sp1" },
-    { id:"sp3", tier:3, name:"Resilience",         desc:"Abyss depth cannot exceed 10 (down from 20).", effect:{ type:"abyss_cap", val:10 }, cost:3, requires:"sp2" },
+    { id:"sp3", tier:3, name:"Resilience",         desc:"Decay depth cannot exceed 10 (down from 20).", effect:{ type:"decay_cap", val:10 }, cost:3, requires:"sp2" },
     { id:"sp4", tier:4, name:"Enlightened",        desc:"Spiritual stat gains count double permanently.", effect:{ type:"stat_double", stat:"Spiritual" }, cost:4, requires:"sp3" },
   ],
   Social: [
@@ -125,7 +125,7 @@ export const DEFAULT_GAME = {
   perms:[], actives:[], cosmetics:[], titles:[],
   title:null, theme:"default", aesthetic:"default", aura:false,
   bonusMission:null, bonusProgress:0,
-  abyssDepth:0, abyssActive:false,
+  decayDepth:0, decayActive:false,
   mood:null, lastMoodDate:null,
   lastDay: new Date().toISOString().split("T")[0],
   briefing:null, briefingDate:null,

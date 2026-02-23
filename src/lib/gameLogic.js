@@ -39,6 +39,16 @@ export function getMultipliers(game, statType = null) {
   if (game.mood === "high") xm += moodBonus;
   if (game.mood === "low")  xm -= moodPenalty;
 
+  // Rival XP siphon — scales with level gap
+  if (game.rivalEnabled && game.rival) {
+    const myLevel    = getLevel(game.xp);
+    const rivalLevel = getLevel(game.rival.xp || 0);
+    const gap        = rivalLevel - myLevel;
+    if (gap >= 5)      xm -= 0.40;
+    else if (gap >= 3) xm -= 0.25;
+    else if (gap >= 1) xm -= 0.10;
+  }
+
   // Stat-specific XP bonus from skill tree
   if (statType) {
     nodes.forEach(n => {
@@ -53,6 +63,12 @@ export function getMultipliers(game, statType = null) {
 
   // Diplomat cross: gem double on days mood is set
   if (nodes.find(n => n.effect?.type === "mood_gem_double") && game.mood) gm *= 2;
+
+  // Habit Decay gem penalty
+  const decayDepthNow = game.decayDepth || 0;
+  if (decayDepthNow >= 15)     gm *= 0.50;
+  else if (decayDepthNow >= 10) gm *= 0.65;
+  else if (decayDepthNow >= 5)  gm *= 0.80;
 
   return { xm: Math.max(0.1, xm), gm: Math.max(0.1, gm) };
 }
@@ -74,8 +90,8 @@ export function rolloverDay(game, today) {
   });
 
   const nodes       = getUnlockedNodes(game.unlockedNodes || []);
-  const abyssCap    = nodes.find(n => n.effect?.type === "abyss_cap")?.effect?.val || 20;
-  const newDepth    = Math.min((game.abyssDepth || 0) + broken, abyssCap);
+  const decayCap    = nodes.find(n => n.effect?.type === "decay_cap")?.effect?.val || 20;
+  const newDepth    = Math.min((game.decayDepth || 0) + broken, decayCap);
   const prev        = game.memory || {};
   const recentActivity = [
     ...(prev.recentActivity || []),
@@ -94,7 +110,7 @@ export function rolloverDay(game, today) {
     penaltyMessage = {
       missed: missedNames,
       broken,
-      abyssChange: broken,
+      decayChange: broken,
       date: game.lastDay,
     };
   }
@@ -114,8 +130,8 @@ export function rolloverDay(game, today) {
     mood: null,
     briefing: null,
     briefingDate: null,
-    abyssDepth: newDepth,
-    abyssActive: newDepth >= 5,
+    decayDepth: newDepth,
+    decayActive: newDepth >= 5,
     questCompletedToday: 0,
     questExtraSlots: 0,
     penaltyMessage,
@@ -162,7 +178,7 @@ export function applyCompleteDaily(game, id, today) {
   const nodes         = getUnlockedNodes(game.unlockedNodes||[]);
   const statDouble    = nodes.find(n => n.effect?.type==="stat_double" && n.effect?.stat===q.type);
   const statGain      = statDouble ? 2 : 1;
-  const newAbyssDepth = Math.max(0,(game.abyssDepth||0)-1);
+  const newDecayDepth = Math.max(0,(game.decayDepth||0)-1);
 
   return {
     ...game,
@@ -175,8 +191,8 @@ export function applyCompleteDaily(game, id, today) {
     daily: game.daily.map(d => d.id===id ? { ...d, streak:d.streak+1, best:Math.max(d.best||0,d.streak+1) } : d),
     bonusMission:  clearShadow ? null : sm,
     bonusProgress: clearShadow ? 0 : sp,
-    abyssDepth: newAbyssDepth,
-    abyssActive: newAbyssDepth >= 5,
+    decayDepth: newDecayDepth,
+    decayActive: newDecayDepth >= 5,
     _events: {
       levelUp:   newLevel > oldLevel,
       newLevel,

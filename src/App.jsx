@@ -264,10 +264,10 @@ xpOffset should be between -400 and +100 (negative means rival starts slightly b
         </div>
       )}
 
-      {game.abyssActive&&(
+      {game.decayActive&&(
         <div style={{background:T.abyss,borderBottom:"1px solid #6a000050",padding:"7px 16px"}}>
           <span style={{fontFamily:FONTS.ui,fontSize:9,letterSpacing:3,color:"#dd5050"}}>
-            ⚠ RECOVERY NEEDED — Depth {game.abyssDepth}/20 — Complete habits to recover
+            ⚠ HABIT DECAY — Depth {game.decayDepth}/20 — Complete habits to recover
           </span>
         </div>
       )}
