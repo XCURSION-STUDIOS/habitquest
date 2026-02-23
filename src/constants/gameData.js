@@ -125,7 +125,6 @@ export const DEFAULT_GAME = {
   perms:[], actives:[], cosmetics:[], titles:[],
   title:null, theme:"default", aesthetic:"default", aura:false,
   bonusMission:null, bonusProgress:0,
-  boss:null, bossHPLeft:0,
   abyssDepth:0, abyssActive:false,
   mood:null, lastMoodDate:null,
   lastDay: new Date().toISOString().split("T")[0],

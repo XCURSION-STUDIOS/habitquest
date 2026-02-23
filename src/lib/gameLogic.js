@@ -158,8 +158,6 @@ export function applyCompleteDaily(game, id, today) {
   let shadowBonus=0, shadowGemBonus=0, clearShadow=false;
   if (sm) { sp+=1; if(sp>=sm.req.count){ shadowBonus=sm.xp; shadowGemBonus=sm.gems||0; clearShadow=true; } }
 
-  let bossHPLeft=game.bossHPLeft, boss=game.boss, bossBonus=0, bossGemBonus=0, clearBoss=false;
-  if (boss) { bossHPLeft=Math.max(0,bossHPLeft-1); if(bossHPLeft===0){ bossBonus=boss.xp; bossGemBonus=boss.gems||0; clearBoss=true; } }
 
   const nodes         = getUnlockedNodes(game.unlockedNodes||[]);
   const statDouble    = nodes.find(n => n.effect?.type==="stat_double" && n.effect?.stat===q.type);
@@ -170,15 +168,13 @@ export function applyCompleteDaily(game, id, today) {
     ...game,
     actives,
     skillPoints: newSP,
-    xp:    newXP + shadowBonus + bossBonus,
-    gems:  game.gems + gemE + shadowGemBonus + bossGemBonus,
+    xp:    newXP + shadowBonus,
+    gems:  game.gems + gemE + shadowGemBonus,
     done:  { ...game.done, [today]:{ ...(game.done[today]||{}), [id]:true } },
     stats: { ...game.stats, [q.type]:Math.min((game.stats[q.type]||1)+statGain, 100) },
     daily: game.daily.map(d => d.id===id ? { ...d, streak:d.streak+1, best:Math.max(d.best||0,d.streak+1) } : d),
     bonusMission:  clearShadow ? null : sm,
     bonusProgress: clearShadow ? 0 : sp,
-    boss:       clearBoss ? null : boss,
-    bossHPLeft: clearBoss ? 0 : bossHPLeft,
     abyssDepth: newAbyssDepth,
     abyssActive: newAbyssDepth >= 5,
     _events: {
@@ -188,7 +184,6 @@ export function applyCompleteDaily(game, id, today) {
       gemEarned: gemE,
       boosted:   xm > 1.05,
       shadowDone: clearShadow, shadowXP: shadowBonus,
-      bossDone:   clearBoss,   bossXP:   bossBonus,
       skillPointGained: newLevel > oldLevel,
     },
   };

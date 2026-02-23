@@ -8,7 +8,6 @@ import { T, FONTS, THEMES, AESTHETICS, getVisuals } from "./constants/theme.js";
 import GlobalCSS        from "./components/ui/GlobalCSS.jsx";
 import Toast            from "./components/ui/Toast.jsx";
 import Header           from "./components/layout/Header.jsx";
-import BossBar          from "./components/layout/BossBar.jsx";
 
 import AuthScreen       from "./screens/AuthScreen.jsx";
 import SetupScreen      from "./screens/SetupScreen.jsx";
@@ -146,7 +145,6 @@ export default function App() {
     const clean={...result}; delete clean._events;
     if(ev.levelUp) setTimeout(()=>{ setLvlAnim(ev.newLevel); setTimeout(()=>setLvlAnim(null),3500); },200);
     if(ev.shadowDone) showToast(`Bonus mission complete! +${ev.shadowXP} XP`,"system");
-    else if(ev.bossDone) showToast(`Weekly challenge complete! +${ev.bossXP} XP`,"success",5000);
     else if(!game.done?.[today]?.[id]) showToast(`+${ev.xpEarned} XP  ·  +${ev.gemEarned} gems${ev.boosted?"  ⚡":""}`,ev.skillPointGained?"success":"gold");
     if(ev.skillPointGained) setTimeout(()=>showToast("Level up! +1 Skill Point earned. Visit the Skills tab.","info",5000),400);
     update(()=>clean);
@@ -276,7 +274,6 @@ xpOffset should be between -400 and +100 (negative means rival starts slightly b
 
       <Header game={displayGame} screen={screen} setScreen={navigateTo} aiStatus={aiStatus} saving={saving} V={V}/>
 
-      <BossBar game={game}/>
 
       <div className="screen-padding" style={slideOut}>
         {screen==="status" &&<StatusScreen game={game} update={update} th={th} V={V} showToast={showToast} briefingLoading={briefingLoading} generateBriefing={generateBriefing} onSignOut={signOut}/>}
