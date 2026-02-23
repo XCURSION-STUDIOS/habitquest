@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { T, FONTS, THEMES } from "../constants/theme.js";
-import { STATS, STAT_COL, STAT_ICO, XP_PER_LEVEL, SHOP_ITEMS } from "../constants/gameData.js";
+import { STATS, STAT_COL, STAT_ICO, XP_PER_LEVEL } from "../constants/gameData.js";
 import { getLevel, getXPPct, getClass } from "../lib/gameLogic.js";
 import { Card, SecTitle, Btn } from "../components/ui/index.jsx";
 import RadarChart from "../components/ui/RadarChart.jsx";
@@ -100,13 +100,10 @@ function BonusMissionSection({ game }) {
 }
 
 export default function StatusScreen({ game, update, th, showToast, briefingLoading, generateBriefing, onSignOut }) {
-  const [editChar,setEditChar] = useState(false);
-  const [charForm,setCharForm] = useState(game.char);
   const [showStats,setShowStats] = useState(false);
 
   const level       = getLevel(game.xp);
   const cls         = getClass(level);
-  const ownedTitles = (game.titles||[]).map(id=>SHOP_ITEMS.find(i=>i.id===id)).filter(Boolean);
   const inp = { width:"100%",background:"var(--bg2)",border:`1px solid var(--bg3)`,borderRadius:6,color:"var(--text)",padding:"9px 12px",fontFamily:FONTS.ui,fontSize:12,outline:"none",marginBottom:8,boxSizing:"border-box" };
 
   // Today's completion
@@ -134,54 +131,19 @@ export default function StatusScreen({ game, update, th, showToast, briefingLoad
         </CollapsibleSection>
       )}
 
-      {/* Character card */}
-      <Card style={{ marginBottom:12 }} accent={th.accent}>
-        <div style={{ display:"flex",gap:14,alignItems:"flex-start" }}>
-          <div style={{ textAlign:"center" }}>
-            <div style={{ width:64,height:64,borderRadius:10,background:"var(--bg2)",border:`1px solid ${th.accent}30`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:30,marginBottom:4,animation:game.aura?"auraAnim 2.5s linear infinite":"none" }}>{cls.icon}</div>
-            <div style={{ fontFamily:FONTS.ui,fontSize:7,letterSpacing:2,color:T.dim }}>LVL {level}</div>
-          </div>
-          <div style={{ flex:1 }}>
-            <div style={{ fontFamily:FONTS.display,fontSize:20,color:T.textBright }}>{game.char.name}</div>
-            {game.title&&<div style={{ fontFamily:FONTS.ui,fontSize:8,letterSpacing:2,color:th.accent,marginTop:2 }}>"{game.title}"</div>}
-            <div style={{ fontFamily:FONTS.ui,fontSize:8,letterSpacing:2,color:T.silver,marginTop:3 }}>{cls.icon} {cls.name.toUpperCase()}</div>
-            {game.char.occupation&&<div style={{ fontFamily:FONTS.ui,fontSize:10,color:T.dim,marginTop:2 }}>{game.char.occupation}</div>}
-            {game.char.bio&&<div style={{ fontFamily:FONTS.display,fontSize:13,color:T.silver,marginTop:5,lineHeight:1.7,fontStyle:"italic" }}>"{game.char.bio}"</div>}
-
-            {/* XP bar inline */}
-            <div style={{ marginTop:8 }}>
-              <div style={{ display:"flex",justifyContent:"space-between",fontFamily:FONTS.ui,fontSize:8,color:T.dim,marginBottom:4 }}>
-                <span>{game.xp} XP · {game.gems} ◈</span>
-                <span>{game.xp%XP_PER_LEVEL}/{XP_PER_LEVEL} to next</span>
-              </div>
-              <div style={{ height:2,background:"var(--bg3)",borderRadius:1 }}>
-                <div style={{ height:"100%",width:`${getXPPct(game.xp)*100}%`,background:`linear-gradient(90deg,${th.accent}50,${th.accent})`,borderRadius:1,transition:"width 0.6s ease" }}/>
-              </div>
-            </div>
-          </div>
-          <button onClick={()=>{setCharForm(game.char);setEditChar(!editChar);}} style={{ background:"none",border:`1px solid var(--bg3)`,borderRadius:5,color:T.dim,padding:"4px 8px",cursor:"pointer",fontFamily:FONTS.ui,fontSize:10,flexShrink:0 }}>✎</button>
+      <Card style={{ marginBottom:12 }}>
+        <SecTitle col={th.accent}>Experience & Progress</SecTitle>
+        <div style={{ display:"flex",justifyContent:"space-between",fontFamily:FONTS.ui,fontSize:9,color:T.dim,marginBottom:6 }}>
+          <span>Level {level} to {level+1}</span><span>{game.xp%XP_PER_LEVEL} / {XP_PER_LEVEL} XP</span>
         </div>
-
-        {editChar&&(
-          <div style={{ marginTop:14,borderTop:`1px solid var(--bg3)`,paddingTop:14 }}>
-            {["name","age","occupation"].map(k=>(
-              <input key={k} value={charForm[k]||""} onChange={e=>setCharForm(x=>({...x,[k]:e.target.value}))} placeholder={k} style={inp}/>
-            ))}
-            <textarea value={charForm.bio||""} onChange={e=>setCharForm(x=>({...x,bio:e.target.value}))} placeholder="bio" style={{ ...inp,height:64,resize:"none",marginBottom:10 }}/>
-            {ownedTitles.length>0&&(
-              <div style={{ marginBottom:10 }}>
-                <div style={{ fontFamily:FONTS.ui,fontSize:8,letterSpacing:2,color:T.dim,marginBottom:6 }}>TITLE</div>
-                <div style={{ display:"flex",gap:6,flexWrap:"wrap" }}>
-                  <button onClick={()=>update(s=>({...s,title:null}))} style={{ fontFamily:FONTS.ui,fontSize:8,padding:"4px 10px",background:!game.title?T.bg3:"transparent",border:`1px solid var(--bg3)`,borderRadius:4,color:T.silver,cursor:"pointer" }}>None</button>
-                  {ownedTitles.map(t=>(
-                    <button key={t.id} onClick={()=>update(s=>({...s,title:t.titleVal}))} style={{ fontFamily:FONTS.ui,fontSize:8,padding:"4px 10px",background:game.title===t.titleVal?T.bg3:"transparent",border:`1px solid ${th.accent}40`,borderRadius:4,color:th.accent,cursor:"pointer" }}>{t.titleVal}</button>
-                  ))}
-                </div>
-              </div>
-            )}
-            <Btn onClick={()=>{update(s=>({...s,char:charForm}));setEditChar(false);showToast("Profile updated.","gold");}} full>SAVE</Btn>
-          </div>
-        )}
+        <div style={{ height:3,background:"var(--bg3)",borderRadius:2,marginBottom:8 }}>
+          <div style={{ height:"100%",width:`${getXPPct(game.xp)*100}%`,background:`linear-gradient(90deg,${th.accent}50,${th.accent})`,borderRadius:2,transition:"width 0.6s ease" }}/>
+        </div>
+        <div style={{ display:"flex",gap:16,fontFamily:FONTS.ui,fontSize:8,letterSpacing:1,color:T.dim }}>
+          <span>{game.xp} XP total</span>
+          <span>{game.gems} gems</span>
+          {(game.skillPoints||0)>0&&<span style={{ color:T.purple }}>{game.skillPoints} skill points available</span>}
+        </div>
       </Card>
 
       {/* Today's completion at-a-glance */}

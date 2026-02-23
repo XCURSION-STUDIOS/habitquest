@@ -14,22 +14,24 @@ Everything is tied to what you actually do — not what you plan to do.`,
   {
     title: "Daily Habits",
     icon: "⚔",
-    body: `Daily habits are the core of HabitQuest. These are tasks you want to complete every single day — things like working out, reading, or studying.
+    body: `Daily habits are the core of HabitQuest. Tasks you want to complete every single day — working out, reading, studying, whatever matters to you.
 
-Each habit has a difficulty rank (F through S) and a stat type (Physical, Mental, Spiritual, Social, or Emotional). Completing it gives you XP and gems based on the difficulty.
+Each habit has a difficulty rank (F through S) and a stat type (Physical, Mental, Spiritual, Social, or Emotional). Completing it earns XP and gems based on difficulty.
 
-Build a streak by completing the habit multiple days in a row. Streaks are tracked and rewarded. Miss a day and your streak resets — so consistency matters.
+Tap SET MOOD at the top of the Daily screen each morning — High Energy gives +25% XP, Low Energy reduces your penalty if you miss habits. You can only set it once per day.
 
-You can add your own habits, set their difficulty, and assign them to the right stat.`,
+Build streaks by completing habits on consecutive days. Miss a day and your streak resets.`,
   },
   {
     title: "Stats & The Radar Chart",
     icon: "✦",
     body: `Your character has 5 stats: Physical, Mental, Spiritual, Social, and Emotional.
 
-Each stat grows when you complete habits assigned to it. The radar chart on your Status screen shows your stat balance at a glance — a well-rounded chart means you're developing across all areas.
+Each stat grows when you complete habits assigned to it. The radar chart on your Status screen shows your balance at a glance — a well-rounded chart means you're developing across all areas.
 
-Stats don't just look good. They're used by the AI to identify your weaknesses and give you personalised recommendations. A lopsided chart means the AI will push you to address the neglected areas.`,
+Tap SHOW BARS on the Status screen to see the detailed breakdown beneath the radar chart.
+
+Stats are used by the AI to identify your weaknesses and give personalised recommendations. A lopsided chart means the AI will push you to address the neglected areas.`,
   },
   {
     title: "Quests",
@@ -38,57 +40,53 @@ Stats don't just look good. They're used by the AI to identify your weaknesses a
 
 Each quest has a difficulty rank and a stat type. Completing a quest gives significantly more XP and gems than a daily habit, and boosts your stat by 3 points.
 
-You can complete up to 5 quests per day to prevent gaming the system. If you genuinely need more, you can buy extra quest slots in the shop using gems.
+You can complete up to 5 quests per day. If you need more, buy extra quest slots in the shop using gems.
 
-Quests can have notes attached — use these to add context, sub-tasks, or anything else relevant.`,
+Quests can have notes attached — use these for context, sub-tasks, or anything relevant.`,
   },
   {
     title: "Skill Tree",
     icon: "🌿",
     body: `The skill tree lets you specialise your character. Every time you gain a level, you earn 1 Skill Point.
 
-Spend Skill Points to unlock nodes in the skill tree — one branch per stat. Each branch has 4 tiers. Invest heavily in Physical and you'll unlock powerful physical-focused perks. Ignore a branch and it fades over time.
+Spend Skill Points to unlock nodes — one branch per stat, each with 4 tiers. Invest heavily in one branch to unlock powerful perks for that stat. Cross-branch nodes unlock when you've invested in two different branches.
 
-Cross-branch nodes unlock when you've invested in two different branches — these give unique bonuses that reward balanced development.
+Your available Skill Points are shown in the header whenever you have some to spend.
 
-Access the skill tree from the SKILLS tab in the navigation.`,
+Access the skill tree from the SKILLS tab.`,
   },
   {
     title: "The Penalty System",
     icon: "◌",
-    body: `If you don't complete all your daily habits by midnight, you'll receive a penalty report the next morning.
+    body: `If you don't complete all your daily habits by midnight, you'll receive a penalty report the next morning — shown as a collapsible card at the top of your Status screen.
 
-Missed habits increase your Abyss Depth. The deeper you go, the harder recovery becomes. At depth 5+ you enter an active Abyss state shown at the top of the screen.
+Missed habits increase your Abyss Depth. At depth 5+ you enter an active Abyss state shown at the top of the screen. Every habit you complete reduces your depth by 1.
 
-Every habit you complete reduces your Abyss Depth by 1. Completing a bonus mission reduces it faster.
-
-The penalty system is designed to make consistency feel meaningful — not to punish you for having a bad day. Life happens. The goal is to get back on track quickly.`,
+The penalty system makes consistency feel meaningful — not to punish you for having a bad day. Life happens. The goal is to get back on track quickly.`,
   },
   {
     title: "AI Coaching",
     icon: "◈",
-    body: `HabitQuest has a built-in AI coach that analyses your actual data — your stats, streaks, habits, mood, and history.
+    body: `HabitQuest has a built-in AI coach that analyses your actual data — stats, streaks, habits, mood, and history.
 
-Every morning you receive a personalised briefing: a short analysis of your recent performance with a focus area for the day. It also generates a bonus mission tailored to your specific weak points.
+Every morning you receive a personalised briefing on your Status screen: a short analysis of recent performance with a focus area for the day. It also generates a Bonus Mission tailored to your weak points — visible as a collapsible card on Status.
 
-The System Terminal (in the AI tab — currently shown as ⚙ SYSTEM in the nav) lets you chat directly with the AI. Ask it to suggest quests, analyse your progress, or recommend what to focus on next.
+The AI tab lets you chat directly with the coach. Ask it to suggest quests, analyse your progress, or recommend what to focus on next.
 
-The AI knows your character. The more you use HabitQuest, the more useful its advice becomes.`,
+You can also generate an AI Rival in Options — a character built around your weaknesses who levels up every day you play.`,
   },
   {
-    title: "You're ready.",
+    title: "Navigation & Settings",
     icon: "★",
-    body: `That's everything you need to get started.
+    body: `The nav bar has 7 tabs: STATUS, DAILY, QUESTS, SKILLS, SHOP, AI, and Options.
 
-A few quick tips:
-- Set your mood each morning in the Daily tab — it affects your XP multiplier for the day
-- Check your AI briefing every morning on the Status screen
-- Visit the Skills tab once you've levelled up a few times
-- Use the shop to buy boosts when you've saved up enough gems
+STATUS is your home screen — XP progress, today's completion, radar chart, briefing, and collapsible sections for rival and bonus mission.
 
-You can find this guide again any time in the Options screen.
+Active boosts from the shop are hidden behind the BOOSTS button in the header to keep things clean.
 
-Good luck.`,
+Your character profile (name, bio, occupation) can be edited any time in Options at the top of the page. Themes and appearance are also in Options.
+
+You can reopen this guide any time from Options.`,
   },
 ];
 

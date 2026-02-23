@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { T, FONTS, THEMES } from "../constants/theme.js";
 import { Card, SecTitle, Btn } from "../components/ui/index.jsx";
+import { SHOP_ITEMS } from "../constants/gameData.js";
 import OnboardingModal from "./OnboardingModal.jsx";
 import WeeklyReviewModal from "./WeeklyReviewModal.jsx";
 
@@ -19,12 +20,24 @@ export default function OptionsScreen({ game, update, th, showToast, onSignOut, 
       {showGuide  && <OnboardingModal onClose={()=>setShowGuide(false)} th={th}/>}
       {showReview && <WeeklyReviewModal game={game} onClose={()=>{setShowReview(false); update(s=>({...s,lastReviewDate:new Date().toISOString()}));}} th={th} showToast={showToast}/>}
 
+      {/* Character */}
       <Card style={{ marginBottom:14 }}>
         <SecTitle col={th.accent}>Character Profile</SecTitle>
         {["name","age","occupation"].map(k=>(
           <input key={k} value={charForm[k]||""} onChange={e=>setCharForm(x=>({...x,[k]:e.target.value}))} placeholder={k} style={inp}/>
         ))}
         <textarea value={charForm.bio||""} onChange={e=>setCharForm(x=>({...x,bio:e.target.value}))} placeholder="Bio (optional)" style={{ ...inp,height:64,resize:"none",marginBottom:10 }}/>
+        {((game.titles||[]).map(id=>SHOP_ITEMS.find(i=>i.id===id)).filter(Boolean)).length>0&&(
+          <div style={{ marginBottom:10 }}>
+            <div style={{ fontFamily:FONTS.ui,fontSize:8,letterSpacing:2,color:T.dim,marginBottom:6 }}>TITLE</div>
+            <div style={{ display:"flex",gap:6,flexWrap:"wrap" }}>
+              <button onClick={()=>update(s=>({...s,title:null}))} style={{ fontFamily:FONTS.ui,fontSize:8,padding:"4px 10px",background:!game.title?T.bg3:"transparent",border:"1px solid var(--bg3)",borderRadius:4,color:T.silver,cursor:"pointer" }}>None</button>
+              {(game.titles||[]).map(id=>SHOP_ITEMS.find(i=>i.id===id)).filter(Boolean).map(t=>(
+                <button key={t.id} onClick={()=>update(s=>({...s,title:t.titleVal}))} style={{ fontFamily:FONTS.ui,fontSize:8,padding:"4px 10px",background:game.title===t.titleVal?T.bg3:"transparent",border:`1px solid ${th.accent}40`,borderRadius:4,color:th.accent,cursor:"pointer" }}>{t.titleVal}</button>
+              ))}
+            </div>
+          </div>
+        )}
         <Btn onClick={()=>{update(s=>({...s,char:charForm}));showToast("Profile updated.","gold");}} full>SAVE PROFILE</Btn>
       </Card>
 
