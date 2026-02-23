@@ -67,7 +67,7 @@ You'll receive a penalty report each morning after a missed day. Acknowledge it 
     icon: "◈",
     body: `Every morning your AI generates a personalised Briefing on your Status screen — a short analysis of recent performance with a specific focus area for the day.
 
-It also generates a Bonus Mission: a targeted challenge built around your weak points. Complete it for a big XP reward and accelerated Habit Decay recovery. Find it as a collapsible card on your Status screen.
+It also generates a Bonus Mission: a new personalised task targeted at your weakest stat — something concrete you wouldn't normally do. It appears as a highlighted card at the top of your Daily screen. Tap it to complete it and earn +180 XP, +18 gems, and −2 Habit Decay.
 
 The AI tab lets you chat directly with your coach. Ask it to suggest quests, analyse your stats, or tell you what to focus on next. The more data you build up, the sharper its advice becomes.`,
   },
