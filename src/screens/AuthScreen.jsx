@@ -175,10 +175,10 @@ export default function AuthScreen({ onAuth }) {
     setLoading(false);
   }
 
-  const inp={width:"100%",background:"rgba(6,6,15,0.7)",border:`1px solid ${accent}30`,borderRadius:6,color:"#e8d090",padding:"13px 16px",fontFamily:FONTS.ui,fontSize:13,outline:"none",boxSizing:"border-box",marginBottom:12,backdropFilter:"blur(8px)",transition:"border-color 0.3s"};
+  const inp={width:"100%",background:"rgba(6,6,15,0.7)",border:`1px solid ${accent}30`,borderRadius:6,color:"#e8d090",padding:"13px 16px",fontFamily:"var(--font-ui)",fontSize:13,outline:"none",boxSizing:"border-box",marginBottom:12,backdropFilter:"blur(8px)",transition:"border-color 0.3s"};
 
   return (
-    <div style={{ fontFamily:FONTS.ui,background:"#00000f",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:24,boxSizing:"border-box",position:"relative",overflow:"hidden" }}>
+    <div style={{ fontFamily:"var(--font-ui)",background:"#00000f",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:24,boxSizing:"border-box",position:"relative",overflow:"hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Mono:wght@400;500&display=swap');
         @keyframes dotPulse{0%,100%{opacity:0.15;transform:translate(-50%,-50%) scale(0.7);}50%{opacity:0.5;transform:translate(-50%,-50%) scale(1.2);}}
@@ -201,10 +201,10 @@ export default function AuthScreen({ onAuth }) {
         <div style={{ animation:phase>=1&&phase<2?"float 4s ease-in-out infinite":"none" }}>
           <XCursionLogo progress={logoProgress} accent={accent}/>
         </div>
-        <div style={{ marginTop:28,fontFamily:FONTS.ui,fontSize:9,letterSpacing:8,opacity:logoProgress>0.65?1:0,transition:"opacity 0.8s ease",background:`linear-gradient(90deg,${accent},#fff,${accent})`,backgroundSize:"200% auto",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",animation:logoProgress>0.65?"shimmer 3.5s linear infinite":"none" }}>
+        <div style={{ marginTop:28,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:8,opacity:logoProgress>0.65?1:0,transition:"opacity 0.8s ease",background:`linear-gradient(90deg,${accent},#fff,${accent})`,backgroundSize:"200% auto",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",animation:logoProgress>0.65?"shimmer 3.5s linear infinite":"none" }}>
           XCURSION STUDIOS
         </div>
-        <div style={{ marginTop:10,fontFamily:FONTS.ui,fontSize:7,letterSpacing:5,color:T.dim,opacity:logoProgress>0.82?1:0,transition:"opacity 0.8s ease 0.4s" }}>
+        <div style={{ marginTop:10,fontFamily:"var(--font-ui)",fontSize:7,letterSpacing:5,color:T.dim,opacity:logoProgress>0.82?1:0,transition:"opacity 0.8s ease 0.4s" }}>
           PRESENTS
         </div>
       </div>
@@ -213,19 +213,19 @@ export default function AuthScreen({ onAuth }) {
       <div style={{ maxWidth:"min(380px, 90vw)",width:"100%",textAlign:"center",position:"relative",zIndex:20,opacity:phase>=3?1:0,transition:"opacity 0.1s" }}>
         {phase>=3&&(
           <>
-            <div style={{ fontFamily:FONTS.ui,fontSize:7,letterSpacing:5,color:T.dim,marginBottom:32,animation:"fadeIn 0.8s ease forwards" }}>
+            <div style={{ fontFamily:"var(--font-ui)",fontSize:7,letterSpacing:5,color:T.dim,marginBottom:32,animation:"fadeIn 0.8s ease forwards" }}>
               AN XCURSION STUDIOS APP
             </div>
-            <div style={{ fontFamily:FONTS.display,fontSize:"clamp(48px, 10vw, 88px)",color:accent,lineHeight:0.9,marginBottom:6,textShadow:`0 0 80px ${accent}40,0 0 20px ${accent}20`,animation:"titleCrash 0.9s cubic-bezier(0.16,1,0.3,1) forwards",transformOrigin:"center bottom" }}>
+            <div style={{ fontFamily:"var(--font-display)",fontSize:"clamp(48px, 10vw, 88px)",color:accent,lineHeight:0.9,marginBottom:6,textShadow:`0 0 80px ${accent}40,0 0 20px ${accent}20`,animation:"titleCrash 0.9s cubic-bezier(0.16,1,0.3,1) forwards",transformOrigin:"center bottom" }}>
               HabitQuest
             </div>
-            <div style={{ fontFamily:FONTS.ui,fontSize:8,letterSpacing:6,color:T.dim,marginBottom:48,animation:"fadeIn 0.8s ease 0.5s both" }}>
+            <div style={{ fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:6,color:T.dim,marginBottom:48,animation:"fadeIn 0.8s ease 0.5s both" }}>
               BUILD BETTER HABITS
             </div>
             <div style={{ background:"rgba(6,6,15,0.75)",border:`1px solid ${accent}20`,borderRadius:12,padding:"28px 24px",backdropFilter:"blur(20px)",boxShadow:`0 32px 64px rgba(0,0,0,0.6),0 0 0 1px ${accent}10,inset 0 1px 0 ${accent}15`,animation:"loginSlideUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s both" }}>
               <div style={{ display:"flex",marginBottom:24,border:`1px solid ${accent}20`,borderRadius:7,overflow:"hidden",background:"rgba(0,0,0,0.3)" }}>
                 {["login","register"].map(m=>(
-                  <button key={m} onClick={()=>{setMode(m);setError("");}} style={{ flex:1,padding:"10px",background:mode===m?`${accent}15`:"transparent",border:"none",color:mode===m?accent:T.dim,fontFamily:FONTS.ui,fontSize:9,letterSpacing:3,cursor:"pointer",transition:"all 0.2s",textTransform:"uppercase",borderBottom:mode===m?`1px solid ${accent}`:"1px solid transparent" }}>
+                  <button key={m} onClick={()=>{setMode(m);setError("");}} style={{ flex:1,padding:"10px",background:mode===m?`${accent}15`:"transparent",border:"none",color:mode===m?accent:T.dim,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:3,cursor:"pointer",transition:"all 0.2s",textTransform:"uppercase",borderBottom:mode===m?`1px solid ${accent}`:"1px solid transparent" }}>
                     {m==="login"?"Sign In":"Register"}
                   </button>
                 ))}
@@ -236,20 +236,20 @@ export default function AuthScreen({ onAuth }) {
               <input value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password" type="password" style={inp}
                 onFocus={e=>e.target.style.borderColor=accent} onBlur={e=>e.target.style.borderColor=`${accent}30`}
                 onKeyDown={e=>e.key==="Enter"&&submit()}/>
-              {error&&<div style={{ fontFamily:FONTS.ui,fontSize:10,color:T.danger,marginBottom:12,textAlign:"left",lineHeight:1.5 }}>{error}</div>}
-              <button onClick={submit} disabled={loading} style={{ width:"100%",padding:"14px",background:`linear-gradient(135deg,${accent}18,${accent}08)`,border:`1px solid ${accent}50`,borderRadius:7,color:accent,fontFamily:FONTS.ui,fontSize:10,letterSpacing:4,cursor:loading?"not-allowed":"pointer",transition:"all 0.3s",boxShadow:`0 0 30px ${accent}15`,opacity:loading?0.6:1 }}
+              {error&&<div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.danger,marginBottom:12,textAlign:"left",lineHeight:1.5 }}>{error}</div>}
+              <button onClick={submit} disabled={loading} style={{ width:"100%",padding:"14px",background:`linear-gradient(135deg,${accent}18,${accent}08)`,border:`1px solid ${accent}50`,borderRadius:7,color:accent,fontFamily:"var(--font-ui)",fontSize:10,letterSpacing:4,cursor:loading?"not-allowed":"pointer",transition:"all 0.3s",boxShadow:`0 0 30px ${accent}15`,opacity:loading?0.6:1 }}
                 onMouseEnter={e=>{if(!loading)e.currentTarget.style.background=`linear-gradient(135deg,${accent}28,${accent}18)`;}}
                 onMouseLeave={e=>{e.currentTarget.style.background=`linear-gradient(135deg,${accent}18,${accent}08)`;}}>
                 {loading?"...":(mode==="login"?"SIGN IN":"CREATE ACCOUNT")}
               </button>
-              <div style={{ fontFamily:FONTS.ui,fontSize:9,color:T.dim,marginTop:16,lineHeight:1.7 }}>
+              <div style={{ fontFamily:"var(--font-ui)",fontSize:9,color:T.dim,marginTop:16,lineHeight:1.7 }}>
                 {mode==="login"?"No account? ":"Already registered? "}
-                <button onClick={()=>{setMode(mode==="login"?"register":"login");setError("");}} style={{ background:"none",border:"none",color:accent,fontFamily:FONTS.ui,fontSize:9,cursor:"pointer",textDecoration:"underline" }}>
+                <button onClick={()=>{setMode(mode==="login"?"register":"login");setError("");}} style={{ background:"none",border:"none",color:accent,fontFamily:"var(--font-ui)",fontSize:9,cursor:"pointer",textDecoration:"underline" }}>
                   {mode==="login"?"Register here":"Sign in"}
                 </button>
               </div>
             </div>
-            <div style={{ marginTop:24,fontFamily:FONTS.ui,fontSize:7,letterSpacing:3,color:T.dim,opacity:0.5,animation:"fadeIn 1.2s ease 1s both" }}>
+            <div style={{ marginTop:24,fontFamily:"var(--font-ui)",fontSize:7,letterSpacing:3,color:T.dim,opacity:0.5,animation:"fadeIn 1.2s ease 1s both" }}>
               © XCURSION STUDIOS
             </div>
           </>

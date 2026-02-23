@@ -71,7 +71,7 @@ export const AESTHETICS = {
     name:"Neon City",
     desc:"Cyberpunk streets. Neon lights. Everything glows.",
     cost:500,
-    fonts: { display:"'DM Mono','Courier New',monospace", ui:"'DM Mono','Courier New',monospace" },
+    fonts: { display:"'Share Tech Mono','Courier New',monospace", ui:"'DM Mono','Courier New',monospace" },
     colors: {
       bg0:"#010008", bg1:"#04000f", bg2:"#060014", bg3:"#0c0028",
       accent:"#00ffcc", glow:"#00ffcc25", text:"#b0fff0",
@@ -85,7 +85,7 @@ export const AESTHETICS = {
     name:"Ancient Scroll",
     desc:"Worn parchment. Aged ink. Knowledge from another age.",
     cost:400,
-    fonts: { display:"'Cormorant Garamond','Georgia',serif", ui:"'Cormorant Garamond','Georgia',serif" },
+    fonts: { display:"'IM Fell English','Georgia',serif", ui:"'IM Fell English','Georgia',serif" },
     colors: {
       bg0:"#1a1208", bg1:"#22180a", bg2:"#2a1e0e", bg3:"#382a16",
       accent:"#c8941c", glow:"#c8941c20", text:"#e8d494",
@@ -99,7 +99,7 @@ export const AESTHETICS = {
     name:"Void Realm",
     desc:"The space between stars. Cosmic and infinite.",
     cost:600,
-    fonts: { display:"'Cormorant Garamond','Georgia',serif", ui:"'DM Mono','Courier New',monospace" },
+    fonts: { display:"'Cinzel','Georgia',serif", ui:"'Raleway','Arial',sans-serif" },
     colors: {
       bg0:"#00000a", bg1:"#02000f", bg2:"#040014", bg3:"#08001e",
       accent:"#9060ff", glow:"#9060ff30", text:"#c8b0ff",

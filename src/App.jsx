@@ -158,6 +158,20 @@ export default function App() {
   }
 
   function buyItem(item) {
+    if(item._reapply){
+      if(item.type==="aesthetic"){
+        update(s=>({...s,aesthetic:item.aesthetic}));
+        showToast(`${item.name} applied.`,"gold");
+      } else if(item.id==="aura"){
+        update(s=>({...s,aura:!s.aura}));
+        showToast(game.aura?"Glow effect disabled.":"Glow effect enabled.","gold");
+      } else if(item.titleVal){
+        const newTitle = game.title===item.titleVal ? null : item.titleVal;
+        update(s=>({...s,title:newTitle}));
+        showToast(newTitle?`Title "${newTitle}" equipped.`:"Title removed.","gold");
+      }
+      return;
+    }
     const {game:next,error}=applyBuyItem(game,item);
     if(error){ showToast(error,"danger"); return; }
     showToast(item.type==="perm"?`${item.name} unlocked permanently.`:item.type==="aesthetic"?`${item.name} aesthetic applied.`:item.type==="theme"?`Theme changed to ${item.name}.`:`${item.name} activated.`,"gold");
@@ -221,7 +235,7 @@ xpOffset should be between -400 and +100 (negative means rival starts slightly b
   if(authLoading) return (
     <div style={{background:"var(--bg0)",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center"}}>
       <GlobalCSS V={V}/>
-      <div style={{fontFamily:FONTS.display,fontSize:32,color:"#c9a84c",animation:"pulse 1.5s ease-in-out infinite"}}>◈</div>
+      <div style={{fontFamily:"var(--font-display)",fontSize:32,color:"#c9a84c",animation:"pulse 1.5s ease-in-out infinite"}}>◈</div>
     </div>
   );
 
@@ -256,17 +270,17 @@ xpOffset should be between -400 and +100 (negative means rival starts slightly b
       {lvlAnim&&(
         <div style={{position:"fixed",inset:0,zIndex:1000,background:"rgba(6,6,15,0.94)",backdropFilter:"blur(16px)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",animation:"fadeIn 0.4s ease"}}>
           <div style={{textAlign:"center",animation:"lvlPop 3.5s ease forwards"}}>
-            <div style={{fontFamily:FONTS.ui,fontSize:10,letterSpacing:6,color:T.dim,marginBottom:16}}>LEVEL UP</div>
-            <div style={{fontFamily:FONTS.display,fontSize:96,color:th.accent,lineHeight:1,textShadow:`0 0 60px ${th.glow}`}}>{lvlAnim}</div>
-            <div style={{fontFamily:FONTS.display,fontSize:28,color:T.text,marginTop:8}}>{getClass(lvlAnim).name}</div>
-            <div style={{fontFamily:FONTS.ui,fontSize:9,color:T.purple,marginTop:8,letterSpacing:2}}>+1 SKILL POINT EARNED</div>
+            <div style={{fontFamily:"var(--font-ui)",fontSize:10,letterSpacing:6,color:T.dim,marginBottom:16}}>LEVEL UP</div>
+            <div style={{fontFamily:"var(--font-display)",fontSize:96,color:th.accent,lineHeight:1,textShadow:`0 0 60px ${th.glow}`}}>{lvlAnim}</div>
+            <div style={{fontFamily:"var(--font-display)",fontSize:28,color:T.text,marginTop:8}}>{getClass(lvlAnim).name}</div>
+            <div style={{fontFamily:"var(--font-ui)",fontSize:9,color:T.purple,marginTop:8,letterSpacing:2}}>+1 SKILL POINT EARNED</div>
           </div>
         </div>
       )}
 
       {game.decayActive&&(
         <div style={{background:T.abyss,borderBottom:"1px solid #6a000050",padding:"7px 16px"}}>
-          <span style={{fontFamily:FONTS.ui,fontSize:9,letterSpacing:3,color:"#dd5050"}}>
+          <span style={{fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:3,color:"#dd5050"}}>
             ⚠ HABIT DECAY — Depth {game.decayDepth}/20 — Complete habits to recover
           </span>
         </div>

@@ -98,6 +98,7 @@ export const SHOP_ITEMS = [
   { id:"th_ember", name:"Ember Theme",     icon:"🔥", cost:75,  type:"theme", desc:"Orange accent theme.", theme:"ember"  },
   { id:"th_frost", name:"Frost Theme",     icon:"❄", cost:75,  type:"theme", desc:"Blue accent theme.",   theme:"frost"  },
   { id:"th_toxic", name:"Toxic Theme",     icon:"☣", cost:75,  type:"theme", desc:"Green neon theme.",    theme:"toxic"  },
+  { id:"ae_default",    name:"Standard",       icon:"◈", cost:0,   type:"aesthetic", desc:"The default HabitQuest look.", aesthetic:"default"    },
   { id:"ae_neon",       name:"Neon City",      icon:"⚡", cost:500, type:"aesthetic", desc:"Full cyberpunk aesthetic.", aesthetic:"neon"       },
   { id:"ae_parchment",  name:"Ancient Scroll", icon:"📜", cost:400, type:"aesthetic", desc:"Aged parchment aesthetic.", aesthetic:"parchment"  },
   { id:"ae_void_realm", name:"Void Realm",     icon:"🌌", cost:600, type:"aesthetic", desc:"Deep space aesthetic.",     aesthetic:"void_realm" },

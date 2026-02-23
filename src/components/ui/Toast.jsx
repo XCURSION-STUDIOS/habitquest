@@ -10,7 +10,7 @@ export default function Toast({ toast }) {
   if (!toast) return null;
   const s = STYLES[toast.type] || STYLES.gold;
   return (
-    <div style={{ position:"fixed",top:20,right:"max(16px, calc(50vw - 340px))",zIndex:9999,maxWidth:320,padding:"12px 18px",borderRadius:8,background:s.bg,border:`1px solid ${s.bd}40`,color:s.tx,fontSize:12,fontFamily:FONTS.ui,animation:"toastIn 0.3s ease",boxShadow:`0 8px 32px ${s.bd}15`,lineHeight:1.6,whiteSpace:"pre-wrap" }}>
+    <div style={{ position:"fixed",top:20,right:"max(16px, calc(50vw - 340px))",zIndex:9999,maxWidth:320,padding:"12px 18px",borderRadius:8,background:s.bg,border:`1px solid ${s.bd}40`,color:s.tx,fontSize:12,fontFamily:"var(--font-ui)",animation:"toastIn 0.3s ease",boxShadow:`0 8px 32px ${s.bd}15`,lineHeight:1.6,whiteSpace:"pre-wrap" }}>
       {toast.msg}
     </div>
   );

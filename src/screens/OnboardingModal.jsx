@@ -117,7 +117,7 @@ export default function OnboardingModal({ onClose, th }) {
 
         <div style={{ padding:28 }}>
           {/* Step counter */}
-          <div style={{ fontFamily:FONTS.ui,fontSize:8,letterSpacing:3,color:T.dim,marginBottom:16 }}>
+          <div style={{ fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:3,color:T.dim,marginBottom:16 }}>
             STEP {step+1} OF {STEPS.length}
           </div>
 
@@ -126,20 +126,20 @@ export default function OnboardingModal({ onClose, th }) {
             <div style={{ width:48,height:48,borderRadius:10,background:`${th.accent}15`,border:`1px solid ${th.accent}40`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,color:th.accent,flexShrink:0 }}>
               {current.icon}
             </div>
-            <div style={{ fontFamily:FONTS.display,fontSize:22,color:T.textBright,lineHeight:1.2 }}>
+            <div style={{ fontFamily:"var(--font-display)",fontSize:22,color:T.textBright,lineHeight:1.2 }}>
               {current.title}
             </div>
           </div>
 
           {/* Body */}
-          <div style={{ fontFamily:FONTS.ui,fontSize:12,color:T.silver,lineHeight:1.9,whiteSpace:"pre-wrap",marginBottom:28,maxHeight:260,overflowY:"auto" }}>
+          <div style={{ fontFamily:"var(--font-ui)",fontSize:12,color:T.silver,lineHeight:1.9,whiteSpace:"pre-wrap",marginBottom:28,maxHeight:260,overflowY:"auto" }}>
             {current.body}
           </div>
 
           {/* Navigation */}
           <div style={{ display:"flex",gap:10,alignItems:"center" }}>
             {step > 0 && (
-              <button onClick={()=>setStep(s=>s-1)} style={{ padding:"10px 16px",background:"transparent",border:`1px solid var(--bg3)`,borderRadius:6,color:T.dim,fontFamily:FONTS.ui,fontSize:9,letterSpacing:2,cursor:"pointer" }}>
+              <button onClick={()=>setStep(s=>s-1)} style={{ padding:"10px 16px",background:"transparent",border:`1px solid var(--bg3)`,borderRadius:6,color:T.dim,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer" }}>
                 BACK
               </button>
             )}
@@ -151,7 +151,7 @@ export default function OnboardingModal({ onClose, th }) {
               ))}
             </div>
             <div style={{ flex:1 }}/>
-            <button onClick={isLast?onClose:()=>setStep(s=>s+1)} style={{ padding:"10px 20px",background:`${th.accent}15`,border:`1px solid ${th.accent}50`,borderRadius:6,color:th.accent,fontFamily:FONTS.ui,fontSize:9,letterSpacing:2,cursor:"pointer",transition:"all 0.2s" }}
+            <button onClick={isLast?onClose:()=>setStep(s=>s+1)} style={{ padding:"10px 20px",background:`${th.accent}15`,border:`1px solid ${th.accent}50`,borderRadius:6,color:th.accent,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer",transition:"all 0.2s" }}
               onMouseEnter={e=>e.currentTarget.style.background=`${th.accent}25`}
               onMouseLeave={e=>e.currentTarget.style.background=`${th.accent}15`}>
               {isLast?"LET'S GO":"NEXT"}
@@ -161,7 +161,7 @@ export default function OnboardingModal({ onClose, th }) {
           {/* Skip */}
           {!isLast && (
             <div style={{ textAlign:"center",marginTop:14 }}>
-              <button onClick={onClose} style={{ background:"none",border:"none",color:T.dim,fontFamily:FONTS.ui,fontSize:9,cursor:"pointer",letterSpacing:1 }}>
+              <button onClick={onClose} style={{ background:"none",border:"none",color:T.dim,fontFamily:"var(--font-ui)",fontSize:9,cursor:"pointer",letterSpacing:1 }}>
                 Skip guide
               </button>
             </div>

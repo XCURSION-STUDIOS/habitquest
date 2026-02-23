@@ -32,10 +32,10 @@ export default function HabitTemplatesModal({ onClose, onApply, th, game }) {
       <div style={{ maxWidth:460,width:"100%",background:"linear-gradient(135deg,#0d0d1a,#111120)",border:`1px solid ${th.accent}40`,borderRadius:14,overflow:"hidden",boxShadow:`0 0 60px ${th.accent}10`,maxHeight:"90vh",display:"flex",flexDirection:"column" }}>
         <div style={{ padding:"20px 22px 0" }}>
           <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6 }}>
-            <div style={{ fontFamily:FONTS.display,fontSize:22,color:"#eef2ff" }}>Habit Templates</div>
+            <div style={{ fontFamily:"var(--font-display)",fontSize:22,color:"#eef2ff" }}>Habit Templates</div>
             <button onClick={onClose} style={{ background:"none",border:"none",color:T.dim,cursor:"pointer",fontSize:16 }}>✕</button>
           </div>
-          <div style={{ fontFamily:FONTS.ui,fontSize:10,color:T.dim,marginBottom:16,lineHeight:1.6 }}>
+          <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.dim,marginBottom:16,lineHeight:1.6 }}>
             Choose a template to get started fast. Installs daily habits and starter quests.
           </div>
         </div>
@@ -46,8 +46,8 @@ export default function HabitTemplatesModal({ onClose, onApply, th, game }) {
             {HABIT_TEMPLATES.map(t => (
               <button key={t.id} onClick={() => setSelected(t.id)} style={{ padding:"12px 10px",background:selected===t.id?`${th.accent}15`:"transparent",border:`1px solid ${selected===t.id?th.accent:"var(--bg3)"}`,borderRadius:8,cursor:"pointer",textAlign:"left",transition:"all 0.2s" }}>
                 <div style={{ fontSize:18,marginBottom:4 }}>{t.icon}</div>
-                <div style={{ fontFamily:FONTS.display,fontSize:13,color:selected===t.id?th.accent:"#eef2ff",marginBottom:2 }}>{t.name}</div>
-                <div style={{ fontFamily:FONTS.ui,fontSize:9,color:T.dim,lineHeight:1.5 }}>{t.desc}</div>
+                <div style={{ fontFamily:"var(--font-display)",fontSize:13,color:selected===t.id?th.accent:"#eef2ff",marginBottom:2 }}>{t.name}</div>
+                <div style={{ fontFamily:"var(--font-ui)",fontSize:9,color:T.dim,lineHeight:1.5 }}>{t.desc}</div>
               </button>
             ))}
           </div>
@@ -55,16 +55,16 @@ export default function HabitTemplatesModal({ onClose, onApply, th, game }) {
           {/* Preview */}
           {tmpl && (
             <div style={{ marginBottom:16,padding:"14px",background:"var(--bg2)",borderRadius:8,border:`1px solid var(--bg3)` }}>
-              <div style={{ fontFamily:FONTS.ui,fontSize:8,letterSpacing:3,color:T.dim,marginBottom:10 }}>PREVIEW</div>
-              <div style={{ fontFamily:FONTS.ui,fontSize:9,color:th.accent,marginBottom:6,letterSpacing:2 }}>DAILY HABITS</div>
+              <div style={{ fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:3,color:T.dim,marginBottom:10 }}>PREVIEW</div>
+              <div style={{ fontFamily:"var(--font-ui)",fontSize:9,color:th.accent,marginBottom:6,letterSpacing:2 }}>DAILY HABITS</div>
               {tmpl.daily.map((h,i) => (
-                <div key={i} style={{ fontFamily:FONTS.ui,fontSize:10,color:T.silver,marginBottom:3 }}>
+                <div key={i} style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.silver,marginBottom:3 }}>
                   · {h.name} <span style={{ color:T.dim }}>({h.type} · {h.diff})</span>
                 </div>
               ))}
-              <div style={{ fontFamily:FONTS.ui,fontSize:9,color:th.accent,marginBottom:6,letterSpacing:2,marginTop:10 }}>STARTER QUESTS</div>
+              <div style={{ fontFamily:"var(--font-ui)",fontSize:9,color:th.accent,marginBottom:6,letterSpacing:2,marginTop:10 }}>STARTER QUESTS</div>
               {tmpl.quests.map((q,i) => (
-                <div key={i} style={{ fontFamily:FONTS.ui,fontSize:10,color:T.silver,marginBottom:3 }}>
+                <div key={i} style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.silver,marginBottom:3 }}>
                   · {q.name} <span style={{ color:T.dim }}>({q.type} · {q.diff})</span>
                 </div>
               ))}
@@ -74,10 +74,10 @@ export default function HabitTemplatesModal({ onClose, onApply, th, game }) {
           {/* Mode selector if existing habits */}
           {tmpl && hasExisting && (
             <div style={{ marginBottom:16 }}>
-              <div style={{ fontFamily:FONTS.ui,fontSize:8,letterSpacing:2,color:T.dim,marginBottom:8 }}>YOU ALREADY HAVE HABITS —</div>
+              <div style={{ fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:2,color:T.dim,marginBottom:8 }}>YOU ALREADY HAVE HABITS —</div>
               <div style={{ display:"flex",gap:8 }}>
                 {[{k:"add",l:"Add alongside existing"},{k:"replace",l:"Replace everything"}].map(m => (
-                  <button key={m.k} onClick={() => setMode(m.k)} style={{ flex:1,padding:"9px 6px",background:mode===m.k?`${th.accent}15`:"transparent",border:`1px solid ${mode===m.k?th.accent:"var(--bg3)"}`,borderRadius:6,color:mode===m.k?th.accent:T.dim,fontFamily:FONTS.ui,fontSize:9,cursor:"pointer",transition:"all 0.2s" }}>
+                  <button key={m.k} onClick={() => setMode(m.k)} style={{ flex:1,padding:"9px 6px",background:mode===m.k?`${th.accent}15`:"transparent",border:`1px solid ${mode===m.k?th.accent:"var(--bg3)"}`,borderRadius:6,color:mode===m.k?th.accent:T.dim,fontFamily:"var(--font-ui)",fontSize:9,cursor:"pointer",transition:"all 0.2s" }}>
                     {m.l}
                   </button>
                 ))}
@@ -87,10 +87,10 @@ export default function HabitTemplatesModal({ onClose, onApply, th, game }) {
         </div>
 
         <div style={{ padding:"16px 22px",borderTop:`1px solid var(--bg3)`,display:"flex",gap:8 }}>
-          <button onClick={onClose} style={{ flex:1,padding:"11px",background:"transparent",border:`1px solid var(--bg3)`,borderRadius:6,color:T.dim,fontFamily:FONTS.ui,fontSize:9,letterSpacing:2,cursor:"pointer" }}>
+          <button onClick={onClose} style={{ flex:1,padding:"11px",background:"transparent",border:`1px solid var(--bg3)`,borderRadius:6,color:T.dim,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer" }}>
             CANCEL
           </button>
-          <button onClick={apply} disabled={!selected} style={{ flex:2,padding:"11px",background:selected?`${th.accent}15`:"transparent",border:`1px solid ${selected?th.accent:"var(--bg3)"}`,borderRadius:6,color:selected?th.accent:T.dim,fontFamily:FONTS.ui,fontSize:9,letterSpacing:2,cursor:selected?"pointer":"not-allowed",transition:"all 0.2s" }}>
+          <button onClick={apply} disabled={!selected} style={{ flex:2,padding:"11px",background:selected?`${th.accent}15`:"transparent",border:`1px solid ${selected?th.accent:"var(--bg3)"}`,borderRadius:6,color:selected?th.accent:T.dim,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:selected?"pointer":"not-allowed",transition:"all 0.2s" }}>
             APPLY TEMPLATE
           </button>
         </div>

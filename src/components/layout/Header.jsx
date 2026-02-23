@@ -25,12 +25,12 @@ export default function Header({ game, screen, setScreen, aiStatus, saving, V })
         {/* Name + class */}
         <div style={{ flex:1,minWidth:0 }}>
           <div style={{ display:"flex",alignItems:"center",gap:6,marginBottom:1,flexWrap:"nowrap",overflow:"hidden" }}>
-            <span style={{ fontFamily:FONTS.display,fontSize:16,color:T.textBright,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis" }}>{game.char.name}</span>
-            {game.title&&<span style={{ fontFamily:FONTS.ui,fontSize:7,letterSpacing:2,color:th.accent,border:`1px solid ${th.accent}30`,padding:"1px 6px",borderRadius:3,flexShrink:0 }}>{game.title}</span>}
-            {saving&&<span style={{ fontFamily:FONTS.ui,fontSize:7,color:T.dim,flexShrink:0 }}>saving…</span>}
+            <span style={{ fontFamily:"var(--font-display)",fontSize:16,color:T.textBright,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis" }}>{game.char.name}</span>
+            {game.title&&<span style={{ fontFamily:"var(--font-ui)",fontSize:7,letterSpacing:2,color:th.accent,border:`1px solid ${th.accent}30`,padding:"1px 6px",borderRadius:3,flexShrink:0 }}>{game.title}</span>}
+            {saving&&<span style={{ fontFamily:"var(--font-ui)",fontSize:7,color:T.dim,flexShrink:0 }}>saving…</span>}
           </div>
           <div style={{ display:"flex",alignItems:"center",gap:8 }}>
-            <span style={{ fontFamily:FONTS.ui,fontSize:8,letterSpacing:1,color:T.silver,whiteSpace:"nowrap" }}>LVL {level} · {cls.name.toUpperCase()}</span>
+            <span style={{ fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:1,color:T.silver,whiteSpace:"nowrap" }}>LVL {level} · {cls.name.toUpperCase()}</span>
             <AIStatus status={aiStatus}/>
           </div>
           {/* XP bar */}
@@ -41,12 +41,12 @@ export default function Header({ game, screen, setScreen, aiStatus, saving, V })
 
         {/* Gems + optional boosts toggle */}
         <div style={{ textAlign:"right",flexShrink:0,display:"flex",flexDirection:"column",alignItems:"flex-end",gap:3 }}>
-          <div style={{ fontFamily:FONTS.ui,fontSize:13,color:th.accent }}>◈ {game.gems}</div>
-          {(game.skillPoints||0)>0&&<div style={{ fontFamily:FONTS.ui,fontSize:8,color:T.purple }}>SP: {game.skillPoints}</div>}
+          <div style={{ fontFamily:"var(--font-ui)",fontSize:13,color:th.accent }}>◈ {game.gems}</div>
+          {(game.skillPoints||0)>0&&<div style={{ fontFamily:"var(--font-ui)",fontSize:8,color:T.purple }}>SP: {game.skillPoints}</div>}
           {hasBoosts&&(
             <button
               onClick={()=>setShowBoosts(v=>!v)}
-              style={{ fontFamily:FONTS.ui,fontSize:7,letterSpacing:1,color:showBoosts?th.accent:T.dim,background:"none",border:`1px solid ${showBoosts?th.accent+"40":"var(--bg3)"}`,borderRadius:3,padding:"1px 5px",cursor:"pointer",transition:"all 0.2s" }}
+              style={{ fontFamily:"var(--font-ui)",fontSize:7,letterSpacing:1,color:showBoosts?th.accent:T.dim,background:"none",border:`1px solid ${showBoosts?th.accent+"40":"var(--bg3)"}`,borderRadius:3,padding:"1px 5px",cursor:"pointer",transition:"all 0.2s" }}
             >
               {showBoosts ? "▾ BOOSTS" : "⚡ BOOSTS"}
             </button>
@@ -58,7 +58,7 @@ export default function Header({ game, screen, setScreen, aiStatus, saving, V })
       {hasBoosts && showBoosts && (
         <div style={{ display:"flex",gap:5,flexWrap:"wrap",marginBottom:6,paddingLeft:4,animation:"fadeSlideDown 0.18s ease" }}>
           {game.actives.map(p=>(
-            <span key={p.id} style={{ fontFamily:FONTS.ui,fontSize:8,letterSpacing:1,padding:"2px 8px",border:`1px solid ${th.accent}40`,borderRadius:20,color:th.accent }}>
+            <span key={p.id} style={{ fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:1,padding:"2px 8px",border:`1px solid ${th.accent}40`,borderRadius:20,color:th.accent }}>
               {p.icon} {p.name} ×{p.left}
             </span>
           ))}
@@ -82,7 +82,7 @@ export default function Header({ game, screen, setScreen, aiStatus, saving, V })
             style={{
               flex:1,
               padding:"9px 0 8px",
-              fontFamily:FONTS.ui,
+              fontFamily:"var(--font-ui)",
               fontSize:"var(--nav-font)",
               letterSpacing:1,
               background:"none",

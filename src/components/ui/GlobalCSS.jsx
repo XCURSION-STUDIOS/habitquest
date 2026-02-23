@@ -10,7 +10,7 @@ export default function GlobalCSS({ V }) {
 
   return (
     <style>{`
-      @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Mono:ital,wght@0,400;0,500&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Mono:ital,wght@0,400;0,500&family=Share+Tech+Mono&family=Cinzel:wght@400;600&family=Raleway:wght@300;400&family=IM+Fell+English:ital@0;1&display=swap');
 
       :root {
         --bg0: ${bg0};
@@ -22,6 +22,13 @@ export default function GlobalCSS({ V }) {
         --font-display: ${df};
         --font-ui: ${uf};
 
+        --success: ${V?.success || "#27a060"};
+        --danger:  ${V?.danger  || "#b03030"};
+        --purple:  ${V?.purple  || "#6b4fb0"};
+        --dim:     ${V?.dim     || "#3a4060"};
+        --silver:  ${V?.silver  || "#7a8aaa"};
+        --card-radius: ${V?.cards?.borderRadius ?? 10}px;
+        --card-shadow: ${(V?.cards?.shadow && V.cards.shadow !== "none") ? V.cards.shadow + " " + (V?.glow || "#c9a84c20") : "none"};
         --app-max-width: 480px;
         --app-padding: 14px;
         --font-display-xl: 52px;
