@@ -82,23 +82,6 @@ function RivalSection({ game, th }) {
   );
 }
 
-function BonusMissionSection({ game }) {
-  if (!game.bonusMission) return null;
-  return (
-    <CollapsibleSection label="BONUS MISSION" color={T.purple} badge={game.bonusMission.aiGenerated?"AI":null}>
-      <div style={{ fontFamily:"var(--font-display)",fontSize:14,color:T.text,marginBottom:3 }}>{game.bonusMission.name}</div>
-      <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.silver,lineHeight:1.5,marginBottom:8 }}>{game.bonusMission.desc}</div>
-      <div style={{ display:"flex",alignItems:"center",gap:8 }}>
-        <div style={{ flex:1,height:2,background:T.bg3,borderRadius:1 }}>
-          <div style={{ height:"100%",width:`${Math.min((game.bonusProgress/Math.max(game.bonusMission.req.count,1))*100,100)}%`,background:T.purple,borderRadius:1,transition:"width 0.4s ease" }}/>
-        </div>
-        <span style={{ fontFamily:"var(--font-ui)",fontSize:9,color:T.purple }}>{game.bonusProgress}/{game.bonusMission.req.count}</span>
-        <span style={{ fontFamily:"var(--font-ui)",fontSize:8,color:T.dim }}>+{game.bonusMission.xp}xp</span>
-      </div>
-    </CollapsibleSection>
-  );
-}
-
 export default function StatusScreen({ game, update, th, V, showToast, briefingLoading, generateBriefing, onSignOut }) {
   const [showStats,setShowStats] = useState(false);
 
@@ -214,7 +197,6 @@ export default function StatusScreen({ game, update, th, V, showToast, briefingL
       )}
 
       {/* Collapsible sections */}
-      <BonusMissionSection game={game}/>
       <RivalSection game={game} th={th}/>
 
       <div style={{ marginTop:8,paddingTop:14,borderTop:`1px solid var(--bg3)` }}>

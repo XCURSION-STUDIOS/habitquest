@@ -121,12 +121,19 @@ export default function App() {
     setBriefingLoading(true); setAiStatus("working");
     try {
       const ctx=buildCharContext(game),sys=buildSystemPrompt(ctx);
-      const prompt=`Give this player a morning briefing. 3-4 sentences: note yesterday's performance, identify their most critical weak area, give a clear directive for today. End with one specific bonus mission based on their actual habits. Label it: BONUS MISSION: [mission description]`;
+      const prompt=`Give this player a morning briefing. 3-4 sentences: note yesterday's performance, identify their most critical weak area, give a clear directive for today.
+
+Then generate a specific bonus mission for today — a concrete new action they wouldn't normally do, targeted at their weakest stat. It should be achievable in one day and feel meaningful. Do NOT just repeat one of their existing habits.
+
+Label it exactly: BONUS MISSION: [mission name] | [short description of what to do]`;
       const text=await callAIProxy(sys,prompt);
       let briefingText=text,bonusMission=game.bonusMission;
       const match=text.match(/BONUS MISSION:\s*(.+?)(?:\n|$)/i);
       if(match&&!game.bonusMission){
-        bonusMission={id:`ai_${Date.now()}`,name:"Daily Bonus Mission",desc:match[1].trim(),req:{type:"Any",count:1},xp:180,gems:18,aiGenerated:true};
+        const parts = match[1].split("|").map(s=>s.trim());
+        const bmName = parts[0] || "Daily Bonus Mission";
+        const bmDesc = parts[1] || parts[0] || "";
+        bonusMission={id:`ai_${Date.now()}`,name:bmName,desc:bmDesc,req:{type:"Any",count:1},xp:180,gems:18,aiGenerated:true,done:false};
         briefingText=text.replace(/BONUS MISSION:.*$/im,"").trim();
       }
       update(s=>({...s,briefing:briefingText,briefingDate:today,bonusMission}));

@@ -108,6 +108,40 @@ export default function DailyScreen({ game, update, th, V, today, todayDone, don
         </Card>
       )}
 
+      {/* Bonus Mission card */}
+      {game.bonusMission && (
+        <div onClick={()=>{
+          if(game.bonusMission.done) return;
+          update(s=>({...s, bonusMission:{...s.bonusMission,done:true}, xp:(s.xp||0)+180, gems:(s.gems||0)+18, decayDepth:Math.max(0,(s.decayDepth||0)-2) }));
+        }}
+          style={{ display:"flex",alignItems:"center",gap:12,padding:"14px 16px",marginBottom:16,
+            background:game.bonusMission.done?"var(--bg1)":`linear-gradient(135deg,${V.purple}18,${V.bg2})`,
+            border:`1px solid ${game.bonusMission.done?V.purple+"30":V.purple+"60"}`,
+            borderRadius:"var(--card-radius)",cursor:game.bonusMission.done?"default":"pointer",
+            transition:"all 0.2s",userSelect:"none",opacity:game.bonusMission.done?0.6:1 }}>
+          <div style={{ width:18,height:18,borderRadius:3,
+            border:`1px solid ${game.bonusMission.done?V.purple:V.purple}`,
+            background:game.bonusMission.done?V.purple+"30":"transparent",
+            display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0 }}>
+            {game.bonusMission.done
+              ? <span style={{ color:V.purple,fontSize:11 }}>✓</span>
+              : <span style={{ color:V.purple,fontSize:9 }}>◈</span>}
+          </div>
+          <div style={{ flex:1 }}>
+            <div style={{ display:"flex",alignItems:"center",gap:7,marginBottom:3 }}>
+              <span style={{ fontFamily:"var(--font-display)",fontSize:15,color:"var(--text)",
+                textDecoration:game.bonusMission.done?"line-through":"none",
+                textDecorationColor:V.purple+"60" }}>{game.bonusMission.name}</span>
+              <span style={{ fontFamily:"var(--font-ui)",fontSize:7,letterSpacing:2,color:V.purple,border:`1px solid ${V.purple}40`,padding:"1px 5px",borderRadius:3 }}>
+                {game.bonusMission.done?"COMPLETE":"AI BONUS"}
+              </span>
+            </div>
+            <div style={{ fontFamily:"var(--font-ui)",fontSize:9,color:V.silver,lineHeight:1.5 }}>{game.bonusMission.desc}</div>
+            <div style={{ fontFamily:"var(--font-ui)",fontSize:8,color:V.purple,marginTop:4 }}>+180 XP · +18 gems · −2 decay</div>
+          </div>
+        </div>
+      )}
+
       {/* Habit list */}
       {game.daily?.map(q=>{
         const done=!!todayDone[q.id],cfg=DIFF[q.diff];
