@@ -193,17 +193,25 @@ Label it exactly: BONUS MISSION: [mission name] | [short description of what to 
     showToast("Generating your rival...", "info", 8000);
     try {
       const ctx = buildCharContext(game);
-      const prompt = `Based on this player's data, generate a rival character. The rival should be strong in areas the player is weak, and have a personality that contrasts theirs.
+      const randomSeed = Math.random().toString(36).substring(2,8);
+      const prompt = `Based on this player's data, generate a rival character (seed: ${randomSeed}). The name should feel mystical and evocative but varied — draw inspiration from diverse cultures, mythologies, and languages worldwide. Each generation should feel distinctly different. The personality should contrast the player's in an interesting way.
 
 Respond with ONLY a JSON object (no markdown, no explanation):
 {
   "name": "rival's full name",
   "personality": "one sentence description of their personality and style",
   "taunt": "a short provocative quote from the rival directed at the player (max 15 words)",
-  "xpOffset": -200
+  "xpOffset": -200,
+  "stats": {
+    "Physical": 7,
+    "Mental": 5,
+    "Spiritual": 4,
+    "Social": 6,
+    "Emotional": 3
+  }
 }
 
-xpOffset should be between -400 and +100 (negative means rival starts slightly behind, positive means ahead).`;
+Stats should be values 1-10. Make the rival strong (7-10) in the player's weakest stats and weaker (1-5) in the player's strongest stats. xpOffset should be between -400 and +100.`;
 
       const reply = await callAIProxy(buildSystemPrompt(ctx), prompt, []);
       const clean = reply.replace(/```json|```/g, "").trim();
@@ -216,6 +224,7 @@ xpOffset should be between -400 and +100 (negative means rival starts slightly b
           personality: data.personality || "A ruthless competitor who never rests.",
           taunt:       data.taunt || "You think consistency is enough? Think again.",
           xp:          rivalXP,
+          stats:       data.stats || { Physical:7, Mental:7, Spiritual:7, Social:7, Emotional:7 },
         }
       }));
       showToast(`Rival generated: ${data.name}`, "danger", 4000);

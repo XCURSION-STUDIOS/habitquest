@@ -7,7 +7,7 @@ import { Card, Btn, DiffTag } from "../components/ui/index.jsx";
 export default function QuestsScreen({ game, update, th, completeQuest, showToast }) {
   const [filter,setFilter]       = useState("active");
   const [adding,setAdding]       = useState(false);
-  const [questForm,setQuestForm] = useState({ name:"",type:"Physical",diff:"C-Rank",notes:"" });
+  const [questForm,setQuestForm] = useState({ name:"",type:"Physical",diff:"C-Rank",notes:"",dueDate:"" });
   const [expanded,setExpanded]   = useState(null);
 
   const shown    = game.quests?.filter(q=>filter==="active"?!q.done:q.done)||[];
@@ -15,11 +15,20 @@ export default function QuestsScreen({ game, update, th, completeQuest, showToas
   const todayUsed= game.questCompletedToday||0;
   const sel = { flex:1,background:"var(--bg2)",border:`1px solid var(--bg3)`,borderRadius:5,color:"var(--text)",padding:"8px",fontFamily:"var(--font-ui)",fontSize:10,outline:"none" };
 
+  function calcRewards(diff, dueDate) {
+    const cfg = DIFF[diff];
+    const base = { xp: cfg.xp * 3, gems: cfg.gems * 3 };
+    if (!dueDate) return base;
+    const days = Math.min(365, Math.max(1, Math.ceil((new Date(dueDate) - new Date()) / (1000*60*60*24))));
+    const mult = 1 + 6 * Math.log10(days);
+    return { xp: Math.round(base.xp * mult), gems: Math.round(base.gems * mult) };
+  }
+
   function addQuest() {
     if (!questForm.name.trim()) return;
-    const cfg = DIFF[questForm.diff];
-    update(s=>({...s,quests:[...(s.quests||[]),{ id:Date.now(),name:questForm.name.trim(),type:questForm.type,diff:questForm.diff,done:false,xp:cfg.xp*3,gems:cfg.gems*3,notes:questForm.notes.trim()||null }]}));
-    setQuestForm({name:"",type:"Physical",diff:"C-Rank",notes:""});
+    const { xp, gems } = calcRewards(questForm.diff, questForm.dueDate);
+    update(s=>({...s,quests:[...(s.quests||[]),{ id:Date.now(),name:questForm.name.trim(),type:questForm.type,diff:questForm.diff,done:false,xp,gems,notes:questForm.notes.trim()||null,dueDate:questForm.dueDate||null }]}));
+    setQuestForm({name:"",type:"Physical",diff:"C-Rank",notes:"",dueDate:""});
     setAdding(false);
     showToast("Quest added.","gold");
   }
@@ -66,8 +75,15 @@ export default function QuestsScreen({ game, update, th, completeQuest, showToas
                   {q.notes&&<span style={{ fontFamily:"var(--font-ui)",fontSize:7,color:T.dim,border:`1px solid var(--bg3)`,padding:"1px 5px",borderRadius:3 }}>HAS NOTES</span>}
                 </div>
                 <div style={{ fontFamily:"var(--font-ui)",fontSize:9,color:T.dim }}>
-                  <span style={{ color:STAT_COL[q.type] }}>{q.type}</span>{" · +"}{ q.xp} XP · +{q.gems} gems · +3 {q.type}
+                  <span style={{ color:STAT_COL[q.type] }}>{q.type}</span>{" · +"}{q.xp} XP · +{q.gems} gems · +3 {q.type}
                 </div>
+                {q.dueDate&&(()=>{
+                  const days = Math.ceil((new Date(q.dueDate) - new Date()) / (1000*60*60*24));
+                  const overdue = days < 0;
+                  const color = overdue ? T.danger : days <= 3 ? "#e07828" : T.dim;
+                  const label = overdue ? `${Math.abs(days)}d overdue` : days === 0 ? "due today" : `${days}d left`;
+                  return <div style={{ fontFamily:"var(--font-ui)",fontSize:8,color,marginTop:2 }}>⏱ {label} · due {new Date(q.dueDate).toLocaleDateString()}</div>;
+                })()}
                 {isExpanded&&q.notes&&(
                   <div style={{ marginTop:8,padding:"8px 10px",background:"var(--bg2)",borderRadius:5,fontFamily:"var(--font-ui)",fontSize:10,color:T.silver,lineHeight:1.7,whiteSpace:"pre-wrap" }}>
                     {q.notes}
@@ -98,6 +114,25 @@ export default function QuestsScreen({ game, update, th, completeQuest, showToas
           </div>
           <textarea value={questForm.notes} onChange={e=>setQuestForm(x=>({...x,notes:e.target.value}))} placeholder="Notes (optional) — sub-tasks, context, links..."
             style={{ width:"100%",background:"var(--bg2)",border:`1px solid var(--bg3)`,borderRadius:5,color:"var(--text)",padding:"9px 12px",fontFamily:"var(--font-ui)",fontSize:11,outline:"none",boxSizing:"border-box",marginBottom:10,height:64,resize:"none" }}/>
+          <div style={{ marginBottom:10 }}>
+            <div style={{ fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:2,color:T.dim,marginBottom:5 }}>DUE DATE (optional)</div>
+            <input type="date" value={questForm.dueDate} onChange={e=>setQuestForm(x=>({...x,dueDate:e.target.value}))}
+              style={{ width:"100%",background:"var(--bg2)",border:`1px solid var(--bg3)`,borderRadius:5,color:"var(--text)",padding:"9px 12px",fontFamily:"var(--font-ui)",fontSize:11,outline:"none",boxSizing:"border-box",colorScheme:"dark" }}/>
+          </div>
+          {(()=>{
+            const { xp, gems } = calcRewards(questForm.diff, questForm.dueDate);
+            return (
+              <div style={{ marginBottom:10,padding:"8px 12px",background:"var(--bg2)",borderRadius:5,border:`1px solid var(--bg3)`,fontFamily:"var(--font-ui)",fontSize:9,color:th.accent,display:"flex",gap:16 }}>
+                <span>REWARD</span>
+                <span>+{xp} XP</span>
+                <span>+{gems} gems</span>
+                {questForm.dueDate && (() => {
+                  const days = Math.max(1, Math.ceil((new Date(questForm.dueDate) - new Date()) / (1000*60*60*24)));
+                  return <span style={{ color:T.dim }}>{days}d deadline</span>;
+                })()}
+              </div>
+            );
+          })()}
           <div style={{ display:"flex",gap:8 }}><Btn full onClick={addQuest}>ADD QUEST</Btn><Btn danger onClick={()=>setAdding(false)}>✕</Btn></div>
         </Card>
       ):(

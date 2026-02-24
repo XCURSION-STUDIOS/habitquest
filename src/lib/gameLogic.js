@@ -129,7 +129,19 @@ export function rolloverDay(game, today) {
   if (game.rivalEnabled && rival) {
     const rivalDailyXP = Math.round(avgCompletions * 60 * (0.85 + Math.random() * 0.3));
     const newRivalXP   = (rival.xp || 0) + rivalDailyXP;
-    rival = { ...rival, xp: newRivalXP };
+    // Grow rival stats proportional to their existing stat weights
+    let newRivalStats = { ...(rival.stats || { Physical:5,Mental:5,Spiritual:5,Social:5,Emotional:5 }) };
+    if (rivalDailyXP > 0) {
+      const statKeys = Object.keys(newRivalStats);
+      const total = statKeys.reduce((s,k) => s + newRivalStats[k], 0);
+      statKeys.forEach(k => {
+        // Higher stats grow faster (rival doubles down on strengths)
+        const weight = newRivalStats[k] / total;
+        const gain = weight * (rivalDailyXP / 60) * 0.5;
+        newRivalStats[k] = Math.min(100, newRivalStats[k] + gain);
+      });
+    }
+    rival = { ...rival, xp: newRivalXP, stats: newRivalStats };
   }
 
   return {

@@ -73,6 +73,20 @@ function RivalSection({ game, th, V }) {
           <div style={{ fontFamily:"var(--font-ui)",fontSize:7,color:T.dim }}>{Math.abs(gap)} XP {ahead?"ahead":"behind"}</div>
         </div>
       </div>
+      {/* Rival stat bars */}
+      {game.rival.stats && (
+        <div style={{ marginTop:12 }}>
+          {Object.entries(game.rival.stats).map(([stat, val]) => (
+            <div key={stat} style={{ display:"flex",alignItems:"center",gap:8,marginBottom:5 }}>
+              <span style={{ fontFamily:"var(--font-ui)",fontSize:8,color:STAT_COL[stat],letterSpacing:1,width:64,flexShrink:0 }}>{stat.toUpperCase()}</span>
+              <div style={{ flex:1,height:4,background:V.bg3,borderRadius:2 }}>
+                <div style={{ height:"100%",width:`${val*10}%`,background:STAT_COL[stat],borderRadius:2,transition:"width 0.4s ease" }}/>
+              </div>
+              <span style={{ fontFamily:"var(--font-ui)",fontSize:8,color:V.dim,width:16,textAlign:"right" }}>{val}</span>
+            </div>
+          ))}
+        </div>
+      )}
       {/* Rival XP progress bar */}
       {(()=>{
         const xpForLevel = n => 100 + (n-1)*50;

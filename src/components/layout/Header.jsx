@@ -41,7 +41,19 @@ export default function Header({ game, screen, setScreen, aiStatus, saving, V })
 
         {/* Gems + optional boosts toggle */}
         <div style={{ textAlign:"right",flexShrink:0,display:"flex",flexDirection:"column",alignItems:"flex-end",gap:3 }}>
-          <div style={{ fontFamily:"var(--font-ui)",fontSize:13,color:th.accent }}>◈ {game.gems}</div>
+          {(()=>{
+            const decay = game.decayDepth || 0;
+            let gemDebuff = 0;
+            if (decay >= 15)      gemDebuff = 50;
+            else if (decay >= 10) gemDebuff = 35;
+            else if (decay >= 5)  gemDebuff = 20;
+            return (
+              <div>
+                <div style={{ fontFamily:"var(--font-ui)",fontSize:13,color:th.accent }}>◈ {game.gems}</div>
+                {gemDebuff>0&&<div style={{ fontFamily:"var(--font-ui)",fontSize:7,color:"#c04040",textAlign:"right" }}>▼{gemDebuff}% gems</div>}
+              </div>
+            );
+          })()}
           {(game.skillPoints||0)>0&&<div style={{ fontFamily:"var(--font-ui)",fontSize:8,color:T.purple }}>SP: {game.skillPoints}</div>}
           {hasBoosts&&(
             <button
