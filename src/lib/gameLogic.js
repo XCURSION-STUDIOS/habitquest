@@ -1,8 +1,17 @@
-import { XP_PER_LEVEL, CLASSES, STATS, DIFF, SKILL_TREE, QUEST_DAILY_LIMIT } from "../constants/gameData.js";
+import { CLASSES, STATS, DIFF, SKILL_TREE, QUEST_DAILY_LIMIT } from "../constants/gameData.js";
 
 export const TODAY   = () => new Date().toISOString().split("T")[0];
-export const getLevel = xp  => Math.floor(xp / XP_PER_LEVEL) + 1;
-export const getXPPct = xp  => (xp % XP_PER_LEVEL) / XP_PER_LEVEL;
+// Scaling XP curve: level N requires N*100 XP
+// Total XP to reach level N = 50 * N * (N-1)
+export const xpToReachLevel = n => 50 * n * (n - 1);
+export const getLevel = xp => {
+  let level = 1;
+  while (xpToReachLevel(level + 1) <= xp) level++;
+  return level;
+};
+export const getXPInLevel = xp => { const l = getLevel(xp); return xp - xpToReachLevel(l); };
+export const getXPForLevel = l => l * 100;
+export const getXPPct = xp => { const l = getLevel(xp); return getXPInLevel(xp) / getXPForLevel(l); };
 export const getClass = lvl => [...CLASSES].reverse().find(c => lvl >= c.min) || CLASSES[0];
 
 // Get all unlocked node objects
@@ -130,6 +139,8 @@ export function rolloverDay(game, today) {
     mood: null,
     briefing: null,
     briefingDate: null,
+    bonusMission: null,
+    bonusProgress: 0,
     decayDepth: newDepth,
     decayActive: newDepth >= 5,
     questCompletedToday: 0,

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { T, FONTS, THEMES } from "../constants/theme.js";
-import { STATS, STAT_COL, STAT_ICO, XP_PER_LEVEL } from "../constants/gameData.js";
-import { getLevel, getXPPct, getClass } from "../lib/gameLogic.js";
+import { STATS, STAT_COL, STAT_ICO } from "../constants/gameData.js";
+import { getLevel, getXPPct, getXPInLevel, getXPForLevel, getClass } from "../lib/gameLogic.js";
 import { Card, SecTitle, Btn } from "../components/ui/index.jsx";
 import RadarChart from "../components/ui/RadarChart.jsx";
 
@@ -46,7 +46,7 @@ function CollapsibleSection({ label, color, defaultOpen=false, badge, children }
   );
 }
 
-function RivalSection({ game, th }) {
+function RivalSection({ game, th, V }) {
   if (!game.rivalEnabled || !game.rival) return null;
   const rival      = game.rival;
   const rivalLevel = getLevel(rival.xp || 0);
@@ -73,8 +73,26 @@ function RivalSection({ game, th }) {
           <div style={{ fontFamily:"var(--font-ui)",fontSize:7,color:T.dim }}>{Math.abs(gap)} XP {ahead?"ahead":"behind"}</div>
         </div>
       </div>
+      {/* Rival XP progress bar */}
+      {(()=>{
+        const xpForLevel = n => 100 + (n-1)*50;
+        const xpIntoLevel = rival.xp - Array.from({length:rivalLevel-1},(_,i)=>xpForLevel(i+1)).reduce((a,b)=>a+b,0);
+        const xpNeeded = xpForLevel(rivalLevel);
+        const pct = Math.min((xpIntoLevel/xpNeeded)*100,100);
+        return (
+          <div style={{ marginTop:10 }}>
+            <div style={{ display:"flex",justifyContent:"space-between",marginBottom:4 }}>
+              <span style={{ fontFamily:"var(--font-ui)",fontSize:8,color:V.dim }}>LVL {rivalLevel} → {rivalLevel+1}</span>
+              <span style={{ fontFamily:"var(--font-ui)",fontSize:8,color:V.dim }}>{xpIntoLevel}/{xpNeeded} XP</span>
+            </div>
+            <div style={{ height:3,background:V.bg3,borderRadius:2 }}>
+              <div style={{ height:"100%",width:`${pct}%`,background:color,borderRadius:2,transition:"width 0.4s ease" }}/>
+            </div>
+          </div>
+        );
+      })()}
       {rival.taunt&&(
-        <div style={{ marginTop:10,fontFamily:"var(--font-display)",fontSize:12,color:T.silver,fontStyle:"italic",lineHeight:1.6,borderTop:`1px solid ${T.bg3}`,paddingTop:8 }}>
+        <div style={{ marginTop:10,fontFamily:"var(--font-display)",fontSize:12,color:V.silver,fontStyle:"italic",lineHeight:1.6,borderTop:`1px solid ${V.bg3}`,paddingTop:8 }}>
           "{rival.taunt}"
         </div>
       )}
@@ -106,7 +124,7 @@ export default function StatusScreen({ game, update, th, V, showToast, briefingL
           </div>
           <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.silver,lineHeight:1.7,marginBottom:8 }}>
             Missed: {game.penaltyMessage.missed.join(", ")}<br/>
-            Habit Decay increased by {game.penaltyMessage.abyssChange}.
+            Habit Decay increased by {game.penaltyMessage.decayChange}.
           </div>
           <button onClick={()=>update(s=>({...s,penaltyMessage:null}))} style={{ fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:2,padding:"6px 12px",background:"transparent",border:`1px solid ${T.danger}40`,borderRadius:4,color:T.danger,cursor:"pointer" }}>
             ACKNOWLEDGE
@@ -117,7 +135,7 @@ export default function StatusScreen({ game, update, th, V, showToast, briefingL
       <Card style={{ marginBottom:12 }}>
         <SecTitle col={th.accent}>Experience & Progress</SecTitle>
         <div style={{ display:"flex",justifyContent:"space-between",fontFamily:"var(--font-ui)",fontSize:9,color:T.dim,marginBottom:6 }}>
-          <span>Level {level} to {level+1}</span><span>{game.xp%XP_PER_LEVEL} / {XP_PER_LEVEL} XP</span>
+          <span>Level {level} to {level+1}</span><span>{getXPInLevel(game.xp)} / {getXPForLevel(level)} XP</span>
         </div>
         <div style={{ height:3,background:"var(--bg3)",borderRadius:2,marginBottom:8 }}>
           <div style={{ height:"100%",width:`${getXPPct(game.xp)*100}%`,background:`linear-gradient(90deg,${th.accent}50,${th.accent})`,borderRadius:2,transition:"width 0.6s ease" }}/>
@@ -197,7 +215,7 @@ export default function StatusScreen({ game, update, th, V, showToast, briefingL
       )}
 
       {/* Collapsible sections */}
-      <RivalSection game={game} th={th}/>
+      <RivalSection game={game} th={th} V={V}/>
 
       <div style={{ marginTop:8,paddingTop:14,borderTop:`1px solid var(--bg3)` }}>
         <Btn onClick={onSignOut} danger full>SIGN OUT</Btn>
