@@ -22,16 +22,8 @@ export default function ShopScreen({ game, th, V, buyItem, showToast, onPreview,
     if (item.type === "cosm") {
       if (item.id === "aura")    onPreview({ aura: true });
       if (item.titleVal)         onPreview({ title: item.titleVal });
-      if (item.frameVal || item.xpBarVal) {
-        const previewCosmetics = [...(game.cosmetics||[])];
-        // Remove other frames/xpbars first
-        const filtered = previewCosmetics.filter(id => {
-          if (item.frameVal) return !["frm_hex","frm_dbl","frm_crn"].includes(id);
-          if (item.xpBarVal) return !["xpb_pls","xpb_spk"].includes(id);
-          return true;
-        });
-        onPreview({ cosmetics: [...filtered, item.id] });
-      }
+      if (item.frameVal)  onPreview({ activeFrame: item.id });
+      if (item.xpBarVal)  onPreview({ activeXpBar: item.id });
     }
     countRef.current = setInterval(() => {
       setCountdown(c => { if (c <= 1) { clearInterval(countRef.current); return 0; } return c - 1; });

@@ -251,8 +251,10 @@ Stats should be values 1-10. Make the rival strong (7-10) in the player's weakes
   const previewAura = previewOverride?.aura ?? game.aura;
   const previewTitle = previewOverride?.title ?? game.title;
   const previewCosmetics = previewOverride?.cosmetics ?? game.cosmetics;
+  const previewActiveFrame = previewOverride?.activeFrame ?? game.activeFrame;
+  const previewActiveXpBar = previewOverride?.activeXpBar ?? game.activeXpBar;
   const displayGame = previewOverride
-    ? { ...game, theme:previewTheme, aesthetic:previewAesthetic, aura:previewAura, title:previewTitle, cosmetics:previewCosmetics }
+    ? { ...game, theme:previewTheme, aesthetic:previewAesthetic, aura:previewAura, title:previewTitle, cosmetics:previewCosmetics, activeFrame:previewActiveFrame, activeXpBar:previewActiveXpBar }
     : game;
   const V  = getVisuals(displayGame);
   const th = V.th;
