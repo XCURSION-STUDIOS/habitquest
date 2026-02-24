@@ -9,17 +9,34 @@ export default function Header({ game, screen, setScreen, aiStatus, saving, V })
   const level = getLevel(game.xp);
   const cls   = getClass(level);
   const hasBoosts = game.actives?.length > 0;
+  const frame = game.activeFrame === "frm_hex" ? "hexagon"
+              : game.activeFrame === "frm_dbl" ? "double"
+              : game.activeFrame === "frm_crn" ? "crown"
+              : "circle";
+  const xpBarStyle = game.activeXpBar === "xpb_spk" ? "spark"
+                   : game.activeXpBar === "xpb_pls" ? "pulse"
+                   : "default";
+  const frameStyle = frame === "hexagon"
+    ? { borderRadius:"18% 18% 18% 18% / 18% 18% 18% 18%", border:`2px solid ${th.accent}`, clipPath:"polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" }
+    : frame === "double"
+    ? { borderRadius:"50%", border:`2px solid ${th.accent}`, outline:`3px solid ${th.accent}40`, outlineOffset:"2px" }
+    : frame === "crown"
+    ? { borderRadius:"50%", border:`2px solid ${th.accent}`, boxShadow:`0 -6px 16px ${th.accent}90, 0 -2px 8px ${th.accent}60, 0 0 0 2px ${th.accent}30` }
+    : { borderRadius:"50%", border:`1px solid ${th.accent}40` };
 
   return (
     <div style={{ padding:"12px 16px 0" }}>
       <div style={{ display:"flex",alignItems:"center",gap:12,marginBottom:8 }}>
         {/* Avatar */}
-        <div
-          onClick={()=>setScreen("status")}
-          className="header-avatar"
-          style={{ width:36,height:36,borderRadius:"50%",background:V?.bg1||T.bg1,border:`1px solid ${th.accent}40`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,cursor:"pointer",flexShrink:0,animation:game.aura?"auraAnim 2.5s linear infinite":"none" }}
-        >
-          {cls.icon}
+        <div style={{ position:"relative",flexShrink:0 }}>
+          {frame==="crown"&&<div style={{ position:"absolute",top:-10,left:"50%",transform:"translateX(-50%)",fontSize:10,lineHeight:1,zIndex:1 }}>♛</div>}
+          <div
+            onClick={()=>setScreen("status")}
+            className="header-avatar"
+            style={{ width:36,height:36,background:V?.bg1||T.bg1,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,cursor:"pointer",animation:game.aura?"auraAnim 2.5s linear infinite":"none",...frameStyle }}
+          >
+            {cls.icon}
+          </div>
         </div>
 
         {/* Name + class */}
@@ -34,8 +51,20 @@ export default function Header({ game, screen, setScreen, aiStatus, saving, V })
             <AIStatus status={aiStatus}/>
           </div>
           {/* XP bar */}
-          <div style={{ marginTop:4,height:2,background:"var(--bg3)",borderRadius:1 }}>
-            <div style={{ height:"100%",width:`${getXPPct(game.xp)*100}%`,background:`linear-gradient(90deg,${th.accent}60,${th.accent})`,borderRadius:1,transition:"width 0.6s ease" }}/>
+          <div style={{ marginTop:4,height:xpBarStyle==="pulse"?4:2,background:"var(--bg3)",borderRadius:1,transition:"height 0.3s" }}>
+            <div style={{
+              height:"100%",
+              width:`${getXPPct(game.xp)*100}%`,
+              background: xpBarStyle==="spark"
+                ? `linear-gradient(90deg, ${th.accent}40, ${th.accent}, #fff, ${th.accent}, ${th.accent}40)`
+                : `linear-gradient(90deg,${th.accent}60,${th.accent})`,
+              backgroundSize: xpBarStyle==="spark" ? "200% 100%" : "100% 100%",
+              borderRadius:1,
+              transition:"width 0.6s ease",
+              animation: xpBarStyle==="pulse" ? "xpPulse 1.5s ease-in-out infinite"
+                       : xpBarStyle==="spark" ? "xpSpark 1.5s linear infinite"
+                       : "none"
+            }}/>
           </div>
         </div>
 

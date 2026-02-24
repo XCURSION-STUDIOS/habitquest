@@ -109,6 +109,48 @@ export const AESTHETICS = {
     cards: { borderRadius:16, borderStyle:"1px solid", shadow:"0 0 20px" },
     preview: { bg:"#00000a", card:"#040014", accent:"#9060ff", text:"#c8b0ff", font:"serif" },
   },
+  blood_moon: {
+    name:"Blood Moon",
+    desc:"Gothic ceremony. Ancient power. The ritual begins.",
+    cost:550,
+    fonts: { display:"'Cinzel Decorative','Georgia',serif", ui:"'Crimson Text','Georgia',serif" },
+    colors: {
+      bg0:"#0a0005", bg1:"#120008", bg2:"#1a000c", bg3:"#280010",
+      accent:"#cc2244", glow:"#cc224430", text:"#e8b0b8",
+      silver:"#a06070", dim:"#602040", textBright:"#ffd0d8",
+      success:"#806020", danger:"#ff1040", purple:"#8020a0", sg:"#cc2244",
+    },
+    cards: { borderRadius:0, borderStyle:"2px solid", shadow:"none" },
+    preview: { bg:"#0a0005", card:"#1a000c", accent:"#cc2244", text:"#e8b0b8", font:"serif" },
+  },
+  arctic: {
+    name:"Arctic",
+    desc:"Stillness. Clarity. Nothing but the signal.",
+    cost:450,
+    fonts: { display:"'Raleway','Arial',sans-serif", ui:"'Raleway','Arial',sans-serif" },
+    colors: {
+      bg0:"#06080f", bg1:"#090c16", bg2:"#0c1020", bg3:"#141828",
+      accent:"#88c8f0", glow:"#88c8f020", text:"#c8dff0",
+      silver:"#6090b0", dim:"#304060", textBright:"#e8f4ff",
+      success:"#40c090", danger:"#e04060", purple:"#8090e0", sg:"#40c090",
+    },
+    cards: { borderRadius:2, borderStyle:"1px solid", shadow:"none" },
+    preview: { bg:"#06080f", card:"#0c1020", accent:"#88c8f0", text:"#c8dff0", font:"sans" },
+  },
+  gilded: {
+    name:"Gilded",
+    desc:"Opulence. Prestige. Every detail deliberate.",
+    cost:700,
+    fonts: { display:"'Playfair Display','Georgia',serif", ui:"'Cormorant Garamond','Georgia',serif" },
+    colors: {
+      bg0:"#080600", bg1:"#100e00", bg2:"#181400", bg3:"#241e04",
+      accent:"#d4a820", glow:"#d4a82030", text:"#e8d898",
+      silver:"#b09040", dim:"#806820", textBright:"#fff0b0",
+      success:"#608030", danger:"#c03020", purple:"#806090", sg:"#d4a820",
+    },
+    cards: { borderRadius:6, borderStyle:"2px solid", shadow:"0 4px 20px" },
+    preview: { bg:"#080600", card:"#181400", accent:"#d4a820", text:"#e8d898", font:"serif" },
+  },
 };
 
 // Get the active visual config (aesthetic overrides theme)

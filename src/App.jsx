@@ -176,6 +176,14 @@ Label it exactly: BONUS MISSION: [mission name] | [short description of what to 
         const newTitle = game.title===item.titleVal ? null : item.titleVal;
         update(s=>({...s,title:newTitle}));
         showToast(newTitle?`Title "${newTitle}" equipped.`:"Title removed.","gold");
+      } else if(item.frameVal){
+        const isActive = game.activeFrame === item.id;
+        update(s=>({...s, activeFrame: isActive ? null : item.id}));
+        showToast(isActive?`${item.name} deactivated.`:`${item.name} equipped.`,"gold");
+      } else if(item.xpBarVal){
+        const isActive = game.activeXpBar === item.id;
+        update(s=>({...s, activeXpBar: isActive ? null : item.id}));
+        showToast(isActive?`${item.name} deactivated.`:`${item.name} equipped.`,"gold");
       }
       return;
     }
@@ -242,8 +250,9 @@ Stats should be values 1-10. Make the rival strong (7-10) in the player's weakes
   const previewAesthetic = previewOverride?.aesthetic || game.aesthetic;
   const previewAura = previewOverride?.aura ?? game.aura;
   const previewTitle = previewOverride?.title ?? game.title;
+  const previewCosmetics = previewOverride?.cosmetics ?? game.cosmetics;
   const displayGame = previewOverride
-    ? { ...game, theme:previewTheme, aesthetic:previewAesthetic, aura:previewAura, title:previewTitle }
+    ? { ...game, theme:previewTheme, aesthetic:previewAesthetic, aura:previewAura, title:previewTitle, cosmetics:previewCosmetics }
     : game;
   const V  = getVisuals(displayGame);
   const th = V.th;

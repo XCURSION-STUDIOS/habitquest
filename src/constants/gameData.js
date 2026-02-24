@@ -102,9 +102,18 @@ export const SHOP_ITEMS = [
   { id:"ae_neon",       name:"Neon City",      icon:"⚡", cost:500, type:"aesthetic", desc:"Full cyberpunk aesthetic.", aesthetic:"neon"       },
   { id:"ae_parchment",  name:"Ancient Scroll", icon:"📜", cost:400, type:"aesthetic", desc:"Aged parchment aesthetic.", aesthetic:"parchment"  },
   { id:"ae_void_realm", name:"Void Realm",     icon:"🌌", cost:600, type:"aesthetic", desc:"Deep space aesthetic.",     aesthetic:"void_realm" },
+  { id:"ae_blood_moon", name:"Blood Moon",     icon:"🩸", cost:550, type:"aesthetic", desc:"Gothic ceremony. Sharp edges. Ancient power.", aesthetic:"blood_moon" },
+  { id:"ae_arctic",     name:"Arctic",         icon:"❄️", cost:450, type:"aesthetic", desc:"Minimal and clinical. Pure focus.",            aesthetic:"arctic"     },
+  { id:"ae_gilded",     name:"Gilded",         icon:"👑", cost:700, type:"aesthetic", desc:"Opulent gold on black. Maximum prestige.",      aesthetic:"gilded"     },
   { id:"aura",    name:"Glow Effect",      icon:"⚡", cost:300, type:"cosm", desc:"Animated glow around your avatar." },
   { id:"tit_sm",  name:"Title: Shadow Monarch", icon:"◈", cost:100, type:"cosm", desc:"Equip the Shadow Monarch title.", titleVal:"Shadow Monarch" },
-  { id:"tit_ar",  name:"Title: ARISE",     icon:"⚔", cost:300, type:"cosm", desc:"Equip the ARISE title.", titleVal:"ARISE" },
+  { id:"tit_ar",  name:"Title: ARISE",        icon:"⚔",  cost:300,  type:"cosm", desc:"Equip the ARISE title.", titleVal:"ARISE" },
+  { id:"tit_ph",  name:"Title: Phantom",       icon:"◈",  cost:250,  type:"cosm", desc:"Equip the Phantom title.", titleVal:"Phantom" },
+  { id:"frm_hex", name:"Avatar: Hexagon",      icon:"⬡",  cost:200,  type:"cosm", desc:"Hexagonal avatar frame.", frameVal:"hexagon" },
+  { id:"frm_dbl", name:"Avatar: Double Ring",  icon:"◎",  cost:350,  type:"cosm", desc:"Double ring avatar frame.", frameVal:"double" },
+  { id:"frm_crn", name:"Avatar: Crown",        icon:"♛",  cost:500,  type:"cosm", desc:"Crown avatar frame.", frameVal:"crown" },
+  { id:"xpb_pls", name:"XP Bar: Pulse",        icon:"〜", cost:300,  type:"cosm", desc:"Pulsing glow on your XP bar.", xpBarVal:"pulse" },
+  { id:"xpb_spk", name:"XP Bar: Spark",        icon:"✦",  cost:400,  type:"cosm", desc:"Spark animation on your XP bar.", xpBarVal:"spark" },
 ];
 
 export const DEFAULT_GAME = {
