@@ -1,6 +1,6 @@
 import { CLASSES, STATS, DIFF, SKILL_TREE, QUEST_DAILY_LIMIT } from "../constants/gameData.js";
 
-export const TODAY   = () => new Date().toISOString().split("T")[0];
+export const TODAY   = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
 // Scaling XP curve: level N requires N*100 XP
 // Total XP to reach level N = 50 * N * (N-1)
 export const xpToReachLevel = n => 50 * n * (n - 1);
@@ -126,8 +126,16 @@ export function rolloverDay(game, today) {
 
   // Rival progression
   let rival = game.rival;
+  const rivalUpdate = game.rivalEnabled && game.rival ? { levelBefore: getLevel(game.rival.xp||0), statsBefore: {...(game.rival.stats||{})} } : null;
   if (game.rivalEnabled && rival) {
-    const rivalDailyXP = Math.round(avgCompletions * 60 * (0.85 + Math.random() * 0.3));
+    const myLevel    = getLevel(game.xp || 0);
+    const rivalLevel = getLevel(rival.xp || 0);
+    const gap        = myLevel - rivalLevel; // positive = player ahead, negative = rival ahead
+    // If player is ahead, rival catches up faster. If rival is ahead, it slows down slightly.
+    const catchUpMult = gap > 0
+      ? 1 + Math.min(gap * 0.15, 1.5)  // up to 2.5x faster when player is far ahead
+      : Math.max(1 - Math.abs(gap) * 0.05, 0.7); // slows slightly when rival is ahead
+    const rivalDailyXP = Math.round(avgCompletions * 60 * (0.85 + Math.random() * 0.3) * catchUpMult);
     const newRivalXP   = (rival.xp || 0) + rivalDailyXP;
     // Grow rival stats proportional to their existing stat weights
     let newRivalStats = { ...(rival.stats || { Physical:5,Mental:5,Spiritual:5,Social:5,Emotional:5 }) };
@@ -142,12 +150,29 @@ export function rolloverDay(game, today) {
       });
     }
     rival = { ...rival, xp: newRivalXP, stats: newRivalStats };
+
+    if (rivalUpdate) {
+      const levelAfter = getLevel(newRivalXP);
+      const levelledUp = levelAfter > rivalUpdate.levelBefore;
+      const statLevelsBefore = Object.fromEntries(Object.entries(rivalUpdate.statsBefore).map(([k,v])=>[k,Math.floor(v)]));
+      const statLevelsAfter  = Object.fromEntries(Object.entries(newRivalStats).map(([k,v])=>[k,Math.floor(v)]));
+      const statChanges = Object.keys(newRivalStats).filter(k => statLevelsAfter[k] > (statLevelsBefore[k]||0));
+      if (levelledUp || statChanges.length > 0) {
+        penaltyMessage = {
+          ...(penaltyMessage || { missed:[], broken:0, decayChange:0, date:game.lastDay }),
+          rivalLevelUp: levelledUp ? levelAfter : null,
+          rivalStatUps: statChanges,
+          rivalName: rival.name,
+        };
+      }
+    }
   }
 
   return {
     ...game,
     daily,
     lastDay: today,
+    done: { ...game.done, [today]: {} },
     mood: null,
     briefing: null,
     briefingDate: null,
@@ -193,9 +218,8 @@ export function applyCompleteDaily(game, id, today) {
   const newLevel    = getLevel(newXP);
   const newSP       = (game.skillPoints||0) + (newLevel - oldLevel);
 
-  let sp=game.bonusProgress||0, sm=game.bonusMission;
-  let shadowBonus=0, shadowGemBonus=0, clearShadow=false;
-  if (sm) { sp+=1; if(sp>=sm.req.count){ shadowBonus=sm.xp; shadowGemBonus=sm.gems||0; clearShadow=true; } }
+  let sm=game.bonusMission;
+  const shadowBonus=0, shadowGemBonus=0, clearShadow=false;
 
 
   const nodes         = getUnlockedNodes(game.unlockedNodes||[]);
@@ -212,8 +236,7 @@ export function applyCompleteDaily(game, id, today) {
     done:  { ...game.done, [today]:{ ...(game.done[today]||{}), [id]:true } },
     stats: { ...game.stats, [q.type]:Math.min((game.stats[q.type]||1)+statGain, 100) },
     daily: game.daily.map(d => d.id===id ? { ...d, streak:d.streak+1, best:Math.max(d.best||0,d.streak+1) } : d),
-    bonusMission:  clearShadow ? null : sm,
-    bonusProgress: clearShadow ? 0 : sp,
+    bonusMission:  sm,
     decayDepth: newDecayDepth,
     decayActive: newDecayDepth >= 5,
     _events: {

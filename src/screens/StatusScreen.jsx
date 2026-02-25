@@ -74,24 +74,27 @@ function RivalSection({ game, th, V }) {
         </div>
       </div>
       {/* Rival stat bars */}
-      {game.rival.stats && (
-        <div style={{ marginTop:12 }}>
-          {Object.entries(game.rival.stats).map(([stat, val]) => (
-            <div key={stat} style={{ display:"flex",alignItems:"center",gap:8,marginBottom:5 }}>
-              <span style={{ fontFamily:"var(--font-ui)",fontSize:8,color:STAT_COL[stat],letterSpacing:1,width:64,flexShrink:0 }}>{stat.toUpperCase()}</span>
-              <div style={{ flex:1,height:4,background:V.bg3,borderRadius:2 }}>
-                <div style={{ height:"100%",width:`${val*10}%`,background:STAT_COL[stat],borderRadius:2,transition:"width 0.4s ease" }}/>
+      {game.rival.stats && (()=>{
+        const statEntries = Object.entries(game.rival.stats);
+        const maxVal = Math.max(...statEntries.map(([,v])=>v), 1);
+        return (
+          <div style={{ marginTop:12 }}>
+            {statEntries.map(([stat, val]) => (
+              <div key={stat} style={{ display:"flex",alignItems:"center",gap:8,marginBottom:5 }}>
+                <span style={{ fontFamily:"var(--font-ui)",fontSize:8,color:STAT_COL[stat],letterSpacing:1,width:64,flexShrink:0 }}>{stat.toUpperCase()}</span>
+                <div style={{ flex:1,height:4,background:V.bg3,borderRadius:2 }}>
+                  <div style={{ height:"100%",width:`${(val/Math.pow(10,Math.ceil(Math.log10(Math.max(maxVal,1)))))*100}%`,background:STAT_COL[stat],borderRadius:2,transition:"width 0.4s ease" }}/>
+                </div>
+                <span style={{ fontFamily:"var(--font-ui)",fontSize:8,color:V.dim,width:24,textAlign:"right" }}>{Math.round(val)}</span>
               </div>
-              <span style={{ fontFamily:"var(--font-ui)",fontSize:8,color:V.dim,width:16,textAlign:"right" }}>{val}</span>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        );
+      })()}
       {/* Rival XP progress bar */}
       {(()=>{
-        const xpForLevel = n => 100 + (n-1)*50;
-        const xpIntoLevel = rival.xp - Array.from({length:rivalLevel-1},(_,i)=>xpForLevel(i+1)).reduce((a,b)=>a+b,0);
-        const xpNeeded = xpForLevel(rivalLevel);
+        const xpIntoLevel = getXPInLevel(rival.xp||0);
+        const xpNeeded = getXPForLevel(rivalLevel);
         const pct = Math.min((xpIntoLevel/xpNeeded)*100,100);
         return (
           <div style={{ marginTop:10 }}>
@@ -133,13 +136,27 @@ export default function StatusScreen({ game, update, th, V, showToast, briefingL
       {/* Penalty message — collapsible if exists */}
       {game.penaltyMessage&&(
         <CollapsibleSection label={`YESTERDAY'S REPORT — ${game.penaltyMessage.date}`} color={T.danger} defaultOpen={true}>
-          <div style={{ fontFamily:"var(--font-display)",fontSize:14,color:"var(--text)",marginBottom:6 }}>
-            You missed {game.penaltyMessage.broken} habit{game.penaltyMessage.broken>1?"s":""} yesterday.
-          </div>
-          <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.silver,lineHeight:1.7,marginBottom:8 }}>
-            Missed: {game.penaltyMessage.missed.join(", ")}<br/>
-            Habit Decay increased by {game.penaltyMessage.decayChange}.
-          </div>
+          {game.penaltyMessage.broken > 0 && (
+            <>
+              <div style={{ fontFamily:"var(--font-display)",fontSize:14,color:"var(--text)",marginBottom:6 }}>
+                You missed {game.penaltyMessage.broken} habit{game.penaltyMessage.broken>1?"s":""} yesterday.
+              </div>
+              <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.silver,lineHeight:1.7,marginBottom:8 }}>
+                Missed: {game.penaltyMessage.missed.join(", ")}<br/>
+                Habit Decay increased by {game.penaltyMessage.decayChange}.
+              </div>
+            </>
+          )}
+          {game.penaltyMessage.rivalLevelUp && (
+            <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:V.danger,lineHeight:1.7,marginBottom:6 }}>
+              ⚠ {game.penaltyMessage.rivalName} levelled up to LVL {game.penaltyMessage.rivalLevelUp}!
+            </div>
+          )}
+          {game.penaltyMessage.rivalStatUps?.length > 0 && (
+            <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:V.danger,lineHeight:1.7,marginBottom:8 }}>
+              ⚠ {game.penaltyMessage.rivalName} improved: {game.penaltyMessage.rivalStatUps.join(", ")}.
+            </div>
+          )}
           <button onClick={()=>update(s=>({...s,penaltyMessage:null}))} style={{ fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:2,padding:"6px 12px",background:"transparent",border:`1px solid ${T.danger}40`,borderRadius:4,color:T.danger,cursor:"pointer" }}>
             ACKNOWLEDGE
           </button>
@@ -192,7 +209,7 @@ export default function StatusScreen({ game, update, th, V, showToast, briefingL
                 <div style={{ fontFamily:"var(--font-ui)",fontSize:9,color:STAT_COL[s],width:18,textAlign:"center" }}>{STAT_ICO[s]}</div>
                 <div style={{ fontFamily:"var(--font-ui)",fontSize:9,color:T.silver,width:64,letterSpacing:1 }}>{s.toUpperCase()}</div>
                 <div style={{ flex:1,height:3,background:"var(--bg3)",borderRadius:2 }}>
-                  <div style={{ height:"100%",width:`${Math.min(game.stats[s]||1,100)}%`,background:STAT_COL[s],borderRadius:2,transition:"width 0.6s ease",boxShadow:`0 0 5px ${STAT_COL[s]}50` }}/>
+                  <div style={{ height:"100%",width:`${((game.stats[s]||1)/Math.pow(10,Math.ceil(Math.log10(Math.max(...STATS.map(s=>game.stats[s]||1),1)))))*100}%`,background:STAT_COL[s],borderRadius:2,transition:"width 0.6s ease",boxShadow:`0 0 5px ${STAT_COL[s]}50` }}/>
                 </div>
                 <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:STAT_COL[s],width:22,textAlign:"right" }}>{game.stats[s]||1}</div>
               </div>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getLevel, getXPInLevel, getXPForLevel, rolloverDay, TODAY } from "../lib/gameLogic.js";
 import { T, FONTS, THEMES } from "../constants/theme.js";
 import { Card, SecTitle, Btn } from "../components/ui/index.jsx";
 import OnboardingModal from "./OnboardingModal.jsx";
@@ -6,6 +7,7 @@ import WeeklyReviewModal from "./WeeklyReviewModal.jsx";
 
 export default function OptionsScreen({ game, update, th, showToast, onSignOut, onGenerateRival }) {
   const [showGuide,  setShowGuide]  = useState(false);
+  const [showDev,    setShowDev]    = useState(false);
   const [showReview, setShowReview] = useState(false);
   const [charForm,   setCharForm]   = useState(game.char);
   const inp = { width:"100%",background:"var(--bg2)",border:"1px solid var(--bg3)",borderRadius:6,color:"var(--text)",padding:"9px 12px",fontFamily:"var(--font-ui)",fontSize:12,outline:"none",marginBottom:8,boxSizing:"border-box" };
@@ -107,6 +109,134 @@ export default function OptionsScreen({ game, update, th, showToast, onSignOut, 
       <div style={{ textAlign:"center",marginTop:20,fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:2,color:T.dim }}>
         HABITQUEST V2 · BUILD BETTER HABITS
       </div>
+      <div style={{ textAlign:"center",marginTop:8 }}>
+        <button onClick={()=>setShowDev(v=>!v)}
+          style={{ fontFamily:"var(--font-ui)",fontSize:7,letterSpacing:2,color:T.dim,background:"none",border:`1px solid var(--bg3)`,borderRadius:4,padding:"3px 10px",cursor:"pointer",opacity:0.4 }}>
+          {showDev?"HIDE DEV":"DEV"}
+        </button>
+      </div>
+
+      {showDev&&(()=>{
+        const myLevel   = getLevel(game.xp);
+        const rivalLevel = game.rival ? getLevel(game.rival.xp||0) : null;
+        const today     = TODAY();
+        const decayDepth = game.decayDepth||0;
+        const gap       = rivalLevel ? myLevel - rivalLevel : null;
+        const catchUpMult = gap !== null ? (gap > 0 ? 1+Math.min(gap*0.15,1.5) : Math.max(1-Math.abs(gap)*0.05,0.7)) : null;
+        const avgComp   = game.memory?.recentActivity?.length
+          ? (game.memory.recentActivity.reduce((a,r)=>a+r.count,0)/game.memory.recentActivity.length).toFixed(2)
+          : "N/A";
+        // Habit completion rate
+        const recentAct = game.memory?.recentActivity || [];
+        const last7  = recentAct.slice(-7);
+        const last30 = recentAct.slice(-30);
+        const habitCount = game.daily?.length || 1;
+        const rate7  = last7.length  ? ((last7.reduce((a,r)=>a+r.count,0)  / (last7.length  * habitCount)) * 100).toFixed(1) + "%" : "N/A";
+        const rate30 = last30.length ? ((last30.reduce((a,r)=>a+r.count,0) / (last30.length * habitCount)) * 100).toFixed(1) + "%" : "N/A";
+
+        // Projected rival XP tonight
+        const projectedRivalXP = catchUpMult !== null
+          ? Math.round(parseFloat(avgComp) * 60 * 0.85 * catchUpMult)
+          : null;
+
+        // Storage size
+        const saveStr = JSON.stringify(game);
+        const saveKB  = (new Blob([saveStr]).size / 1024).toFixed(1) + " KB";
+        const doneKeys = Object.keys(game.done || {}).length;
+
+        // XP sources (approximate from memory)
+        const totalDays = game.memory?.totalDays || 1;
+        const estHabitXP = Math.round((game.memory?.recentActivity||[]).reduce((a,r)=>a+r.count,0) * 60);
+
+        // Recent penalty history
+        const penaltyHistory = game.memory?.recentActivity?.slice(-5).reverse() || [];
+
+        const rows = [
+          ["── DATES ──", ""],
+          ["today", today],
+          ["lastDay", game.lastDay],
+          ["rollover due", game.lastDay !== today ? "YES" : "no"],
+          ["── PLAYER ──", ""],
+          ["xp", game.xp],
+          ["level", myLevel],
+          ["xp in level", getXPInLevel(game.xp)],
+          ["xp needed", getXPForLevel(myLevel)],
+          ["gems", game.gems],
+          ["decay depth", decayDepth],
+          ["decay active", game.decayActive ? "yes" : "no"],
+          ["── HABITS ──", ""],
+          ["habit count", habitCount],
+          ["completion rate 7d", rate7],
+          ["completion rate 30d", rate30],
+          ["avg completions/day", avgComp],
+          ["── RIVAL ──", ""],
+          ["enabled", game.rivalEnabled ? "yes" : "no"],
+          ["name", game.rival?.name || "none"],
+          ["xp", game.rival?.xp ?? "—"],
+          ["level", rivalLevel ?? "—"],
+          ["level gap", gap !== null ? (gap > 0 ? `player +${gap}` : gap < 0 ? `rival +${Math.abs(gap)}` : "tied") : "—"],
+          ["catchup mult", catchUpMult !== null ? catchUpMult.toFixed(2)+"x" : "—"],
+          ["proj. XP tonight", projectedRivalXP !== null ? projectedRivalXP : "—"],
+          ...(game.rival?.stats ? Object.entries(game.rival.stats).map(([k,v])=>[`rival ${k}`, Math.round(v)]) : []),
+          ["── MEMORY ──", ""],
+          ["total days tracked", game.memory?.totalDays ?? 0],
+          ["longest streak", game.memory?.longestStreak ?? 0],
+          ["── STORAGE ──", ""],
+          ["save size", saveKB],
+          ["done entries", doneKeys + " days"],
+          ["est. habit XP earned", estHabitXP],
+          ["── COSMETICS ──", ""],
+          ["aesthetic", game.aesthetic||"default"],
+          ["theme", game.theme||"default"],
+          ["activeFrame", game.activeFrame||"none"],
+          ["activeXpBar", game.activeXpBar||"none"],
+          ["owned cosmetics", (game.cosmetics||[]).join(", ")||"none"],
+        ];
+        return (
+          <div style={{ marginTop:16,padding:14,background:"var(--bg1)",border:`1px solid ${th.accent}40`,borderRadius:8 }}>
+            <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10 }}>
+              <span style={{ fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,color:th.accent }}>DEV PANEL</span>
+              <div style={{ display:"flex",gap:8 }}>
+                <button onClick={()=>update(s=>rolloverDay(s,today))}
+                  style={{ fontFamily:"var(--font-ui)",fontSize:8,padding:"4px 8px",background:`${th.accent}15`,border:`1px solid ${th.accent}40`,borderRadius:4,color:th.accent,cursor:"pointer" }}>
+                  FORCE ROLLOVER
+                </button>
+                <button onClick={()=>update(s=>({...s,decayDepth:Math.min((s.decayDepth||0)+1,20)}))}
+                  style={{ fontFamily:"var(--font-ui)",fontSize:8,padding:"4px 8px",background:"transparent",border:`1px solid ${T.danger}40`,borderRadius:4,color:T.danger,cursor:"pointer" }}>
+                  +DECAY
+                </button>
+                <button onClick={()=>update(s=>({...s,decayDepth:Math.max((s.decayDepth||0)-1,0)}))}
+                  style={{ fontFamily:"var(--font-ui)",fontSize:8,padding:"4px 8px",background:"transparent",border:`1px solid var(--success)`,borderRadius:4,color:"var(--success)",cursor:"pointer" }}>
+                  −DECAY
+                </button>
+                <button onClick={()=>setShowDev(false)}
+                  style={{ fontFamily:"var(--font-ui)",fontSize:8,padding:"4px 8px",background:"transparent",border:`1px solid var(--bg3)`,borderRadius:4,color:T.dim,cursor:"pointer" }}>
+                  CLOSE
+                </button>
+              </div>
+            </div>
+            {rows.map(([k,v],i)=>k.startsWith("──") ? (
+              <div key={i} style={{ fontFamily:"var(--font-ui)",fontSize:7,letterSpacing:2,color:th.accent,marginTop:8,marginBottom:4 }}>{k}</div>
+            ) : (
+              <div key={i} style={{ display:"flex",justifyContent:"space-between",fontFamily:"var(--font-ui)",fontSize:9,color:T.silver,borderBottom:`1px solid var(--bg3)`,padding:"3px 0" }}>
+                <span style={{ color:T.dim }}>{k}</span>
+                <span>{String(v)}</span>
+              </div>
+            ))}
+          {penaltyHistory.length > 0 && (
+            <div style={{ marginTop:12 }}>
+              <div style={{ fontFamily:"var(--font-ui)",fontSize:7,letterSpacing:2,color:th.accent,marginBottom:6 }}>── RECENT ACTIVITY (LAST 5 DAYS) ──</div>
+              {penaltyHistory.map((r,i)=>(
+                <div key={i} style={{ display:"flex",justifyContent:"space-between",fontFamily:"var(--font-ui)",fontSize:9,color:T.silver,borderBottom:`1px solid var(--bg3)`,padding:"3px 0" }}>
+                  <span style={{ color:T.dim }}>{r.date}</span>
+                  <span>{r.count}/{habitCount} habits · mood: {r.mood||"—"}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          </div>
+        );
+      })()}
     </div>
   );
 }
