@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { T, FONTS } from "../constants/theme.js";
-import { STATS, DIFF, STAT_COL } from "../constants/gameData.js";
+import { STATS, DIFF, STAT_COL, statColor } from "../constants/gameData.js";
 import { Card, Btn, DiffTag } from "../components/ui/index.jsx";
 import HabitTemplatesModal from "./HabitTemplatesModal.jsx";
 
@@ -156,7 +156,7 @@ export default function DailyScreen({ game, update, th, V, today, todayDone, don
                 <DiffTag diff={q.diff}/>
               </div>
               <div style={{ fontFamily:"var(--font-ui)",fontSize:8,color:T.dim }}>
-                <span style={{ color:STAT_COL[q.type] }}>{q.type.toUpperCase()}</span>{" · +"}{cfg.xp} XP · +{cfg.gems} gems
+                <span style={{ color:statColor(q.type, game.aesthetic) }}>{q.type.toUpperCase()}</span>{" · +"}{cfg.xp} XP · +{cfg.gems} gems
               </div>
             </div>
             <div style={{ textAlign:"right",flexShrink:0 }}>

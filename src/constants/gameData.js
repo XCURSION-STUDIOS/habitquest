@@ -3,6 +3,10 @@ export const STAT_COL = {
   Physical:"#b03030", Mental:"#2060a0",
   Spiritual:"#7060c0", Social:"#b09020", Emotional:"#208060",
 };
+export const statColor = (stat, aesthetic) => {
+  if (aesthetic === "pixel") return { Physical:"#ffffff", Mental:"#cccccc", Spiritual:"#aaaaaa", Social:"#888888", Emotional:"#666666" }[stat] || "#ffffff";
+  return STAT_COL[stat];
+};
 export const STAT_ICO = {
   Physical:"⚔", Mental:"◈", Spiritual:"✦", Social:"◉", Emotional:"♦",
 };
@@ -102,6 +106,7 @@ export const SHOP_ITEMS = [
   { id:"ae_neon",       name:"Neon City",      icon:"⚡", cost:500, type:"aesthetic", desc:"Full cyberpunk aesthetic.", aesthetic:"neon"       },
   { id:"ae_parchment",  name:"Ancient Scroll", icon:"📜", cost:400, type:"aesthetic", desc:"Aged parchment aesthetic.", aesthetic:"parchment"  },
   { id:"ae_void_realm", name:"Void Realm",     icon:"🌌", cost:600, type:"aesthetic", desc:"Deep space aesthetic.",     aesthetic:"void_realm" },
+  { id:"ae_console",    name:"Console",        icon:"⌨", cost:480, type:"aesthetic", desc:"Retro terminal. Monochrome. Pure signal.", aesthetic:"pixel" },
   { id:"ae_blood_moon", name:"Blood Moon",     icon:"🩸", cost:550, type:"aesthetic", desc:"Gothic ceremony. Sharp edges. Ancient power.", aesthetic:"blood_moon" },
   { id:"ae_arctic",     name:"Arctic",         icon:"❄️", cost:450, type:"aesthetic", desc:"Minimal and clinical. Pure focus.",            aesthetic:"arctic"     },
   { id:"ae_gilded",     name:"Gilded",         icon:"👑", cost:700, type:"aesthetic", desc:"Opulent gold on black. Maximum prestige.",      aesthetic:"gilded"     },

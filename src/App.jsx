@@ -259,6 +259,11 @@ Stats should be values 1-10. Make the rival strong (7-10) in the player's weakes
   const V  = getVisuals(displayGame);
   const th = V.th;
 
+  // Set body aesthetic class for CSS effects
+  useEffect(() => {
+    document.body.className = displayGame.aesthetic ? `aesthetic-${displayGame.aesthetic}` : "";
+  }, [displayGame.aesthetic]);
+
   if(authLoading) return (
     <div style={{background:"var(--bg0)",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center"}}>
       <GlobalCSS V={V}/>
@@ -283,7 +288,8 @@ Stats should be values 1-10. Make the rival strong (7-10) in the player's weakes
   };
 
   return (
-    <div className="app-wrapper" style={{fontFamily:"var(--font-ui)",color:"var(--text)",position:"relative"}}>
+    <div className="app-wrapper" style={{fontFamily:"var(--font-ui)",color:"var(--text)",position:"relative",animation:displayGame.aesthetic==="pixel"?"crtFlicker 8s infinite":"none"}}>
+      {displayGame.aesthetic==="pixel"&&<div style={{position:"fixed",top:0,left:0,right:0,bottom:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.12) 2px,rgba(0,0,0,0.12) 4px)",pointerEvents:"none",zIndex:9999}}/>}
       <GlobalCSS V={V}/>
       <Toast toast={toast}/>
 

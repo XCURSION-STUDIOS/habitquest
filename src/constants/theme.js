@@ -137,6 +137,20 @@ export const AESTHETICS = {
     cards: { borderRadius:2, borderStyle:"1px solid", shadow:"none" },
     preview: { bg:"#06080f", card:"#0c1020", accent:"#88c8f0", text:"#c8dff0", font:"sans" },
   },
+  pixel: {
+    name:"Console",
+    desc:"Retro terminal. Monochrome. Pure signal.",
+    cost:480,
+    fonts: { display:"Press Start 2P, Courier New, monospace", ui:"VT323, Courier New, monospace" },
+    colors: {
+      bg0:"#000000", bg1:"#080808", bg2:"#101010", bg3:"#1a1a1a",
+      accent:"#ffffff", glow:"#ffffff15", text:"#cccccc",
+      silver:"#888888", dim:"#444444", textBright:"#ffffff",
+      success:"#aaaaaa", danger:"#ffffff", purple:"#cccccc", sg:"#ffffff",
+    },
+    cards: { borderRadius:0, borderStyle:"1px dashed", shadow:"none" },
+    preview: { bg:"#000000", card:"#101010", accent:"#ffffff", text:"#cccccc", font:"mono" },
+  },
   gilded: {
     name:"Gilded",
     desc:"Opulence. Prestige. Every detail deliberate.",

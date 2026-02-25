@@ -10,7 +10,7 @@ export default function GlobalCSS({ V }) {
 
   return (
     <style>{`
-      @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Mono:ital,wght@0,400;0,500&family=Share+Tech+Mono&family=Cinzel:wght@400;600&family=Cinzel+Decorative:wght@400;700&family=Raleway:wght@300;400;500&family=IM+Fell+English:ital@0;1&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Mono:ital,wght@0,400;0,500&family=Share+Tech+Mono&family=Cinzel:wght@400;600&family=Cinzel+Decorative:wght@400;700&family=Raleway:wght@300;400;500&family=IM+Fell+English:ital@0;1&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Press+Start+2P&family=VT323&display=swap');
 
       :root {
         --bg0: ${bg0};

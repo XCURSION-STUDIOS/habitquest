@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { T, FONTS, THEMES } from "../constants/theme.js";
-import { SKILL_TREE, STATS, STAT_COL, STAT_ICO } from "../constants/gameData.js";
+import { SKILL_TREE, STATS, STAT_COL, STAT_ICO, statColor } from "../constants/gameData.js";
 import { canUnlockNode, getUnlockedNodes } from "../lib/gameLogic.js";
 import { Card, SecTitle } from "../components/ui/index.jsx";
 
@@ -77,7 +77,7 @@ export default function SkillsScreen({ game, update, th, V, showToast }) {
           const branchUnlocked = SKILL_TREE[s].filter(n=>unlocked.includes(n.id)).length;
           const isActive = activeBranch===s;
           return (
-            <button key={s} onClick={()=>setActiveBranch(s)} style={{ flex:1,minWidth:60,padding:"8px 4px",background:isActive?`${STAT_COL[s]}18`:"transparent",border:`1px solid ${isActive?STAT_COL[s]:"var(--bg3)"}`,borderRadius:6,color:isActive?STAT_COL[s]:T.dim,fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:1,cursor:"pointer",transition:"all 0.2s",display:"flex",flexDirection:"column",alignItems:"center",gap:2 }}>
+            <button key={s} onClick={()=>setActiveBranch(s)} style={{ flex:1,minWidth:60,padding:"8px 4px",background:isActive?`${statColor(s, game.aesthetic)}18`:"transparent",border:`1px solid ${isActive?statColor(s, game.aesthetic):"var(--bg3)"}`,borderRadius:6,color:isActive?statColor(s, game.aesthetic):T.dim,fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:1,cursor:"pointer",transition:"all 0.2s",display:"flex",flexDirection:"column",alignItems:"center",gap:2 }}>
               <span style={{ fontSize:14 }}>{STAT_ICO[s]}</span>
               <span>{s.toUpperCase()}</span>
               <span style={{ fontSize:7,color:T.dim }}>{branchUnlocked}/4</span>
@@ -88,7 +88,7 @@ export default function SkillsScreen({ game, update, th, V, showToast }) {
 
       {/* Branch nodes */}
       <div style={{ marginBottom:14 }}>
-        <SecTitle col={STAT_COL[activeBranch]}>{activeBranch} Branch</SecTitle>
+        <SecTitle col={statColor(activeBranch, game.aesthetic)}>{activeBranch} Branch</SecTitle>
         <div style={{ display:"flex",flexDirection:"column",gap:8 }}>
           {branchNodes.map((node,i)=>{
             const isUnlocked = unlocked.includes(node.id);
@@ -98,7 +98,7 @@ export default function SkillsScreen({ game, update, th, V, showToast }) {
               <div key={node.id}>
                 {i>0&&(
                   <div style={{ display:"flex",justifyContent:"center",margin:"2px 0" }}>
-                    <div style={{ width:1,height:16,background:unlocked.includes(branchNodes[i-1].id)?STAT_COL[activeBranch]:"var(--bg3)",transition:"background 0.3s" }}/>
+                    <div style={{ width:1,height:16,background:unlocked.includes(branchNodes[i-1].id)?statColor(activeBranch, game.aesthetic):"var(--bg3)",transition:"background 0.3s" }}/>
                   </div>
                 )}
                 <div style={{ display:"flex",alignItems:"center",gap:8 }}>

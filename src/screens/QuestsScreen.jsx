@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { T, FONTS } from "../constants/theme.js";
-import { STATS, DIFF, STAT_COL, STAT_ICO, QUEST_DAILY_LIMIT } from "../constants/gameData.js";
+import { STATS, DIFF, STAT_COL, STAT_ICO, QUEST_DAILY_LIMIT, statColor } from "../constants/gameData.js";
 import { getQuestLimit } from "../lib/gameLogic.js";
 import { Card, Btn, DiffTag } from "../components/ui/index.jsx";
 
@@ -67,7 +67,7 @@ export default function QuestsScreen({ game, update, th, completeQuest, showToas
         return (
           <Card key={q.id} style={{ marginBottom:10,border:`1px solid ${q.done?"#27a06030":cfg.col+"30"}` }}>
             <div style={{ display:"flex",gap:10,alignItems:"flex-start" }}>
-              <div style={{ fontSize:14,color:STAT_COL[q.type]||T.dim,marginTop:3,flexShrink:0 }}>{q.done?"✓":STAT_ICO[q.type]}</div>
+              <div style={{ fontSize:14,color:statColor(q.type, game.aesthetic)||T.dim,marginTop:3,flexShrink:0 }}>{q.done?"✓":STAT_ICO[q.type]}</div>
               <div style={{ flex:1,cursor:q.notes?"pointer":"default" }} onClick={()=>q.notes&&setExpanded(isExpanded?null:q.id)}>
                 <div style={{ display:"flex",gap:7,flexWrap:"wrap",alignItems:"center",marginBottom:5 }}>
                   <span style={{ fontFamily:"var(--font-display)",fontSize:16,color:q.done?"#40d090":"var(--text)",textDecoration:q.done?"line-through":"none" }}>{q.name}</span>
@@ -75,7 +75,7 @@ export default function QuestsScreen({ game, update, th, completeQuest, showToas
                   {q.notes&&<span style={{ fontFamily:"var(--font-ui)",fontSize:7,color:T.dim,border:`1px solid var(--bg3)`,padding:"1px 5px",borderRadius:3 }}>HAS NOTES</span>}
                 </div>
                 <div style={{ fontFamily:"var(--font-ui)",fontSize:9,color:T.dim }}>
-                  <span style={{ color:STAT_COL[q.type] }}>{q.type}</span>{" · +"}{q.xp} XP · +{q.gems} gems · +3 {q.type}
+                  <span style={{ color:statColor(q.type, game.aesthetic) }}>{q.type}</span>{" · +"}{q.xp} XP · +{q.gems} gems · +3 {q.type}
                 </div>
                 {q.dueDate&&(()=>{
                   const days = Math.ceil((new Date(q.dueDate) - new Date()) / (1000*60*60*24));

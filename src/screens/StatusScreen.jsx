@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { T, FONTS, THEMES } from "../constants/theme.js";
-import { STATS, STAT_COL, STAT_ICO } from "../constants/gameData.js";
+import { STATS, STAT_COL, STAT_ICO, statColor } from "../constants/gameData.js";
 import { getLevel, getXPPct, getXPInLevel, getXPForLevel, getClass } from "../lib/gameLogic.js";
 import { Card, SecTitle, Btn } from "../components/ui/index.jsx";
 import RadarChart from "../components/ui/RadarChart.jsx";
@@ -81,9 +81,9 @@ function RivalSection({ game, th, V }) {
           <div style={{ marginTop:12 }}>
             {statEntries.map(([stat, val]) => (
               <div key={stat} style={{ display:"flex",alignItems:"center",gap:8,marginBottom:5 }}>
-                <span style={{ fontFamily:"var(--font-ui)",fontSize:8,color:STAT_COL[stat],letterSpacing:1,width:64,flexShrink:0 }}>{stat.toUpperCase()}</span>
+                <span style={{ fontFamily:"var(--font-ui)",fontSize:8,color:statColor(stat, game.aesthetic),letterSpacing:1,width:64,flexShrink:0 }}>{stat.toUpperCase()}</span>
                 <div style={{ flex:1,height:4,background:V.bg3,borderRadius:2 }}>
-                  <div style={{ height:"100%",width:`${(val/Math.pow(10,Math.ceil(Math.log10(Math.max(maxVal,1)))))*100}%`,background:STAT_COL[stat],borderRadius:2,transition:"width 0.4s ease" }}/>
+                  <div style={{ height:"100%",width:`${(val/Math.pow(10,Math.ceil(Math.log10(Math.max(maxVal,1)))))*100}%`,background:statColor(stat, game.aesthetic),borderRadius:2,transition:"width 0.4s ease" }}/>
                 </div>
                 <span style={{ fontFamily:"var(--font-ui)",fontSize:8,color:V.dim,width:24,textAlign:"right" }}>{Math.round(val)}</span>
               </div>
@@ -200,18 +200,18 @@ export default function StatusScreen({ game, update, th, V, showToast, briefingL
           </button>
         </div>
         <div style={{ display:"flex",justifyContent:"center",marginBottom:showStats?14:0 }}>
-          <RadarChart stats={game.stats} accent={th.accent} bg={V.bg3} size={210}/>
+          <RadarChart stats={game.stats} accent={th.accent} bg={V.bg3} size={210} aesthetic={game.aesthetic}/>
         </div>
         {showStats&&(
           <div style={{ animation:"fadeSlideDown 0.18s ease" }}>
             {STATS.map(s=>(
               <div key={s} style={{ display:"flex",alignItems:"center",gap:10,marginBottom:7 }}>
-                <div style={{ fontFamily:"var(--font-ui)",fontSize:9,color:STAT_COL[s],width:18,textAlign:"center" }}>{STAT_ICO[s]}</div>
+                <div style={{ fontFamily:"var(--font-ui)",fontSize:9,color:statColor(s, game.aesthetic),width:18,textAlign:"center" }}>{STAT_ICO[s]}</div>
                 <div style={{ fontFamily:"var(--font-ui)",fontSize:9,color:T.silver,width:64,letterSpacing:1 }}>{s.toUpperCase()}</div>
                 <div style={{ flex:1,height:3,background:"var(--bg3)",borderRadius:2 }}>
-                  <div style={{ height:"100%",width:`${((game.stats[s]||1)/Math.pow(10,Math.ceil(Math.log10(Math.max(...STATS.map(s=>game.stats[s]||1),1)))))*100}%`,background:STAT_COL[s],borderRadius:2,transition:"width 0.6s ease",boxShadow:`0 0 5px ${STAT_COL[s]}50` }}/>
+                  <div style={{ height:"100%",width:`${((game.stats[s]||1)/Math.pow(10,Math.ceil(Math.log10(Math.max(...STATS.map(s=>game.stats[s]||1),1)))))*100}%`,background:statColor(s, game.aesthetic),borderRadius:2,transition:"width 0.6s ease",boxShadow:`0 0 5px ${statColor(s, game.aesthetic)}50` }}/>
                 </div>
-                <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:STAT_COL[s],width:22,textAlign:"right" }}>{game.stats[s]||1}</div>
+                <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:statColor(s, game.aesthetic),width:22,textAlign:"right" }}>{game.stats[s]||1}</div>
               </div>
             ))}
           </div>
