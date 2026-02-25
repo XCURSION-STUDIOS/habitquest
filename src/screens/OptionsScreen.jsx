@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getLevel, getXPInLevel, getXPForLevel, rolloverDay, TODAY } from "../lib/gameLogic.js";
+import { getLevel, getXPInLevel, getXPForLevel, rolloverDay, TODAY, getMultipliers } from "../lib/gameLogic.js";
 import { T, FONTS, THEMES } from "../constants/theme.js";
 import { Card, SecTitle, Btn } from "../components/ui/index.jsx";
 import OnboardingModal from "./OnboardingModal.jsx";
@@ -185,6 +185,13 @@ export default function OptionsScreen({ game, update, th, showToast, onSignOut, 
           ["save size", saveKB],
           ["done entries", doneKeys + " days"],
           ["est. habit XP earned", estHabitXP],
+          ["── BUFFS & DEBUFFS ──", ""],
+          ["xp multiplier", (()=>{ const {xm} = getMultipliers(game); return xm.toFixed(2)+"x" + (xm>1?" ▲":" ▼"); })()],
+          ["gem multiplier", (()=>{ const {gm} = getMultipliers(game); return gm.toFixed(2)+"x" + (gm>1?" ▲":" ▼"); })()],
+          ["mood", game.mood || "none"],
+          ["active boosts", (game.actives||[]).map(a=>a.id).join(", ")||"none"],
+          ["perm unlocks", (game.perms||[]).map(p=>p.id).join(", ")||"none"],
+          ["skill nodes", (game.unlockedNodes||[]).length + " unlocked"],
           ["── COSMETICS ──", ""],
           ["aesthetic", game.aesthetic||"default"],
           ["theme", game.theme||"default"],
