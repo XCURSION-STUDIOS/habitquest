@@ -35,7 +35,9 @@ export default function Header({ game, screen, setScreen, aiStatus, saving, V })
             className="header-avatar"
             style={{ width:36,height:36,background:V?.bg1||T.bg1,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,cursor:"pointer",animation:game.aura?"auraAnim 2.5s linear infinite":"none",...frameStyle }}
           >
-            {cls.icon}
+            {game.avatarImage
+              ? <img src={game.avatarImage} style={{ width:"100%",height:"100%",objectFit:"cover",borderRadius:"inherit" }}/>
+              : <span style={{ fontSize:30, lineHeight:1, display:"block", marginTop:"-2px", marginLeft:"1px" }}>{getClass(game).icon}</span>}
           </div>
         </div>
 

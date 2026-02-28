@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { getLevel, getXPInLevel, getXPForLevel, rolloverDay, TODAY, getMultipliers } from "../lib/gameLogic.js";
+import { useState, useRef } from "react";
+import { getLevel, getXPInLevel, getXPForLevel, rolloverDay, TODAY, getMultipliers, getClass } from "../lib/gameLogic.js";
 import { T, FONTS, THEMES } from "../constants/theme.js";
 import { Card, SecTitle, Btn } from "../components/ui/index.jsx";
 import OnboardingModal from "./OnboardingModal.jsx";
@@ -8,6 +8,12 @@ import WeeklyReviewModal from "./WeeklyReviewModal.jsx";
 export default function OptionsScreen({ game, update, th, showToast, onSignOut, onGenerateRival }) {
   const [showGuide,  setShowGuide]  = useState(false);
   const [showDev,    setShowDev]    = useState(false);
+  const [showCrop,   setShowCrop]   = useState(false);
+  const [cropSrc,    setCropSrc]    = useState(null);
+  const [cropScale,  setCropScale]  = useState(1);
+  const [cropOffset, setCropOffset] = useState({x:0,y:0});
+  const [dragStart,  setDragStart]  = useState(null);
+  const fileInputRef  = useRef(null);
   const [showReview, setShowReview] = useState(false);
   const [charForm,   setCharForm]   = useState(game.char);
   const inp = { width:"100%",background:"var(--bg2)",border:"1px solid var(--bg3)",borderRadius:6,color:"var(--text)",padding:"9px 12px",fontFamily:"var(--font-ui)",fontSize:12,outline:"none",marginBottom:8,boxSizing:"border-box" };
@@ -84,6 +90,100 @@ export default function OptionsScreen({ game, update, th, showToast, onSignOut, 
           ))}
         </div>
       </Card>
+
+      {/* Avatar */}
+      <Card style={{ marginBottom:14 }}>
+        <SecTitle col={th.accent}>Avatar</SecTitle>
+        <div style={{ display:"flex",alignItems:"center",gap:16,marginBottom:12 }}>
+          <div style={{ width:56,height:56,borderRadius:"50%",background:"var(--bg2)",border:`1px solid ${th.accent}40`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,overflow:"hidden",flexShrink:0 }}>
+            {game.avatarImage
+              ? <img src={game.avatarImage} style={{ width:"100%",height:"100%",objectFit:"cover" }}/>
+              : <span>{getClass(game).icon}</span>}
+          </div>
+          <div style={{ flex:1 }}>
+            <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.dim,marginBottom:10,lineHeight:1.6 }}>
+              Upload a custom avatar. It will be cropped to a circle.
+            </div>
+            <div style={{ display:"flex",gap:8 }}>
+              <input ref={fileInputRef} type="file" accept="image/*" style={{ display:"none" }} onChange={e=>{
+                const file = e.target.files?.[0];
+                if(!file) return;
+                const reader = new FileReader();
+                reader.onload = ev => { setCropSrc(ev.target.result); setCropScale(1); setCropOffset({x:0,y:0}); setShowCrop(true); };
+                reader.readAsDataURL(file);
+                e.target.value = "";
+              }}/>
+              <button onClick={()=>fileInputRef.current?.click()}
+                style={{ flex:1,padding:"8px",background:`${th.accent}15`,border:`1px solid ${th.accent}40`,borderRadius:5,color:th.accent,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer" }}>
+                UPLOAD IMAGE
+              </button>
+              {game.avatarImage&&<button onClick={()=>update(s=>({...s,avatarImage:null}))}
+                style={{ padding:"8px 12px",background:"transparent",border:`1px solid ${T.danger}40`,borderRadius:5,color:T.danger,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer" }}>
+                REMOVE
+              </button>}
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* Crop Modal */}
+      {showCrop&&cropSrc&&(()=>{
+        const SIZE = 240;
+        function applyAndSave() {
+          const canvas = document.createElement("canvas");
+          canvas.width = SIZE; canvas.height = SIZE;
+          const ctx = canvas.getContext("2d");
+          ctx.beginPath(); ctx.arc(SIZE/2,SIZE/2,SIZE/2,0,Math.PI*2); ctx.clip();
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          const doRender = () => {
+            const aspect = img.naturalWidth / img.naturalHeight;
+            let sw, sh;
+            if (aspect > 1) { sh = SIZE * cropScale; sw = sh * aspect; }
+            else { sw = SIZE * cropScale; sh = sw / aspect; }
+            const sx = (SIZE-sw)/2 + cropOffset.x;
+            const sy = (SIZE-sh)/2 + cropOffset.y;
+            ctx.drawImage(img, sx, sy, sw, sh);
+            const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+            update(s=>({...s, avatarImage:dataUrl})); showToast("Avatar updated.", "gold");
+            setShowCrop(false); setCropSrc(null);
+          };
+          if (img.complete && img.naturalWidth) { doRender(); }
+          else { img.onload = doRender; }
+          img.src = cropSrc;
+        }
+        return (
+          <div style={{ position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.85)",zIndex:1000,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24 }}>
+            <div style={{ fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,color:th.accent,marginBottom:16 }}>POSITION & ZOOM</div>
+            <div
+              style={{ width:SIZE,height:SIZE,borderRadius:"50%",overflow:"hidden",border:`2px solid ${th.accent}`,cursor:"grab",position:"relative",flexShrink:0 }}
+              onMouseDown={e=>setDragStart({x:e.clientX-cropOffset.x,y:e.clientY-cropOffset.y})}
+              onMouseMove={e=>{ if(!dragStart) return; setCropOffset({x:e.clientX-dragStart.x,y:e.clientY-dragStart.y}); }}
+              onMouseUp={()=>setDragStart(null)}
+              onTouchStart={e=>{ const t=e.touches[0]; setDragStart({x:t.clientX-cropOffset.x,y:t.clientY-cropOffset.y}); }}
+              onTouchMove={e=>{ if(!dragStart) return; const t=e.touches[0]; setCropOffset({x:t.clientX-dragStart.x,y:t.clientY-dragStart.y}); e.preventDefault(); }}
+              onTouchEnd={()=>setDragStart(null)}
+            >
+              <img src={cropSrc} style={{ position:"absolute",width:`${cropScale*100}%`,height:"auto",left:`calc(50% + ${cropOffset.x}px)`,top:`calc(50% + ${cropOffset.y}px)`,transform:"translate(-50%,-50%)",userSelect:"none",pointerEvents:"none",minWidth:`${cropScale*100}%` }} draggable={false}/>
+            </div>
+            <div style={{ display:"flex",alignItems:"center",gap:12,marginTop:16,width:SIZE }}>
+              <span style={{ fontFamily:"var(--font-ui)",fontSize:8,color:T.dim }}>−</span>
+              <input type="range" min="50" max="300" value={Math.round(cropScale*100)} onChange={e=>setCropScale(e.target.value/100)} style={{ flex:1,accentColor:th.accent }}/>
+              <span style={{ fontFamily:"var(--font-ui)",fontSize:8,color:T.dim }}>+</span>
+            </div>
+            <div style={{ display:"flex",gap:12,marginTop:20 }}>
+              <button onClick={()=>setShowCrop(false)}
+                style={{ padding:"10px 24px",background:"transparent",border:`1px solid var(--bg3)`,borderRadius:5,color:T.dim,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer" }}>
+                CANCEL
+              </button>
+              <button onClick={applyAndSave}
+                style={{ padding:"10px 24px",background:`${th.accent}20`,border:`1px solid ${th.accent}`,borderRadius:5,color:th.accent,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer" }}>
+                APPLY
+              </button>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Account */}
       <Card style={{ marginBottom:14 }}>
