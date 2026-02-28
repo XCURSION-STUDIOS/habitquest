@@ -3,53 +3,21 @@ import { supabase } from "../lib/supabase.js";
 import { T, FONTS } from "../constants/theme.js";
 
 function XCursionLogo({ progress, accent }) {
-  // Reconstructed from actual logo:
-  // - Top: 1 large diamond (point up)
-  // - Mid-upper: 2 wide diamonds left+right
-  // - Center: hourglass figure (top triangle + bottom triangle + circle top + circle bottom)
-  // - Mid-lower: 2 medium diamonds left+right  
-  // - Bottom: 1 inverted triangle center + 2 small lens shapes left+right
   const shapes = [
-    // Top large diamond
-    { type:"diamond", cx:200, cy:52,  w:90, h:70,  delay:0    },
-    // Mid-upper left diamond
-    { type:"diamond", cx:90,  cy:118, w:78, h:90,  delay:0.06 },
-    // Mid-upper right diamond
-    { type:"diamond", cx:310, cy:118, w:78, h:90,  delay:0.06 },
-    // Center top triangle (pointing down, top half of hourglass)
-    { type:"tri-down", cx:200, cy:148, w:70, h:60, delay:0.13 },
-    // Center circle top (waist of hourglass)
-    { type:"circle", cx:200, cy:182, r:14,         delay:0.18 },
-    // Center bottom triangle (pointing up, bottom half of hourglass)
-    { type:"tri-up",  cx:200, cy:216, w:70, h:60,  delay:0.22 },
-    // Center circle bottom
-    { type:"circle", cx:200, cy:252, r:10,          delay:0.26 },
-    // Mid-lower left diamond
-    { type:"diamond", cx:90,  cy:232, w:58, h:70,  delay:0.30 },
-    // Mid-lower right diamond
-    { type:"diamond", cx:310, cy:232, w:58, h:70,  delay:0.30 },
-    // Bottom center inverted diamond (small)
-    { type:"diamond", cx:200, cy:296, w:54, h:44,  delay:0.36 },
-    // Bottom left lens
-    { type:"diamond", cx:112, cy:306, w:44, h:34,  delay:0.40 },
-    // Bottom right lens
-    { type:"diamond", cx:288, cy:306, w:44, h:34,  delay:0.40 },
+    { type:"diamond", cx:166, cy:52,  half:52, delay:0.00 },
+    { type:"circle",  cx:166, cy:157, r:18,    delay:0.10 },
+    { type:"diamond", cx:61,  cy:157, half:52, delay:0.10 },
+    { type:"diamond", cx:271, cy:157, half:52, delay:0.10 },
+    { type:"diamond", cx:166, cy:262, half:52, delay:0.20 },
+    { type:"circle",  cx:166, cy:367, r:18,    delay:0.30 },
+    { type:"diamond", cx:61,  cy:367, half:52, delay:0.30 },
+    { type:"diamond", cx:271, cy:367, half:52, delay:0.30 },
   ];
 
   function renderShape(s, i) {
     const p = Math.max(0, Math.min(1, (progress - s.delay) / 0.22));
     const opacity = p;
     const scale = 0.3 + p * 0.7;
-
-    let points = "";
-    if (s.type === "diamond") {
-      points = `0,${-s.h/2} ${s.w/2},0 0,${s.h/2} ${-s.w/2},0`;
-    } else if (s.type === "tri-down") {
-      points = `${-s.w/2},${-s.h/2} ${s.w/2},${-s.h/2} 0,${s.h/2}`;
-    } else if (s.type === "tri-up") {
-      points = `0,${-s.h/2} ${s.w/2},${s.h/2} ${-s.w/2},${s.h/2}`;
-    }
-
     return (
       <g key={i} transform={`translate(${s.cx},${s.cy}) scale(${scale})`} style={{ opacity }}>
         {s.type === "circle" ? (
@@ -59,8 +27,8 @@ function XCursionLogo({ progress, accent }) {
           </>
         ) : (
           <>
-            <polygon points={points} fill="url(#hatch2)" filter="url(#glow2)"/>
-            <polygon points={points} fill="none" stroke={accent} strokeWidth="0.8" opacity="0.4"/>
+            <polygon points={`0,${-s.half} ${s.half},0 0,${s.half} ${-s.half},0`} fill="url(#hatch2)" filter="url(#glow2)"/>
+            <polygon points={`0,${-s.half} ${s.half},0 0,${s.half} ${-s.half},0`} fill="none" stroke={accent} strokeWidth="0.8" opacity="0.4"/>
           </>
         )}
       </g>
@@ -68,10 +36,10 @@ function XCursionLogo({ progress, accent }) {
   }
 
   return (
-    <svg viewBox="0 0 400 350" width="160" height="140" style={{ overflow:"visible" }}>
+    <svg viewBox="0 0 332 420" width="166" height="210" style={{ overflow:"visible" }}>
       <defs>
-        <pattern id="hatch2" patternUnits="userSpaceOnUse" width="8" height="8">
-          <line x1="0" y1="0" x2="8" y2="0" stroke="white" strokeWidth="1.4" opacity="0.95"/>
+        <pattern id="hatch2" patternUnits="userSpaceOnUse" width="11" height="11">
+          <line x1="0" y1="5.5" x2="11" y2="5.5" stroke="white" strokeWidth="2.2" opacity="0.95"/>
         </pattern>
         <filter id="glow2">
           <feGaussianBlur stdDeviation="2.5" result="blur"/>
