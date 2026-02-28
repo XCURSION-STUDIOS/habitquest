@@ -29,10 +29,33 @@ export default function OptionsScreen({ game, update, th, showToast, onSignOut, 
 
       <Card style={{ marginBottom:14 }}>
         <SecTitle col={th.accent}>Character Profile</SecTitle>
-        {["name","age","occupation"].map(k=>(
-          <input key={k} value={charForm[k]||""} onChange={e=>setCharForm(x=>({...x,[k]:e.target.value}))} placeholder={k} style={inp}/>
-        ))}
-        <textarea value={charForm.bio||""} onChange={e=>setCharForm(x=>({...x,bio:e.target.value}))} placeholder="Bio (optional)" style={{ ...inp,height:64,resize:"none",marginBottom:10 }}/>
+        <div style={{ display:"flex",alignItems:"center",gap:16,marginBottom:14 }}>
+          <div style={{ width:64,height:64,borderRadius:"50%",background:"var(--bg2)",border:`1px solid ${th.accent}40`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,overflow:"hidden",flexShrink:0 }}>
+            {game.avatarImage
+              ? <img src={game.avatarImage} style={{ width:"100%",height:"100%",objectFit:"cover" }}/>
+              : <span>{getClass(game).icon}</span>}
+          </div>
+          <div style={{ flex:1 }}>
+            <input value={charForm.name||""} onChange={e=>setCharForm(x=>({...x,name:e.target.value}))} placeholder="Name" style={{...inp, marginBottom:8}}/>
+            <div style={{ display:"flex",gap:8 }}>
+              <input ref={fileInputRef} type="file" accept="image/*" style={{ display:"none" }} onChange={e=>{
+                const file = e.target.files?.[0];
+                const reader = new FileReader();
+                reader.onload = ev => { setCropSrc(ev.target.result); setCropScale(1); setCropOffset({x:0,y:0}); setShowCrop(true); };
+                reader.readAsDataURL(file);
+                e.target.value = "";
+              }}/>
+              <button onClick={()=>fileInputRef.current?.click()}
+                style={{ flex:1,padding:"8px",background:`${th.accent}15`,border:`1px solid ${th.accent}40`,borderRadius:5,color:th.accent,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer" }}>
+                UPLOAD IMAGE
+              </button>
+              {game.avatarImage&&<button onClick={()=>update(s=>({...s,avatarImage:null}))}
+                style={{ padding:"8px 12px",background:"transparent",border:`1px solid ${T.danger}40`,borderRadius:5,color:T.danger,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer" }}>
+                REMOVE
+              </button>}
+            </div>
+          </div>
+        </div>
         <Btn onClick={()=>{update(s=>({...s,char:charForm}));showToast("Profile updated.","gold");}} full>SAVE PROFILE</Btn>
       </Card>
 
@@ -91,40 +114,7 @@ export default function OptionsScreen({ game, update, th, showToast, onSignOut, 
         </div>
       </Card>
 
-      {/* Avatar */}
-      <Card style={{ marginBottom:14 }}>
-        <SecTitle col={th.accent}>Avatar</SecTitle>
-        <div style={{ display:"flex",alignItems:"center",gap:16,marginBottom:12 }}>
-          <div style={{ width:56,height:56,borderRadius:"50%",background:"var(--bg2)",border:`1px solid ${th.accent}40`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,overflow:"hidden",flexShrink:0 }}>
-            {game.avatarImage
-              ? <img src={game.avatarImage} style={{ width:"100%",height:"100%",objectFit:"cover" }}/>
-              : <span>{getClass(game).icon}</span>}
-          </div>
-          <div style={{ flex:1 }}>
-            <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.dim,marginBottom:10,lineHeight:1.6 }}>
-              Upload a custom avatar. It will be cropped to a circle.
-            </div>
-            <div style={{ display:"flex",gap:8 }}>
-              <input ref={fileInputRef} type="file" accept="image/*" style={{ display:"none" }} onChange={e=>{
-                const file = e.target.files?.[0];
-                if(!file) return;
-                const reader = new FileReader();
-                reader.onload = ev => { setCropSrc(ev.target.result); setCropScale(1); setCropOffset({x:0,y:0}); setShowCrop(true); };
-                reader.readAsDataURL(file);
-                e.target.value = "";
-              }}/>
-              <button onClick={()=>fileInputRef.current?.click()}
-                style={{ flex:1,padding:"8px",background:`${th.accent}15`,border:`1px solid ${th.accent}40`,borderRadius:5,color:th.accent,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer" }}>
-                UPLOAD IMAGE
-              </button>
-              {game.avatarImage&&<button onClick={()=>update(s=>({...s,avatarImage:null}))}
-                style={{ padding:"8px 12px",background:"transparent",border:`1px solid ${T.danger}40`,borderRadius:5,color:T.danger,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer" }}>
-                REMOVE
-              </button>}
-            </div>
-          </div>
-        </div>
-      </Card>
+
 
       {/* Crop Modal */}
       {showCrop&&cropSrc&&(()=>{
