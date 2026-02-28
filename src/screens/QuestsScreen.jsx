@@ -116,8 +116,10 @@ export default function QuestsScreen({ game, update, th, completeQuest, showToas
             style={{ width:"100%",background:"var(--bg2)",border:`1px solid var(--bg3)`,borderRadius:5,color:"var(--text)",padding:"9px 12px",fontFamily:"var(--font-ui)",fontSize:11,outline:"none",boxSizing:"border-box",marginBottom:10,height:64,resize:"none" }}/>
           <div style={{ marginBottom:10 }}>
             <div style={{ fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:2,color:T.dim,marginBottom:5 }}>DUE DATE (optional)</div>
-            <input type="date" value={questForm.dueDate} onChange={e=>setQuestForm(x=>({...x,dueDate:e.target.value}))}
-              style={{ width:"100%",background:"var(--bg2)",border:`1px solid var(--bg3)`,borderRadius:5,color:"var(--text)",padding:"9px 12px",fontFamily:"var(--font-ui)",fontSize:11,outline:"none",boxSizing:"border-box",colorScheme:"dark" }}/>
+            <div style={{ width:"100%",overflow:"hidden",borderRadius:5,border:`1px solid var(--bg3)`,background:"var(--bg2)" }}>
+              <input type="date" value={questForm.dueDate} onChange={e=>setQuestForm(x=>({...x,dueDate:e.target.value}))}
+                style={{ width:"100%",background:"transparent",border:"none",color:"var(--text)",padding:"9px 12px",fontFamily:"var(--font-ui)",fontSize:11,outline:"none",boxSizing:"border-box",colorScheme:"dark",WebkitAppearance:"none" }}/>
+            </div>
           </div>
           {(()=>{
             const { xp, gems } = calcRewards(questForm.diff, questForm.dueDate);
