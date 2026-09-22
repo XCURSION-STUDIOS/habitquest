@@ -145,9 +145,14 @@ create policy "Users can update own profile"
 The app uses a Supabase Edge Function to proxy Gemini API calls securely (keeps your API key server-side).
 
 ```bash
-supabase functions deploy ai-proxy
-supabase secrets set GEMINI_API_KEY=your-gemini-api-key
+npx supabase secrets set GEMINI_API_KEY=your-gemini-api-key
+npx supabase secrets set GEMINI_MODEL=gemini-3.5-flash-lite
+npx supabase functions deploy ai-proxy
 ```
+
+Install the CLI with `npm install --save-dev supabase`; the npm-based CLI requires Node.js 20+.
+
+If you change `GEMINI_MODEL`, set the new value with `npx supabase secrets set GEMINI_MODEL=...` and run `npx supabase functions deploy ai-proxy` again. Updating a local `.env` file alone does not change the deployed Edge Function.
 
 ### 5. Run locally
 

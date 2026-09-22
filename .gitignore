@@ -1,6 +1,7 @@
 node_modules
 .env.local
 .env
+README.local.md
 dist
 .DS_Store
 supabase/.temp
