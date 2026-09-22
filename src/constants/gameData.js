@@ -71,12 +71,6 @@ export const SKILL_TREE = {
     { id:"em3", tier:3, name:"Balanced",           desc:"Completing habits from 4+ different stats in one day gives +80 bonus XP.", effect:{ type:"variety_bonus", count:4, val:80 }, cost:3, requires:"em2" },
     { id:"em4", tier:4, name:"Mastery",            desc:"Emotional stat gains count double permanently.", effect:{ type:"stat_double", stat:"Emotional" }, cost:4, requires:"em3" },
   ],
-  // Cross-branch unlocks (require nodes from 2 different branches)
-  Cross: [
-    { id:"cx1", name:"Tactician",   desc:"Unlocked Physical + Mental T2. Bonus +30 XP when you complete both a physical and mental task on the same day.", effect:{ type:"cross_bonus", stats:["Physical","Mental"], val:30 }, cost:3, requires:["ph2","mn2"], icon:"⚡" },
-    { id:"cx2", name:"Sage",        desc:"Unlocked Mental + Spiritual T2. AI briefings gain additional insight based on your emotional patterns.", effect:{ type:"ai_enhanced_briefing" }, cost:3, requires:["mn2","sp2"], icon:"✦" },
-    { id:"cx3", name:"Diplomat",    desc:"Unlocked Social + Emotional T2. Gem rewards doubled on days your mood is set to any value.", effect:{ type:"mood_gem_double" }, cost:3, requires:["so2","em2"], icon:"◉" },
-  ],
 };
 
 export const SHOP_ITEMS = [
@@ -85,16 +79,6 @@ export const SHOP_ITEMS = [
   { id:"frz",  name:"Streak Shield",    icon:"◇", cost:55,  type:"temp", desc:"Protects one streak from a missed day.", uses:1, val:1 },
   { id:"xp3",  name:"XP Surge",         icon:"⚡", cost:110, type:"temp", desc:"3× XP for next 3 completions.", uses:3, val:3 },
   { id:"xslot",name:"Extra Quest Slot", icon:"＋", cost:20,  type:"temp", desc:"Add one extra completable quest today.", uses:1, val:1, questSlot:true },
-  { id:"pxp",  name:"Permanent XP+",    icon:"★", cost:250, type:"perm", desc:"+8% XP on every task, permanently.", effect:"+8% XP" },
-  { id:"pgem", name:"Permanent Gem+",   icon:"⬡", cost:200, type:"perm", desc:"+10% gems every completion, permanently.", effect:"+10% Gems" },
-  ...["Physical","Mental","Spiritual","Social","Emotional"].map(s => ({
-    id:`p${s.toLowerCase().slice(0,4)}`,
-    name:`${s} Boost`,
-    icon:{ Physical:"⚔", Mental:"◈", Spiritual:"✦", Social:"◉", Emotional:"♦" }[s],
-    cost:180, type:"perm",
-    desc:`+20 ${s} stat ceiling.`,
-    effect:`+20 ${s} Cap`, stat:s,
-  })),
   { id:"th_blood", name:"Crimson Theme",   icon:"◆", cost:50,  type:"theme", desc:"Red accent theme.",    theme:"blood"  },
   { id:"th_void",  name:"Purple Theme",    icon:"⬡", cost:50,  type:"theme", desc:"Purple accent theme.", theme:"void"   },
   { id:"th_jade",  name:"Jade Theme",      icon:"✦", cost:50,  type:"theme", desc:"Green accent theme.",  theme:"jade"   },
@@ -110,15 +94,6 @@ export const SHOP_ITEMS = [
   { id:"ae_blood_moon", name:"Blood Moon",     icon:"🩸", cost:550, type:"aesthetic", desc:"Gothic ceremony. Sharp edges. Ancient power.", aesthetic:"blood_moon" },
   { id:"ae_arctic",     name:"Arctic",         icon:"❄️", cost:450, type:"aesthetic", desc:"Minimal and clinical. Pure focus.",            aesthetic:"arctic"     },
   { id:"ae_gilded",     name:"Gilded",         icon:"👑", cost:700, type:"aesthetic", desc:"Opulent gold on black. Maximum prestige.",      aesthetic:"gilded"     },
-  { id:"aura",    name:"Glow Effect",      icon:"⚡", cost:300, type:"cosm", desc:"Animated glow around your avatar." },
-  { id:"tit_sm",  name:"Title: Shadow Monarch", icon:"◈", cost:100, type:"cosm", desc:"Equip the Shadow Monarch title.", titleVal:"Shadow Monarch" },
-  { id:"tit_ar",  name:"Title: ARISE",        icon:"⚔",  cost:300,  type:"cosm", desc:"Equip the ARISE title.", titleVal:"ARISE" },
-  { id:"tit_ph",  name:"Title: Phantom",       icon:"◈",  cost:250,  type:"cosm", desc:"Equip the Phantom title.", titleVal:"Phantom" },
-  { id:"frm_hex", name:"Avatar: Hexagon",      icon:"⬡",  cost:200,  type:"cosm", desc:"Hexagonal avatar frame.", frameVal:"hexagon" },
-  { id:"frm_dbl", name:"Avatar: Double Ring",  icon:"◎",  cost:350,  type:"cosm", desc:"Double ring avatar frame.", frameVal:"double" },
-  { id:"frm_crn", name:"Avatar: Crown",        icon:"♛",  cost:500,  type:"cosm", desc:"Crown avatar frame.", frameVal:"crown" },
-  { id:"xpb_pls", name:"XP Bar: Pulse",        icon:"〜", cost:300,  type:"cosm", desc:"Pulsing glow on your XP bar.", xpBarVal:"pulse" },
-  { id:"xpb_spk", name:"XP Bar: Spark",        icon:"✦",  cost:400,  type:"cosm", desc:"Spark animation on your XP bar.", xpBarVal:"spark" },
 ];
 
 export const DEFAULT_GAME = {
@@ -138,15 +113,13 @@ export const DEFAULT_GAME = {
   questCompletedToday: 0,
   questExtraSlots: 0,
   perms:[], actives:[], cosmetics:[], titles:[],
-  title:null, theme:"default", aesthetic:"default", aura:false,
+  title:null, theme:"default", aesthetic:"default", aura:true,
   bonusMission:null, bonusProgress:0,
   decayDepth:0, decayActive:false,
   mood:null, lastMoodDate:null,
   lastDay: new Date().toISOString().split("T")[0],
   briefing:null, briefingDate:null,
   penaltyMessage: null,
-  rivalEnabled: false,
-  rival: null,
   weeklyReview: null,
   lastReviewDate: null,
   memory: {

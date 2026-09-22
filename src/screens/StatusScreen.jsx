@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { T, FONTS, THEMES } from "../constants/theme.js";
-import { STATS, STAT_COL, STAT_ICO, statColor } from "../constants/gameData.js";
-import { getLevel, getXPPct, getXPInLevel, getXPForLevel, getClass } from "../lib/gameLogic.js";
+import { T } from "../constants/theme.js";
+import { STATS, STAT_ICO, statColor } from "../constants/gameData.js";
+import { getLevel, getXPPct, getXPInLevel, getXPForLevel } from "../lib/gameLogic.js";
 import { Card, SecTitle, Btn } from "../components/ui/index.jsx";
 import RadarChart from "../components/ui/RadarChart.jsx";
 
@@ -46,83 +46,10 @@ function CollapsibleSection({ label, color, defaultOpen=false, badge, children }
   );
 }
 
-function RivalSection({ game, th, V }) {
-  if (!game.rivalEnabled || !game.rival) return null;
-  const rival      = game.rival;
-  const rivalLevel = getLevel(rival.xp || 0);
-  const rivalClass = getClass(rivalLevel);
-  const myLevel    = getLevel(game.xp);
-  const gap        = rival.xp - game.xp;
-  const ahead      = gap > 0;
-  const color      = ahead ? T.danger : "var(--success)";
-
-  return (
-    <CollapsibleSection label="RIVAL" color={color} badge={ahead ? "AHEAD" : "BEHIND"}>
-      <div style={{ display:"flex",alignItems:"center",gap:12 }}>
-        <div style={{ width:42,height:42,borderRadius:"50%",background:T.bg2,border:`1px solid ${color}60`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0 }}>
-          {rivalClass.icon}
-        </div>
-        <div style={{ flex:1 }}>
-          <div style={{ fontFamily:"var(--font-display)",fontSize:16,color:"#eef2ff",marginBottom:2 }}>{rival.name}</div>
-          <div style={{ fontFamily:"var(--font-ui)",fontSize:8,color:T.silver,letterSpacing:1 }}>
-            {rivalClass.icon} {rivalClass.name.toUpperCase()} · LVL {rivalLevel}
-          </div>
-        </div>
-        <div style={{ textAlign:"right",flexShrink:0 }}>
-          <div style={{ fontFamily:"var(--font-display)",fontSize:20,color }}>{ahead?"+":"-"}{Math.abs(rivalLevel-myLevel)} LVL</div>
-          <div style={{ fontFamily:"var(--font-ui)",fontSize:7,color:T.dim }}>{Math.abs(gap)} XP {ahead?"ahead":"behind"}</div>
-        </div>
-      </div>
-      {/* Rival stat bars */}
-      {game.rival.stats && (()=>{
-        const statEntries = Object.entries(game.rival.stats);
-        const maxVal = Math.max(...statEntries.map(([,v])=>v), 1);
-        return (
-          <div style={{ marginTop:12 }}>
-            {statEntries.map(([stat, val]) => (
-              <div key={stat} style={{ display:"flex",alignItems:"center",gap:8,marginBottom:5 }}>
-                <span style={{ fontFamily:"var(--font-ui)",fontSize:8,color:statColor(stat, game.aesthetic),letterSpacing:1,width:64,flexShrink:0 }}>{stat.toUpperCase()}</span>
-                <div style={{ flex:1,height:4,background:V.bg3,borderRadius:2 }}>
-                  <div style={{ height:"100%",width:`${(val/Math.pow(10,Math.ceil(Math.log10(Math.max(maxVal,1)))))*100}%`,background:statColor(stat, game.aesthetic),borderRadius:2,transition:"width 0.4s ease" }}/>
-                </div>
-                <span style={{ fontFamily:"var(--font-ui)",fontSize:8,color:V.dim,width:24,textAlign:"right" }}>{Math.round(val)}</span>
-              </div>
-            ))}
-          </div>
-        );
-      })()}
-      {/* Rival XP progress bar */}
-      {(()=>{
-        const xpIntoLevel = getXPInLevel(rival.xp||0);
-        const xpNeeded = getXPForLevel(rivalLevel);
-        const pct = Math.min((xpIntoLevel/xpNeeded)*100,100);
-        return (
-          <div style={{ marginTop:10 }}>
-            <div style={{ display:"flex",justifyContent:"space-between",marginBottom:4 }}>
-              <span style={{ fontFamily:"var(--font-ui)",fontSize:8,color:V.dim }}>LVL {rivalLevel} → {rivalLevel+1}</span>
-              <span style={{ fontFamily:"var(--font-ui)",fontSize:8,color:V.dim }}>{xpIntoLevel}/{xpNeeded} XP</span>
-            </div>
-            <div style={{ height:3,background:V.bg3,borderRadius:2 }}>
-              <div style={{ height:"100%",width:`${pct}%`,background:color,borderRadius:2,transition:"width 0.4s ease" }}/>
-            </div>
-          </div>
-        );
-      })()}
-      {rival.taunt&&(
-        <div style={{ marginTop:10,fontFamily:"var(--font-display)",fontSize:12,color:V.silver,fontStyle:"italic",lineHeight:1.6,borderTop:`1px solid ${V.bg3}`,paddingTop:8 }}>
-          "{rival.taunt}"
-        </div>
-      )}
-    </CollapsibleSection>
-  );
-}
-
-export default function StatusScreen({ game, update, th, V, showToast, briefingLoading, generateBriefing, onSignOut }) {
+export default function StatusScreen({ game, update, th, V, showToast, onSignOut }) {
   const [showStats,setShowStats] = useState(false);
 
   const level       = getLevel(game.xp);
-  const cls         = getClass(level);
-  const inp = { width:"100%",background:"var(--bg2)",border:`1px solid var(--bg3)`,borderRadius:6,color:"var(--text)",padding:"9px 12px",fontFamily:"var(--font-ui)",fontSize:12,outline:"none",marginBottom:8,boxSizing:"border-box" };
 
   // Today's completion
   const today = game.lastDay;
@@ -146,16 +73,6 @@ export default function StatusScreen({ game, update, th, V, showToast, briefingL
                 Habit Decay increased by {game.penaltyMessage.decayChange}.
               </div>
             </>
-          )}
-          {game.penaltyMessage.rivalLevelUp && (
-            <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:V.danger,lineHeight:1.7,marginBottom:6 }}>
-              ⚠ {game.penaltyMessage.rivalName} levelled up to LVL {game.penaltyMessage.rivalLevelUp}!
-            </div>
-          )}
-          {game.penaltyMessage.rivalStatUps?.length > 0 && (
-            <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:V.danger,lineHeight:1.7,marginBottom:8 }}>
-              ⚠ {game.penaltyMessage.rivalName} improved: {game.penaltyMessage.rivalStatUps.join(", ")}.
-            </div>
           )}
           <button onClick={()=>update(s=>({...s,penaltyMessage:null}))} style={{ fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:2,padding:"6px 12px",background:"transparent",border:`1px solid ${T.danger}40`,borderRadius:4,color:T.danger,cursor:"pointer" }}>
             ACKNOWLEDGE
@@ -218,22 +135,6 @@ export default function StatusScreen({ game, update, th, V, showToast, briefingL
         )}
       </Card>
 
-      {/* AI Briefing */}
-      {(game.briefing||briefingLoading)&&(
-        <Card style={{ marginBottom:12,border:`1px solid ${T.sg}30` }}>
-          <div style={{ fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:4,color:T.sg,marginBottom:10 }}>AI BRIEFING — {game.briefingDate||"TODAY"}</div>
-          {briefingLoading
-            ? <div style={{ fontFamily:"var(--font-ui)",fontSize:11,color:T.dim,animation:"pulse 1.5s ease-in-out infinite" }}>Analysing your data...</div>
-            : <div style={{ fontFamily:"var(--font-display)",fontSize:15,color:"var(--text)",lineHeight:1.8,whiteSpace:"pre-wrap" }}>{game.briefing}</div>
-          }
-        </Card>
-      )}
-      {!game.briefing&&!briefingLoading&&(
-        <button onClick={generateBriefing} style={{ width:"100%",padding:"10px",marginBottom:12,background:"transparent",border:`1px dashed ${T.sg}40`,borderRadius:8,color:T.sg,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:3,cursor:"pointer" }}>
-          GET TODAY'S BRIEFING
-        </button>
-      )}
-
       {/* Habit Decay */}
       {game.decayDepth>0&&(
         <Card style={{ marginBottom:12,border:"1px solid #6a000050" }}>
@@ -246,8 +147,6 @@ export default function StatusScreen({ game, update, th, V, showToast, briefingL
       )}
 
       {/* Collapsible sections */}
-      <RivalSection game={game} th={th} V={V}/>
-
       <div style={{ marginTop:8,paddingTop:14,borderTop:`1px solid var(--bg3)` }}>
         <Btn onClick={onSignOut} danger full>SIGN OUT</Btn>
       </div>

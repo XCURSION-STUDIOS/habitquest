@@ -19,12 +19,6 @@ export default function ShopScreen({ game, th, V, buyItem, showToast, onPreview,
     setCountdown(5);
     if (item.type === "theme")     onPreview({ theme: item.theme });
     if (item.type === "aesthetic") onPreview({ aesthetic: item.aesthetic });
-    if (item.type === "cosm") {
-      if (item.id === "aura")    onPreview({ aura: true });
-      if (item.titleVal)         onPreview({ title: item.titleVal });
-      if (item.frameVal)  onPreview({ activeFrame: item.id });
-      if (item.xpBarVal)  onPreview({ activeXpBar: item.id });
-    }
     countRef.current = setInterval(() => {
       setCountdown(c => { if (c <= 1) { clearInterval(countRef.current); return 0; } return c - 1; });
     }, 1000);
@@ -55,12 +49,11 @@ export default function ShopScreen({ game, th, V, buyItem, showToast, onPreview,
       )}
 
       <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12 }}>
-        <div style={{ fontFamily:"var(--font-display)",fontSize:13,color:T.silver }}>Spend gems on upgrades</div>
         <div style={{ fontFamily:"var(--font-ui)",fontSize:13,color:th.accent }}>◈ {game.gems}</div>
       </div>
 
       <div style={{ display:"flex",gap:5,marginBottom:12,flexWrap:"wrap" }}>
-        {[{id:"temp",l:"BOOSTS"},{id:"perm",l:"PERMANENT"},{id:"aesthetic",l:"AESTHETICS"},{id:"cosm",l:"COSMETIC"}].map(t=>(
+        {[{id:"temp",l:"BOOSTS"},{id:"aesthetic",l:"AESTHETICS"}].map(t=>(
           <button key={t.id} onClick={()=>setShopTab(t.id)} style={{ flex:1,minWidth:60,padding:"7px 4px",background:shopTab===t.id?`${th.accent}15`:"transparent",border:`1px solid ${shopTab===t.id?th.accent:"var(--bg3)"}`,borderRadius:5,color:shopTab===t.id?th.accent:V.dim,fontFamily:"var(--font-ui)",fontSize:7,letterSpacing:1,cursor:"pointer",transition:"all 0.2s" }}>
             {t.l}
           </button>
@@ -68,11 +61,11 @@ export default function ShopScreen({ game, th, V, buyItem, showToast, onPreview,
       </div>
 
       {items.map(item => {
-        const owned   = game.perms?.find(p=>p.id===item.id)||(["cosm","theme","aesthetic"].includes(item.type)&&game.cosmetics?.includes(item.id));
+        const owned   = game.perms?.find(p=>p.id===item.id)||(["theme","aesthetic"].includes(item.type)&&game.cosmetics?.includes(item.id));
         const active  = game.actives?.find(p=>p.id===item.id);
         const can     = game.gems >= item.cost;
         const isPrev  = previewing === item.id;
-        const canPrev = ["theme","aesthetic","cosm"].includes(item.type);
+        const canPrev = ["theme","aesthetic"].includes(item.type);
 
         return (
           <Card key={item.id} style={{ marginBottom:10,border:`1px solid ${isPrev?V.purple+"60":owned?"var(--success)30":can?V.bg3:"var(--bg2)"}`,transition:"border 0.3s" }}>
@@ -99,30 +92,6 @@ export default function ShopScreen({ game, th, V, buyItem, showToast, onPreview,
                 <button onClick={()=>{ onPreviewEnd(); buyItem({...item, cost:0, _reapply:true}); }}
                   style={{ flex:1,padding:"9px",background:game.aesthetic===item.aesthetic?`${th.accent}15`:"transparent",border:`1px solid ${game.aesthetic===item.aesthetic?th.accent:"var(--success)60"}`,borderRadius:5,color:game.aesthetic===item.aesthetic?th.accent:"var(--success)",fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer",transition:"all 0.2s" }}>
                   {game.aesthetic===item.aesthetic?"✓ ACTIVE":"APPLY"}
-                </button>
-              )}
-              {owned && item.type === "cosm" && item.id === "aura" && (
-                <button onClick={()=>{ onPreviewEnd(); buyItem({...item, cost:0, _reapply:true}); }}
-                  style={{ flex:1,padding:"9px",background:game.aura?`${th.accent}15`:"transparent",border:`1px solid ${game.aura?th.accent:"var(--success)60"}`,borderRadius:5,color:game.aura?th.accent:"var(--success)",fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer",transition:"all 0.2s" }}>
-                  {game.aura?"✓ ACTIVE":"APPLY"}
-                </button>
-              )}
-              {owned && item.type === "cosm" && item.titleVal && (
-                <button onClick={()=>{ onPreviewEnd(); buyItem({...item, cost:0, _reapply:true}); }}
-                  style={{ flex:1,padding:"9px",background:game.title===item.titleVal?`${th.accent}15`:"transparent",border:`1px solid ${game.title===item.titleVal?th.accent:"var(--success)60"}`,borderRadius:5,color:game.title===item.titleVal?th.accent:"var(--success)",fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer",transition:"all 0.2s" }}>
-                  {game.title===item.titleVal?"✓ ACTIVE":"APPLY"}
-                </button>
-              )}
-              {owned && item.type === "cosm" && item.frameVal && (
-                <button onClick={()=>{ onPreviewEnd(); buyItem({...item, cost:0, _reapply:true}); }}
-                  style={{ flex:1,padding:"9px",background:game.activeFrame===item.id?`${th.accent}15`:"transparent",border:`1px solid ${game.activeFrame===item.id?th.accent:"var(--success)60"}`,borderRadius:5,color:game.activeFrame===item.id?th.accent:"var(--success)",fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer",transition:"all 0.2s" }}>
-                  {game.activeFrame===item.id?"✓ ACTIVE":"APPLY"}
-                </button>
-              )}
-              {owned && item.type === "cosm" && item.xpBarVal && (
-                <button onClick={()=>{ onPreviewEnd(); buyItem({...item, cost:0, _reapply:true}); }}
-                  style={{ flex:1,padding:"9px",background:game.activeXpBar===item.id?`${th.accent}15`:"transparent",border:`1px solid ${game.activeXpBar===item.id?th.accent:"var(--success)60"}`,borderRadius:5,color:game.activeXpBar===item.id?th.accent:"var(--success)",fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer",transition:"all 0.2s" }}>
-                  {game.activeXpBar===item.id?"✓ ACTIVE":"APPLY"}
                 </button>
               )}
               {!owned && (
