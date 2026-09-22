@@ -152,10 +152,10 @@ Label it exactly: BONUS MISSION: [mission name] | [short description of what to 
     const result=applyCompleteDaily(game,id,today);
     const ev=result._events||{};
     const clean={...result}; delete clean._events;
-    if(ev.levelUp) setTimeout(()=>{ setLvlAnim(ev.newLevel); setTimeout(()=>setLvlAnim(null),3500); },200);
+    if(ev.levelUp) setTimeout(()=>{ setLvlAnim({ level:ev.newLevel, points:ev.skillPointsGained||1 }); setTimeout(()=>setLvlAnim(null),3500); },200);
     if(ev.shadowDone) showToast(`Bonus mission complete! +${ev.shadowXP} XP`,"system");
     else if(!game.done?.[today]?.[id]) showToast(`+${ev.xpEarned} XP  ·  +${ev.gemEarned} gems${ev.boosted?"  ⚡":""}`,ev.skillPointGained?"success":"gold");
-    if(ev.skillPointGained) setTimeout(()=>showToast("Level up! +1 Skill Point earned. Visit the Skills tab.","info",5000),400);
+    if(ev.skillPointsGained) setTimeout(()=>showToast(`Level up! +${ev.skillPointsGained} Skill Point${ev.skillPointsGained>1?"s":""} earned. Visit the Skills tab.`,"info",5000),400);
     update(()=>clean);
   }
 
@@ -163,6 +163,8 @@ Label it exactly: BONUS MISSION: [mission name] | [short description of what to 
     const {game:next,events}=applyCompleteQuest(game,id,today);
     if(events.error){ showToast(events.error,"danger"); return; }
     showToast(`Quest complete — ${events.name}\n+${events.xp} XP  +${events.gems} gems`,"success");
+    if(events.levelUp) setTimeout(()=>{ setLvlAnim({ level:events.newLevel, points:events.skillPointsGained||1 }); setTimeout(()=>setLvlAnim(null),3500); },200);
+    if(events.skillPointsGained) setTimeout(()=>showToast(`Level up! +${events.skillPointsGained} Skill Point${events.skillPointsGained>1?"s":""} earned. Visit the Skills tab.`,"info",5000),400);
     update(()=>next);
   }
 
@@ -241,9 +243,9 @@ Label it exactly: BONUS MISSION: [mission name] | [short description of what to 
         <div style={{position:"fixed",inset:0,zIndex:1000,background:"rgba(6,6,15,0.94)",backdropFilter:"blur(16px)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",animation:"fadeIn 0.4s ease"}}>
           <div style={{textAlign:"center",animation:"lvlPop 3.5s ease forwards"}}>
             <div style={{fontFamily:"var(--font-ui)",fontSize:10,letterSpacing:6,color:T.dim,marginBottom:16}}>LEVEL UP</div>
-            <div style={{fontFamily:"var(--font-display)",fontSize:96,color:th.accent,lineHeight:1,textShadow:`0 0 60px ${th.glow}`}}>{lvlAnim}</div>
-            <div style={{fontFamily:"var(--font-display)",fontSize:28,color:T.text,marginTop:8}}>{getClass(lvlAnim).name}</div>
-            <div style={{fontFamily:"var(--font-ui)",fontSize:9,color:T.purple,marginTop:8,letterSpacing:2}}>+1 SKILL POINT EARNED</div>
+            <div style={{fontFamily:"var(--font-display)",fontSize:96,color:th.accent,lineHeight:1,textShadow:`0 0 60px ${th.glow}`}}>{lvlAnim.level}</div>
+            <div style={{fontFamily:"var(--font-display)",fontSize:28,color:T.text,marginTop:8}}>{getClass(lvlAnim.level).name}</div>
+            <div style={{fontFamily:"var(--font-ui)",fontSize:9,color:T.purple,marginTop:8,letterSpacing:2}}>+{lvlAnim.points} SKILL POINT{lvlAnim.points===1?"":"S"} EARNED</div>
           </div>
         </div>
       )}

@@ -52,7 +52,6 @@ export default function SkillsScreen({ game, update, th, V, showToast }) {
   }
 
   const branchNodes = SKILL_TREE[activeBranch]||[];
-  const crossNodes  = SKILL_TREE.Cross||[];
 
   return (
     <div>
@@ -113,31 +112,6 @@ export default function SkillsScreen({ game, update, th, V, showToast }) {
         </div>
       </div>
 
-      {/* Cross-branch nodes */}
-      <div>
-        <SecTitle col={T.gold}>Cross-Branch Unlocks</SecTitle>
-        <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.dim,marginBottom:12,lineHeight:1.6 }}>
-          These unlock when you've invested in two different branches. They reward balanced development.
-        </div>
-        <div style={{ display:"flex",flexDirection:"column",gap:8 }}>
-          {crossNodes.map(node=>{
-            const isUnlocked = unlocked.includes(node.id);
-            const canU       = canUnlockNode(node,unlocked,sp);
-            const reqLabels  = node.requires.map(r=>{
-              const found = Object.values(SKILL_TREE).flat().find(n=>n.id===r);
-              return found?.name||r;
-            });
-            return (
-              <div key={node.id}>
-                <div style={{ fontFamily:"var(--font-ui)",fontSize:8,color:T.dim,marginBottom:4,letterSpacing:1 }}>
-                  Requires: {reqLabels.join(" + ")}
-                </div>
-                <NodeCard node={node} unlocked={isUnlocked} canUnlock={canU} onUnlock={()=>unlock(node.id)} th={th}/>
-              </div>
-            );
-          })}
-        </div>
-      </div>
     </div>
   );
 }

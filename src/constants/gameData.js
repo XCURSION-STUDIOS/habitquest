@@ -71,12 +71,6 @@ export const SKILL_TREE = {
     { id:"em3", tier:3, name:"Balanced",           desc:"Completing habits from 4+ different stats in one day gives +80 bonus XP.", effect:{ type:"variety_bonus", count:4, val:80 }, cost:3, requires:"em2" },
     { id:"em4", tier:4, name:"Mastery",            desc:"Emotional stat gains count double permanently.", effect:{ type:"stat_double", stat:"Emotional" }, cost:4, requires:"em3" },
   ],
-  // Cross-branch unlocks (require nodes from 2 different branches)
-  Cross: [
-    { id:"cx1", name:"Tactician",   desc:"Unlocked Physical + Mental T2. Bonus +30 XP when you complete both a physical and mental task on the same day.", effect:{ type:"cross_bonus", stats:["Physical","Mental"], val:30 }, cost:3, requires:["ph2","mn2"], icon:"⚡" },
-    { id:"cx2", name:"Sage",        desc:"Unlocked Mental + Spiritual T2. AI briefings gain additional insight based on your emotional patterns.", effect:{ type:"ai_enhanced_briefing" }, cost:3, requires:["mn2","sp2"], icon:"✦" },
-    { id:"cx3", name:"Diplomat",    desc:"Unlocked Social + Emotional T2. Gem rewards doubled on days your mood is set to any value.", effect:{ type:"mood_gem_double" }, cost:3, requires:["so2","em2"], icon:"◉" },
-  ],
 };
 
 export const SHOP_ITEMS = [

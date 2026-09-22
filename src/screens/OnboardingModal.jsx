@@ -47,7 +47,7 @@ You can complete up to 5 quests per day. Buy extra quest slots in the Shop if yo
 
 The skill tree has one branch per stat, each with 4 tiers. Unlock nodes to gain permanent passive bonuses: faster XP, gem multipliers, streak protection, and more.
 
-Cross-branch nodes unlock when you've invested in two different branches, rewarding balanced development.
+Each branch has four tiers, so you can specialise without needing to manage cross-branch requirements.
 
 Access the skill tree from the SKILLS tab.`,
   },
@@ -65,7 +65,7 @@ You'll receive a penalty report each morning after a missed day. Acknowledge it 
   {
     title: "Bonus Missions & AI Briefing",
     icon: "◈",
-    body: `Every morning your AI generates a personalised Briefing on your Status screen — a short analysis of recent performance with a specific focus area for the day.
+    body: `Every morning your AI generates a personalised Briefing on your Status screen — a short analysis of recent performance with a specific focus area for the day. You can regenerate it from Settings at any time.
 
 It also generates a Bonus Mission: a new personalised task targeted at your weakest stat — something concrete you wouldn't normally do. It appears as a highlighted card at the top of your Daily screen. Tap it to complete it and earn +180 XP, +18 gems, and −2 Habit Decay.
 
@@ -76,7 +76,7 @@ The Architect weekly review is available in Settings when you want a structured 
     icon: "★",
   body: `The Shop lets you spend gems on temporary boosts (XP Boost, Gem Boost, Streak Shield) and aesthetics. Active boosts are shown under the BOOSTS button in the header.
 
-Your character profile — name, bio, occupation — can be edited any time in Options. Themes are there too.
+Your character name and theme can be edited any time in Options. Your class icon is used as your profile image.
 
 A few tips to get started:
 · Set your mood every morning in the Daily tab

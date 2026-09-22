@@ -60,9 +60,6 @@ export function getMultipliers(game, statType = null) {
     if (n.effect?.type === "gem_bonus") gm += n.effect.val;
   });
 
-  // Diplomat cross: gem double on days mood is set
-  if (nodes.find(n => n.effect?.type === "mood_gem_double") && game.mood) gm *= 2;
-
   // Habit Decay gem penalty
   const decayDepthNow = game.decayDepth || 0;
   if (decayDepthNow >= 15)     gm *= 0.50;
@@ -192,6 +189,7 @@ export function applyCompleteDaily(game, id, today) {
       boosted:   xm > 1.05,
       shadowDone: clearShadow, shadowXP: shadowBonus,
       skillPointGained: newLevel > oldLevel,
+      skillPointsGained: newLevel - oldLevel,
     },
   };
 }
@@ -205,17 +203,22 @@ export function applyCompleteQuest(game, id, today) {
   const nodes      = getUnlockedNodes(game.unlockedNodes||[]);
   const questBonus = nodes.find(n => n.effect?.type==="quest_bonus")?.effect?.val || 0;
   const xpFinal    = Math.round(q.xp * (1 + questBonus));
+  const oldLevel   = getLevel(game.xp);
+  const newXP      = game.xp + xpFinal;
+  const newLevel   = getLevel(newXP);
+  const levelUps   = newLevel - oldLevel;
 
   return {
     game: {
       ...game,
-      xp:    game.xp + xpFinal,
+      xp:    newXP,
+      skillPoints: (game.skillPoints||0) + levelUps,
       gems:  game.gems + q.gems,
       stats: { ...game.stats, [q.type]:Math.min((game.stats[q.type]||1)+3, 100) },
       quests: game.quests.map(x => x.id===id ? { ...x, done:true } : x),
       questCompletedToday: (game.questCompletedToday||0)+1,
     },
-    events: { xp:xpFinal, gems:q.gems, name:q.name },
+    events: { xp:xpFinal, gems:q.gems, name:q.name, levelUp:levelUps>0, newLevel, skillPointsGained:levelUps },
   };
 }
 

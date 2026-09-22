@@ -12,7 +12,7 @@ HabitQuest turns your daily habits and goals into an RPG progression system. Com
 
 - **Daily Habits** — Track habits with difficulty ranks (F through S) and stat types. Build streaks, earn XP and gems on every completion
 - **Quests** — Larger one-off goals with notes support. Up to 5 completable per day, with extra slots purchasable via gems
-- **Skill Tree** — 5 branches (Physical, Mental, Spiritual, Social, Emotional) × 4 tiers each, plus 3 cross-branch unlock nodes. Earn 1 skill point per level
+- **Skill Tree** — 5 straightforward branches (Physical, Mental, Spiritual, Social, Emotional) × 4 tiers each. Earn 1 skill point per level
 - **Penalty System** — Missed habits increase your Abyss Depth. A morning report delivers the damage and tracks recovery
 
 ### AI Assistance
@@ -187,13 +187,12 @@ HabitQuest is built mobile-first but scales across all screen sizes:
 
 - Each habit has a difficulty rank with a base XP value (F=20 → S=500)
 - XP multipliers apply from: mood, active boosts, and skill tree nodes
-- 400 XP per level. Each level-up grants 1 Skill Point
+- Each next level requires 100 more XP than the previous level. Each level-up grants 1 Skill Point
 
 ### Skill Tree
 
 - 5 branches × 4 tiers = 20 nodes
 - Tier costs: 1 / 2 / 3 / 4 Skill Points
-- 3 cross-branch nodes unlock when two specific branch tiers are owned
 - Effects include: XP bonuses, gem bonuses, Abyss reduction, stat doubling, mood modifiers
 
 ### Abyss System

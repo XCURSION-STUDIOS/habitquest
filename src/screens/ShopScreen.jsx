@@ -49,7 +49,6 @@ export default function ShopScreen({ game, th, V, buyItem, showToast, onPreview,
       )}
 
       <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12 }}>
-        <div style={{ fontFamily:"var(--font-display)",fontSize:13,color:T.silver }}>Spend gems on upgrades</div>
         <div style={{ fontFamily:"var(--font-ui)",fontSize:13,color:th.accent }}>◈ {game.gems}</div>
       </div>
 
