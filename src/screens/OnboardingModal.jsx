@@ -63,11 +63,9 @@ Recovery: every habit you complete reduces decay by 1. Miss 3 habits and you nee
 You'll receive a penalty report each morning after a missed day. Acknowledge it and get back on track.`,
   },
   {
-    title: "Bonus Missions & AI Briefing",
+    title: "Bonus Missions",
     icon: "◈",
-    body: `Every morning your AI generates a personalised Briefing on your Status screen — a short analysis of recent performance with a specific focus area for the day. You can regenerate it from Settings at any time.
-
-It also generates a Bonus Mission: a new personalised task targeted at your weakest stat — something concrete you wouldn't normally do. It appears as a highlighted card at the top of your Daily screen. Tap it to complete it and earn +180 XP, +18 gems, and −2 Habit Decay.
+    body: `Every morning your AI generates a Bonus Mission: a new personalised task targeted at your weakest stat — something concrete you wouldn't normally do. It appears as a highlighted card at the top of your Daily screen. Tap it to complete it and earn +180 XP, +18 gems, and −2 Habit Decay.
 
 The Architect weekly review is available in Settings when you want a structured look at your progress.`,
   },
@@ -80,7 +78,7 @@ Your character name and theme can be edited any time in Options. Your class icon
 
 A few tips to get started:
 · Set your mood every morning in the Daily tab
-· Check your AI briefing on Status each day
+· Check your Bonus Mission on the Daily tab
 · Visit Skills once you've levelled up a few times
 · Use the Shop when you've saved enough gems
 

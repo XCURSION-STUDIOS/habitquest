@@ -46,7 +46,7 @@ function CollapsibleSection({ label, color, defaultOpen=false, badge, children }
   );
 }
 
-export default function StatusScreen({ game, update, th, V, showToast, briefingLoading, generateBriefing, onSignOut }) {
+export default function StatusScreen({ game, update, th, V, showToast, onSignOut }) {
   const [showStats,setShowStats] = useState(false);
 
   const level       = getLevel(game.xp);
@@ -134,22 +134,6 @@ export default function StatusScreen({ game, update, th, V, showToast, briefingL
           </div>
         )}
       </Card>
-
-      {/* AI Briefing */}
-      {(game.briefing||briefingLoading)&&(
-        <Card style={{ marginBottom:12,border:`1px solid ${T.sg}30` }}>
-          <div style={{ fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:4,color:T.sg,marginBottom:10 }}>AI BRIEFING — {game.briefingDate||"TODAY"}</div>
-          {briefingLoading
-            ? <div style={{ fontFamily:"var(--font-ui)",fontSize:11,color:T.dim,animation:"pulse 1.5s ease-in-out infinite" }}>Analysing your data...</div>
-            : <div style={{ fontFamily:"var(--font-display)",fontSize:15,color:"var(--text)",lineHeight:1.8,whiteSpace:"pre-wrap" }}>{game.briefing}</div>
-          }
-        </Card>
-      )}
-      {!game.briefing&&!briefingLoading&&(
-        <button onClick={generateBriefing} style={{ width:"100%",padding:"10px",marginBottom:12,background:"transparent",border:`1px dashed ${T.sg}40`,borderRadius:8,color:T.sg,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:3,cursor:"pointer" }}>
-          GET TODAY'S BRIEFING
-        </button>
-      )}
 
       {/* Habit Decay */}
       {game.decayDepth>0&&(

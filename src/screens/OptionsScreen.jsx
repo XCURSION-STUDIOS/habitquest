@@ -5,7 +5,7 @@ import { Card, SecTitle, Btn } from "../components/ui/index.jsx";
 import OnboardingModal from "./OnboardingModal.jsx";
 import WeeklyReviewModal from "./WeeklyReviewModal.jsx";
 
-export default function OptionsScreen({ game, update, th, showToast, onSignOut, generateBriefing, briefingLoading }) {
+export default function OptionsScreen({ game, update, th, showToast, onSignOut }) {
   const [showGuide,  setShowGuide]  = useState(false);
   const [showDev,    setShowDev]    = useState(false);
   const [showCrop,   setShowCrop]   = useState(false);
@@ -45,12 +45,9 @@ export default function OptionsScreen({ game, update, th, showToast, onSignOut, 
       <Card style={{ marginBottom:14,border:`1px solid ${T.sg}30` }}>
         <SecTitle col={T.sg}>The Architect — Weekly Review</SecTitle>
         <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.dim,lineHeight:1.7,marginBottom:12 }}>
-          A structured AI analysis of your full week. Daily briefings and essential AI-generated bonus missions remain available automatically. Last review: {lastReview}.
+          A structured AI analysis of your full week. Essential AI-generated bonus missions continue in the background. Last review: {lastReview}.
         </div>
-        <div style={{ display:"flex",flexDirection:"column",gap:8 }}>
-          <Btn full onClick={()=>setShowReview(true)}>RUN WEEKLY REVIEW</Btn>
-          <Btn full onClick={generateBriefing} disabled={briefingLoading}>{briefingLoading?"GENERATING...":"REGENERATE BRIEFING"}</Btn>
-        </div>
+        <Btn full onClick={()=>setShowReview(true)}>RUN WEEKLY REVIEW</Btn>
       </Card>
 
       {/* Guide */}

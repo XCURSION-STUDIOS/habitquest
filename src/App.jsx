@@ -143,7 +143,7 @@ Label it exactly: BONUS MISSION: [mission name] | [short description of what to 
     } catch(e) {
       console.warn("Briefing failed:",e.message);
       setAiStatus("error");
-      showToast("AI briefing unavailable. Check your connection.","danger");
+      showToast("Daily bonus mission unavailable. Check your connection.","danger");
     }
     setBriefingLoading(false);
   }
@@ -262,12 +262,12 @@ Label it exactly: BONUS MISSION: [mission name] | [short description of what to 
 
 
       <div className="screen-padding" style={slideOut}>
-        {screen==="status" &&<StatusScreen game={game} update={update} th={th} V={V} showToast={showToast} briefingLoading={briefingLoading} generateBriefing={generateBriefing} onSignOut={signOut}/>}
+        {screen==="status" &&<StatusScreen game={game} update={update} th={th} V={V} showToast={showToast} onSignOut={signOut}/>}
         {screen==="daily"  &&<DailyScreen  game={game} update={update} th={th} V={V} today={today2} todayDone={todayDone} doneCount={doneCount} allDone={allDone} completeDaily={completeDaily} showToast={showToast}/>}
         {screen==="quests" &&<QuestsScreen game={game} update={update} th={th} V={V} completeQuest={completeQuest} showToast={showToast}/>}
         {screen==="skills" &&<SkillsScreen game={game} update={update} th={th} V={V} showToast={showToast}/>}
         {screen==="shop"   &&<ShopScreen   game={game} th={th} V={V} buyItem={buyItem} showToast={showToast} onPreview={handlePreview} onPreviewEnd={handlePreviewEnd}/>}
-        {screen==="options"&&<OptionsScreen game={game} update={update} th={th} V={V} showToast={showToast} onSignOut={signOut} generateBriefing={generateBriefing} briefingLoading={briefingLoading}/>} 
+        {screen==="options"&&<OptionsScreen game={game} update={update} th={th} V={V} showToast={showToast} onSignOut={signOut}/>} 
       </div>
     </div>
   );
