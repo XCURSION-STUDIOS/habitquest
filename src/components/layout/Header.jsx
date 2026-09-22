@@ -7,7 +7,6 @@ export default function Header({ game, screen, setScreen, aiStatus, saving, V })
   const [showBoosts, setShowBoosts] = useState(false);
   const th    = V?.th || THEMES[game.theme] || THEMES.default;
   const level = getLevel(game.xp);
-  const cls   = getClass(level);
   const hasBoosts = game.actives?.length > 0;
   const frame = "circle";
   const xpBarStyle = "default";
@@ -29,18 +28,18 @@ export default function Header({ game, screen, setScreen, aiStatus, saving, V })
             className="header-avatar"
             style={{ width:36,height:36,background:V?.bg1||T.bg1,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,cursor:"pointer",animation:"auraAnim 2.5s linear infinite",...frameStyle }}
           >
-            <span style={{ fontSize:30, lineHeight:1, display:"block", marginTop:"-2px", marginLeft:"1px" }}>{getClass(game).icon}</span>
+            <span style={{ fontSize:30, lineHeight:1, display:"block", marginTop:"-2px", marginLeft:"1px" }}>{getClass(level).icon}</span>
           </div>
         </div>
 
-        {/* Name + class */}
+        {/* Name + level */}
         <div style={{ flex:1,minWidth:0 }}>
           <div style={{ display:"flex",alignItems:"center",gap:6,marginBottom:1,flexWrap:"nowrap",overflow:"hidden" }}>
             <span style={{ fontFamily:"var(--font-display)",fontSize:16,color:T.textBright,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis" }}>{game.char.name}</span>
             {saving&&<span style={{ fontFamily:"var(--font-ui)",fontSize:7,color:T.dim,flexShrink:0 }}>saving…</span>}
           </div>
           <div style={{ display:"flex",alignItems:"center",gap:8 }}>
-            <span style={{ fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:1,color:T.silver,whiteSpace:"nowrap" }}>LVL {level} · {cls.name.toUpperCase()}</span>
+            <span style={{ fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:1,color:T.silver,whiteSpace:"nowrap" }}>LVL {level}</span>
             <AIStatus status={aiStatus}/>
           </div>
           {/* XP bar */}
