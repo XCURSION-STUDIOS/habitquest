@@ -5,7 +5,7 @@ import { Card, SecTitle, Btn } from "../components/ui/index.jsx";
 import OnboardingModal from "./OnboardingModal.jsx";
 import WeeklyReviewModal from "./WeeklyReviewModal.jsx";
 
-export default function OptionsScreen({ game, update, th, showToast, onSignOut, onGenerateRival }) {
+export default function OptionsScreen({ game, update, th, showToast, onSignOut, generateBriefing, briefingLoading }) {
   const [showGuide,  setShowGuide]  = useState(false);
   const [showDev,    setShowDev]    = useState(false);
   const [showCrop,   setShowCrop]   = useState(false);
@@ -21,7 +21,6 @@ export default function OptionsScreen({ game, update, th, showToast, onSignOut, 
   const lastReview = game.lastReviewDate
     ? new Date(game.lastReviewDate).toLocaleDateString()
     : "Never";
-
   return (
     <div>
       {showGuide  && <OnboardingModal onClose={()=>setShowGuide(false)} th={th}/>}
@@ -31,71 +30,34 @@ export default function OptionsScreen({ game, update, th, showToast, onSignOut, 
         <SecTitle col={th.accent}>Character Profile</SecTitle>
         <div style={{ display:"flex",alignItems:"center",gap:16,marginBottom:14 }}>
           <div style={{ width:64,height:64,borderRadius:"50%",background:"var(--bg2)",border:`1px solid ${th.accent}40`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,overflow:"hidden",flexShrink:0 }}>
-            {game.avatarImage
-              ? <img src={game.avatarImage} style={{ width:"100%",height:"100%",objectFit:"cover" }}/>
-              : <span>{getClass(game).icon}</span>}
+            <span>{getClass(game).icon}</span>
           </div>
           <div style={{ flex:1 }}>
             <input value={charForm.name||""} onChange={e=>setCharForm(x=>({...x,name:e.target.value}))} placeholder="Name" style={{...inp, marginBottom:8}}/>
-            <div style={{ display:"flex",gap:8 }}>
-              <input ref={fileInputRef} type="file" accept="image/*" style={{ display:"none" }} onChange={e=>{
-                const file = e.target.files?.[0];
-                const reader = new FileReader();
-                reader.onload = ev => { setCropSrc(ev.target.result); setCropScale(1); setCropOffset({x:0,y:0}); setShowCrop(true); };
-                reader.readAsDataURL(file);
-                e.target.value = "";
-              }}/>
-              <button onClick={()=>fileInputRef.current?.click()}
-                style={{ flex:1,padding:"8px",background:`${th.accent}15`,border:`1px solid ${th.accent}40`,borderRadius:5,color:th.accent,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer" }}>
-                UPLOAD IMAGE
-              </button>
-              {game.avatarImage&&<button onClick={()=>update(s=>({...s,avatarImage:null}))}
-                style={{ padding:"8px 12px",background:"transparent",border:`1px solid ${T.danger}40`,borderRadius:5,color:T.danger,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer" }}>
-                REMOVE
-              </button>}
+            <div style={{ fontFamily:"var(--font-ui)",fontSize:9,color:T.dim,lineHeight:1.5 }}>
+              Your class icon is used as your avatar for now.
             </div>
           </div>
         </div>
         <Btn onClick={()=>{update(s=>({...s,char:charForm}));showToast("Profile updated.","gold");}} full>SAVE PROFILE</Btn>
       </Card>
 
-      {/* The Architect */}
       <Card style={{ marginBottom:14,border:`1px solid ${T.sg}30` }}>
         <SecTitle col={T.sg}>The Architect — Weekly Review</SecTitle>
         <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.dim,lineHeight:1.7,marginBottom:12 }}>
-          A structured AI analysis of your full week. Identifies patterns, correlates mood and timing data, and prescribes specific changes. Last review: {lastReview}.
+          A structured AI analysis of your full week. Daily briefings and essential AI-generated bonus missions remain available automatically. Last review: {lastReview}.
         </div>
-        <Btn full onClick={()=>setShowReview(true)}>RUN WEEKLY REVIEW</Btn>
-      </Card>
-
-      {/* Rival System */}
-      <Card style={{ marginBottom:14,border:`1px solid ${game.rivalEnabled?"#b0303030":"var(--bg3)"}` }}>
-        <SecTitle col={game.rivalEnabled?T.danger:T.dim}>Rival System</SecTitle>
-        <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.dim,lineHeight:1.7,marginBottom:12 }}>
-          The AI generates a rival based on your weaknesses. They level up every day you play — stay ahead or fall behind.
-          {game.rival && <span style={{ color:T.silver }}> Current rival: <strong>{game.rival.name}</strong>.</span>}
+        <div style={{ display:"flex",flexDirection:"column",gap:8 }}>
+          <Btn full onClick={()=>setShowReview(true)}>RUN WEEKLY REVIEW</Btn>
+          <Btn full onClick={generateBriefing} disabled={briefingLoading}>{briefingLoading?"GENERATING...":"REGENERATE BRIEFING"}</Btn>
         </div>
-        <div style={{ display:"flex",gap:8,alignItems:"center",marginBottom:game.rivalEnabled?10:0 }}>
-          <button onClick={()=>update(s=>({...s,rivalEnabled:!s.rivalEnabled}))} style={{ display:"flex",alignItems:"center",gap:8,padding:"9px 14px",background:game.rivalEnabled?`${T.danger}15`:"transparent",border:`1px solid ${game.rivalEnabled?T.danger:"var(--bg3)"}`,borderRadius:6,color:game.rivalEnabled?T.danger:T.dim,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:2,cursor:"pointer",transition:"all 0.2s" }}>
-            <div style={{ width:10,height:10,borderRadius:"50%",background:game.rivalEnabled?T.danger:"var(--bg3)",transition:"background 0.2s" }}/>
-            {game.rivalEnabled?"RIVAL ENABLED":"RIVAL DISABLED"}
-          </button>
-        </div>
-        {game.rivalEnabled && !game.rival && (
-          <Btn full onClick={onGenerateRival}>GENERATE MY RIVAL</Btn>
-        )}
-        {game.rivalEnabled && game.rival && (
-          <button onClick={()=>{ if(window.confirm("Replace your current rival?")) onGenerateRival(); }} style={{ fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:2,padding:"6px 12px",background:"transparent",border:`1px solid var(--bg3)`,borderRadius:4,color:T.dim,cursor:"pointer" }}>
-            REGENERATE RIVAL
-          </button>
-        )}
       </Card>
 
       {/* Guide */}
       <Card style={{ marginBottom:14 }}>
         <SecTitle col={th.accent}>Help & Guide</SecTitle>
         <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.dim,lineHeight:1.7,marginBottom:12 }}>
-          New to HabitQuest? The guide covers everything — habits, stats, quests, the skill tree, and the AI coach.
+          New to HabitQuest? The guide covers everything — habits, stats, quests, the skill tree, and the Architect weekly review.
         </div>
         <Btn full onClick={()=>setShowGuide(true)}>OPEN GUIDE</Btn>
       </Card>
@@ -192,27 +154,24 @@ export default function OptionsScreen({ game, update, th, showToast, onSignOut, 
         </div>
         <Btn onClick={()=>{
           if(window.confirm("Are you sure? This cannot be undone."))
-            update(()=>({ char:game.char,setup:true,onboardingDone:true,xp:0,gems:0,stats:{Physical:1,Mental:1,Spiritual:1,Social:1,Emotional:1},skillPoints:0,unlockedNodes:[],daily:[],quests:[],done:{},perms:[],actives:[],cosmetics:[],titles:[],title:null,theme:"default",aesthetic:"default",aura:false,bonusMission:null,bonusProgress:0,boss:null,bossHPLeft:0,abyssDepth:0,abyssActive:false,mood:null,lastMoodDate:null,lastDay:new Date().toISOString().split("T")[0],briefing:null,briefingDate:null,penaltyMessage:null,rivalEnabled:false,rival:null,weeklyReview:null,lastReviewDate:null,memory:{recentActivity:[],totalDays:0,avgCompletions:0,mostSkipped:null,longestStreak:0} }));
+            update(()=>({ char:game.char,setup:true,onboardingDone:true,xp:0,gems:0,stats:{Physical:1,Mental:1,Spiritual:1,Social:1,Emotional:1},skillPoints:0,unlockedNodes:[],daily:[],quests:[],done:{},perms:[],actives:[],cosmetics:[],titles:[],title:null,theme:"default",aesthetic:"default",aura:true,bonusMission:null,bonusProgress:0,boss:null,bossHPLeft:0,abyssDepth:0,abyssActive:false,mood:null,lastMoodDate:null,lastDay:new Date().toISOString().split("T")[0],briefing:null,briefingDate:null,penaltyMessage:null,weeklyReview:null,lastReviewDate:null,memory:{recentActivity:[],totalDays:0,avgCompletions:0,mostSkipped:null,longestStreak:0} }));
         }} danger>RESET ALL PROGRESS</Btn>
       </Card>
 
       <div style={{ textAlign:"center",marginTop:20,fontFamily:"var(--font-ui)",fontSize:8,letterSpacing:2,color:T.dim }}>
         HABITQUEST V2 · BUILD BETTER HABITS
       </div>
-      <div style={{ textAlign:"center",marginTop:8 }}>
+      {import.meta.env.DEV&&<div style={{ textAlign:"center",marginTop:8 }}>
         <button onClick={()=>setShowDev(v=>!v)}
           style={{ fontFamily:"var(--font-ui)",fontSize:7,letterSpacing:2,color:T.dim,background:"none",border:`1px solid var(--bg3)`,borderRadius:4,padding:"3px 10px",cursor:"pointer",opacity:0.4 }}>
           {showDev?"HIDE DEV":"DEV"}
         </button>
-      </div>
+      </div>}
 
       {showDev&&(()=>{
         const myLevel   = getLevel(game.xp);
-        const rivalLevel = game.rival ? getLevel(game.rival.xp||0) : null;
         const today     = TODAY();
         const decayDepth = game.decayDepth||0;
-        const gap       = rivalLevel ? myLevel - rivalLevel : null;
-        const catchUpMult = gap !== null ? (gap > 0 ? 1+Math.min(gap*0.15,1.5) : Math.max(1-Math.abs(gap)*0.05,0.7)) : null;
         const avgComp   = game.memory?.recentActivity?.length
           ? (game.memory.recentActivity.reduce((a,r)=>a+r.count,0)/game.memory.recentActivity.length).toFixed(2)
           : "N/A";
@@ -223,11 +182,6 @@ export default function OptionsScreen({ game, update, th, showToast, onSignOut, 
         const habitCount = game.daily?.length || 1;
         const rate7  = last7.length  ? ((last7.reduce((a,r)=>a+r.count,0)  / (last7.length  * habitCount)) * 100).toFixed(1) + "%" : "N/A";
         const rate30 = last30.length ? ((last30.reduce((a,r)=>a+r.count,0) / (last30.length * habitCount)) * 100).toFixed(1) + "%" : "N/A";
-
-        // Projected rival XP tonight
-        const projectedRivalXP = catchUpMult !== null
-          ? Math.round(parseFloat(avgComp) * 60 * 0.85 * catchUpMult)
-          : null;
 
         // Storage size
         const saveStr = JSON.stringify(game);
@@ -259,15 +213,6 @@ export default function OptionsScreen({ game, update, th, showToast, onSignOut, 
           ["completion rate 7d", rate7],
           ["completion rate 30d", rate30],
           ["avg completions/day", avgComp],
-          ["── RIVAL ──", ""],
-          ["enabled", game.rivalEnabled ? "yes" : "no"],
-          ["name", game.rival?.name || "none"],
-          ["xp", game.rival?.xp ?? "—"],
-          ["level", rivalLevel ?? "—"],
-          ["level gap", gap !== null ? (gap > 0 ? `player +${gap}` : gap < 0 ? `rival +${Math.abs(gap)}` : "tied") : "—"],
-          ["catchup mult", catchUpMult !== null ? catchUpMult.toFixed(2)+"x" : "—"],
-          ["proj. XP tonight", projectedRivalXP !== null ? projectedRivalXP : "—"],
-          ...(game.rival?.stats ? Object.entries(game.rival.stats).map(([k,v])=>[`rival ${k}`, Math.round(v)]) : []),
           ["── MEMORY ──", ""],
           ["total days tracked", game.memory?.totalDays ?? 0],
           ["longest streak", game.memory?.longestStreak ?? 0],

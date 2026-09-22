@@ -69,26 +69,12 @@ You'll receive a penalty report each morning after a missed day. Acknowledge it 
 
 It also generates a Bonus Mission: a new personalised task targeted at your weakest stat — something concrete you wouldn't normally do. It appears as a highlighted card at the top of your Daily screen. Tap it to complete it and earn +180 XP, +18 gems, and −2 Habit Decay.
 
-The AI tab lets you chat directly with your coach. Ask it to suggest quests, analyse your stats, or tell you what to focus on next. The more data you build up, the sharper its advice becomes.`,
-  },
-  {
-    title: "The Rival System",
-    icon: "⚔",
-    body: `Enable the Rival System in Options. The AI generates a rival character built around your weaknesses — stronger where you are weak.
-
-Your rival gains XP every day at midnight, calculated from your own average daily completions over the last 30 days. Average 3 habits a day and they gain roughly 180 XP per day. They start behind you, but that head start won't last if you slack off.
-
-When your rival overtakes you, they begin siphoning your XP — every habit earns less until you pull back ahead:
-· 1 level behind = -10% XP
-· 3 levels behind = -25% XP
-· 5+ levels behind = -40% XP
-
-Disable the rival in Options at any time to remove the siphon. Check the Rival card on Status to track the gap.`,
+The Architect weekly review is available in Settings when you want a structured look at your progress.`,
   },
   {
     title: "Shop, Settings & You're Ready",
     icon: "★",
-    body: `The Shop lets you spend gems on temporary boosts (XP Boost, Gem Boost, Streak Shield), permanent upgrades, and cosmetics like titles and the avatar glow effect. Active boosts are shown under the BOOSTS button in the header.
+  body: `The Shop lets you spend gems on temporary boosts (XP Boost, Gem Boost, Streak Shield) and aesthetics. Active boosts are shown under the BOOSTS button in the header.
 
 Your character profile — name, bio, occupation — can be edited any time in Options. Themes are there too.
 

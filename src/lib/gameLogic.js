@@ -48,16 +48,6 @@ export function getMultipliers(game, statType = null) {
   if (game.mood === "high") xm += moodBonus;
   if (game.mood === "low")  xm -= moodPenalty;
 
-  // Rival XP siphon — scales with level gap
-  if (game.rivalEnabled && game.rival) {
-    const myLevel    = getLevel(game.xp);
-    const rivalLevel = getLevel(game.rival.xp || 0);
-    const gap        = rivalLevel - myLevel;
-    if (gap >= 5)      xm -= 0.40;
-    else if (gap >= 3) xm -= 0.25;
-    else if (gap >= 1) xm -= 0.10;
-  }
-
   // Stat-specific XP bonus from skill tree
   if (statType) {
     nodes.forEach(n => {
@@ -124,50 +114,6 @@ export function rolloverDay(game, today) {
     };
   }
 
-  // Rival progression
-  let rival = game.rival;
-  const rivalUpdate = game.rivalEnabled && game.rival ? { levelBefore: getLevel(game.rival.xp||0), statsBefore: {...(game.rival.stats||{})} } : null;
-  if (game.rivalEnabled && rival) {
-    const myLevel    = getLevel(game.xp || 0);
-    const rivalLevel = getLevel(rival.xp || 0);
-    const gap        = myLevel - rivalLevel; // positive = player ahead, negative = rival ahead
-    // If player is ahead, rival catches up faster. If rival is ahead, it slows down slightly.
-    const catchUpMult = gap > 0
-      ? 1 + Math.min(gap * 0.15, 1.5)  // up to 2.5x faster when player is far ahead
-      : Math.max(1 - Math.abs(gap) * 0.05, 0.7); // slows slightly when rival is ahead
-    const rivalDailyXP = Math.round(avgCompletions * 60 * (0.85 + Math.random() * 0.3) * catchUpMult);
-    const newRivalXP   = (rival.xp || 0) + rivalDailyXP;
-    // Grow rival stats proportional to their existing stat weights
-    let newRivalStats = { ...(rival.stats || { Physical:5,Mental:5,Spiritual:5,Social:5,Emotional:5 }) };
-    if (rivalDailyXP > 0) {
-      const statKeys = Object.keys(newRivalStats);
-      const total = statKeys.reduce((s,k) => s + newRivalStats[k], 0);
-      statKeys.forEach(k => {
-        // Higher stats grow faster (rival doubles down on strengths)
-        const weight = newRivalStats[k] / total;
-        const gain = weight * (rivalDailyXP / 60) * 0.5;
-        newRivalStats[k] = Math.min(100, newRivalStats[k] + gain);
-      });
-    }
-    rival = { ...rival, xp: newRivalXP, stats: newRivalStats };
-
-    if (rivalUpdate) {
-      const levelAfter = getLevel(newRivalXP);
-      const levelledUp = levelAfter > rivalUpdate.levelBefore;
-      const statLevelsBefore = Object.fromEntries(Object.entries(rivalUpdate.statsBefore).map(([k,v])=>[k,Math.floor(v)]));
-      const statLevelsAfter  = Object.fromEntries(Object.entries(newRivalStats).map(([k,v])=>[k,Math.floor(v)]));
-      const statChanges = Object.keys(newRivalStats).filter(k => statLevelsAfter[k] > (statLevelsBefore[k]||0));
-      if (levelledUp || statChanges.length > 0) {
-        penaltyMessage = {
-          ...(penaltyMessage || { missed:[], broken:0, decayChange:0, date:game.lastDay }),
-          rivalLevelUp: levelledUp ? levelAfter : null,
-          rivalStatUps: statChanges,
-          rivalName: rival.name,
-        };
-      }
-    }
-  }
-
   return {
     ...game,
     daily,
@@ -183,7 +129,6 @@ export function rolloverDay(game, today) {
     questCompletedToday: 0,
     questExtraSlots: 0,
     penaltyMessage,
-    rival,
     memory: { recentActivity, totalDays, avgCompletions, mostSkipped:leastActive, longestStreak },
   };
 }
@@ -283,13 +228,6 @@ export function applyBuyItem(game, item) {
   if (item.type === "aesthetic") {
     if (game.cosmetics?.includes(item.id)) return { game, error:"Already owned." };
     return { game:{ ...game, gems:game.gems-item.cost, cosmetics:[...(game.cosmetics||[]),item.id], aesthetic:item.aesthetic } };
-  }
-  if (item.type === "cosm") {
-    if (game.cosmetics?.includes(item.id)) return { game, error:"Already owned." };
-    let extra = {};
-    if (item.id==="aura") extra.aura=true;
-    if (item.titleVal) extra.titles=[...(game.titles||[]),item.id];
-    return { game:{ ...game, gems:game.gems-item.cost, cosmetics:[...(game.cosmetics||[]),item.id],...extra } };
   }
   if (item.type === "perm") {
     if (game.perms?.find(p => p.id===item.id)) return { game, error:"Already unlocked." };

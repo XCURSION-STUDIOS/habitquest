@@ -9,13 +9,8 @@ export default function Header({ game, screen, setScreen, aiStatus, saving, V })
   const level = getLevel(game.xp);
   const cls   = getClass(level);
   const hasBoosts = game.actives?.length > 0;
-  const frame = game.activeFrame === "frm_hex" ? "hexagon"
-              : game.activeFrame === "frm_dbl" ? "double"
-              : game.activeFrame === "frm_crn" ? "crown"
-              : "circle";
-  const xpBarStyle = game.activeXpBar === "xpb_spk" ? "spark"
-                   : game.activeXpBar === "xpb_pls" ? "pulse"
-                   : "default";
+  const frame = "circle";
+  const xpBarStyle = "default";
   const frameStyle = frame === "hexagon"
     ? { borderRadius:"18% 18% 18% 18% / 18% 18% 18% 18%", border:`2px solid ${th.accent}`, clipPath:"polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" }
     : frame === "double"
@@ -29,15 +24,12 @@ export default function Header({ game, screen, setScreen, aiStatus, saving, V })
       <div style={{ display:"flex",alignItems:"center",gap:12,marginBottom:8 }}>
         {/* Avatar */}
         <div style={{ position:"relative",flexShrink:0 }}>
-          {frame==="crown"&&<div style={{ position:"absolute",top:-10,left:"50%",transform:"translateX(-50%)",fontSize:10,lineHeight:1,zIndex:1 }}>♛</div>}
           <div
             onClick={()=>setScreen("status")}
             className="header-avatar"
-            style={{ width:36,height:36,background:V?.bg1||T.bg1,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,cursor:"pointer",animation:game.aura?"auraAnim 2.5s linear infinite":"none",...frameStyle }}
+            style={{ width:36,height:36,background:V?.bg1||T.bg1,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,cursor:"pointer",animation:"auraAnim 2.5s linear infinite",...frameStyle }}
           >
-            {game.avatarImage
-              ? <img src={game.avatarImage} style={{ width:"100%",height:"100%",objectFit:"cover",borderRadius:"inherit" }}/>
-              : <span style={{ fontSize:30, lineHeight:1, display:"block", marginTop:"-2px", marginLeft:"1px" }}>{getClass(game).icon}</span>}
+            <span style={{ fontSize:30, lineHeight:1, display:"block", marginTop:"-2px", marginLeft:"1px" }}>{getClass(game).icon}</span>
           </div>
         </div>
 
@@ -45,7 +37,6 @@ export default function Header({ game, screen, setScreen, aiStatus, saving, V })
         <div style={{ flex:1,minWidth:0 }}>
           <div style={{ display:"flex",alignItems:"center",gap:6,marginBottom:1,flexWrap:"nowrap",overflow:"hidden" }}>
             <span style={{ fontFamily:"var(--font-display)",fontSize:16,color:T.textBright,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis" }}>{game.char.name}</span>
-            {game.title&&<span style={{ fontFamily:"var(--font-ui)",fontSize:7,letterSpacing:2,color:th.accent,border:`1px solid ${th.accent}30`,padding:"1px 6px",borderRadius:3,flexShrink:0 }}>{game.title}</span>}
             {saving&&<span style={{ fontFamily:"var(--font-ui)",fontSize:7,color:T.dim,flexShrink:0 }}>saving…</span>}
           </div>
           <div style={{ display:"flex",alignItems:"center",gap:8 }}>
@@ -110,13 +101,12 @@ export default function Header({ game, screen, setScreen, aiStatus, saving, V })
 
       {/* Nav tabs */}
       <nav style={{ display:"flex",borderBottom:`1px solid ${V?.bg3||T.bg3}` }}>
-        {[
+        {[ 
           {id:"status",l:"STATUS"},
           {id:"daily",l:"DAILY"},
           {id:"quests",l:"QUESTS"},
           {id:"skills",l:"SKILLS"},
           {id:"shop",l:"SHOP"},
-          {id:"system",l:"AI"},
           {id:"options",l:"⚙"},
         ].map(t=>(
           <button
