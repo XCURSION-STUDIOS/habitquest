@@ -18,18 +18,19 @@ alter table public.profiles enable row level security;
 
 -- Policy: users can read their own profile only
 create policy "Users can read own profile"
-  on public.profiles for select
+  on public.profiles for select to authenticated
   using (auth.uid() = id);
 
 -- Policy: users can insert their own profile
 create policy "Users can insert own profile"
-  on public.profiles for insert
+  on public.profiles for insert to authenticated
   with check (auth.uid() = id);
 
 -- Policy: users can update their own profile only
 create policy "Users can update own profile"
-  on public.profiles for update
-  using (auth.uid() = id);
+  on public.profiles for update to authenticated
+  using (auth.uid() = id)
+  with check (auth.uid() = id);
 
 -- Auto-update updated_at on every save
 create or replace function public.handle_updated_at()

@@ -22,13 +22,6 @@ import OptionsScreen    from "./screens/OptionsScreen.jsx";
 // Nav order for direction detection
 const NAV_ORDER = ["status","daily","quests","skills","shop","options"];
 
-window.addEventListener('error', (e) => {
-  document.body.innerHTML = `<div style="background:#06060f;color:#ff6060;padding:20px;font-family:monospace;font-size:11px;white-space:pre-wrap;word-break:break-all">${e.message}\n\n${e.filename}:${e.lineno}</div>`
-})
-window.addEventListener('unhandledrejection', (e) => {
-  document.body.innerHTML = `<div style="background:#06060f;color:#ff6060;padding:20px;font-family:monospace;font-size:11px;white-space:pre-wrap;word-break:break-all">PROMISE: ${e.reason}</div>`
-})
-
 export default function App() {
   const [user,setUser]               = useState(null);
   const [authLoading,setAuthLoading] = useState(true);
