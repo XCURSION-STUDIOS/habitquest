@@ -137,7 +137,15 @@ create policy "Users can upsert own profile"
 
 create policy "Users can update own profile"
   on profiles for update using (auth.uid() = id);
-```
+  ```
+
+In the Supabase dashboard, open Authentication → Password Security and enable:
+
+- Minimum password length: 12
+- Required characters: lowercase, uppercase, digits, and symbols
+- Leaked password protection (available on Pro and above)
+
+Under Authentication → Sign In / Providers → Email, enable email confirmations and configure a production SMTP provider. Under Authentication → Multi-Factor Authentication, enable TOTP enrollment and verification. Add both your local URL and production URL to Authentication → URL Configuration so password-reset links can redirect back to the app.
 
 ### 4. Deploy the AI proxy Edge Function
 

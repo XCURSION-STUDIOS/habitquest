@@ -44,6 +44,7 @@ export default function App() {
   const [briefingLoading,setBriefingLoading] = useState(false);
   const [previewOverride,setPreviewOverride] = useState(null);
   const [showOnboarding,setShowOnboarding]   = useState(false);
+  const [passwordRecovery,setPasswordRecovery] = useState(() => window.location.hash.includes("type=recovery"));
   const transTimerRef = useRef(null);
 
   const showToast = useCallback((msg,type="gold",dur=3000)=>{
@@ -71,7 +72,10 @@ export default function App() {
       if(session?.user) setUser(session.user);
       setAuthLoading(false);
     });
-    const {data:{subscription}} = supabase.auth.onAuthStateChange((_,session)=>setUser(session?.user||null));
+    const {data:{subscription}} = supabase.auth.onAuthStateChange((event,session)=>{
+      if (event === "PASSWORD_RECOVERY") setPasswordRecovery(true);
+      setUser(session?.user||null);
+    });
     return ()=>subscription.unsubscribe();
   },[]);
 
@@ -210,6 +214,10 @@ Label it exactly: BONUS MISSION: [mission name] | [short description of what to 
     </div>
   );
 
+  if(passwordRecovery) return <AuthScreen initialMode="update" onAuth={u=>setUser(u)} onPasswordUpdated={()=>{
+    setPasswordRecovery(false);
+    window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+  }}/>;
   if(!user)       return <AuthScreen onAuth={u=>setUser(u)}/>;
   if(!game.setup) return <SetupScreen th={th} onComplete={char=>update(s=>({...s,char,setup:true}))}/>;
 
