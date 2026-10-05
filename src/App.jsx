@@ -22,13 +22,6 @@ import OptionsScreen    from "./screens/OptionsScreen.jsx";
 // Nav order for direction detection
 const NAV_ORDER = ["status","daily","quests","skills","shop","options"];
 
-window.addEventListener('error', (e) => {
-  document.body.innerHTML = `<div style="background:#06060f;color:#ff6060;padding:20px;font-family:monospace;font-size:11px;white-space:pre-wrap;word-break:break-all">${e.message}\n\n${e.filename}:${e.lineno}</div>`
-})
-window.addEventListener('unhandledrejection', (e) => {
-  document.body.innerHTML = `<div style="background:#06060f;color:#ff6060;padding:20px;font-family:monospace;font-size:11px;white-space:pre-wrap;word-break:break-all">PROMISE: ${e.reason}</div>`
-})
-
 export default function App() {
   const [user,setUser]               = useState(null);
   const [authLoading,setAuthLoading] = useState(true);
@@ -44,6 +37,7 @@ export default function App() {
   const [briefingLoading,setBriefingLoading] = useState(false);
   const [previewOverride,setPreviewOverride] = useState(null);
   const [showOnboarding,setShowOnboarding]   = useState(false);
+  const [passwordRecovery,setPasswordRecovery] = useState(() => window.location.hash.includes("type=recovery"));
   const transTimerRef = useRef(null);
 
   const showToast = useCallback((msg,type="gold",dur=3000)=>{
@@ -71,7 +65,10 @@ export default function App() {
       if(session?.user) setUser(session.user);
       setAuthLoading(false);
     });
-    const {data:{subscription}} = supabase.auth.onAuthStateChange((_,session)=>setUser(session?.user||null));
+    const {data:{subscription}} = supabase.auth.onAuthStateChange((event,session)=>{
+      if (event === "PASSWORD_RECOVERY") setPasswordRecovery(true);
+      setUser(session?.user||null);
+    });
     return ()=>subscription.unsubscribe();
   },[]);
 
@@ -210,6 +207,10 @@ Label it exactly: BONUS MISSION: [mission name] | [short description of what to 
     </div>
   );
 
+  if(passwordRecovery) return <AuthScreen initialMode="update" onAuth={u=>setUser(u)} onPasswordUpdated={()=>{
+    setPasswordRecovery(false);
+    window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+  }}/>;
   if(!user)       return <AuthScreen onAuth={u=>setUser(u)}/>;
   if(!game.setup) return <SetupScreen th={th} onComplete={char=>update(s=>({...s,char,setup:true}))}/>;
 

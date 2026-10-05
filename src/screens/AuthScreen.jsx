@@ -103,12 +103,25 @@ function HalftoneGrid({ phase, accent }) {
   );
 }
 
-export default function AuthScreen({ onAuth }) {
+const PASSWORD_MIN_LENGTH = 12;
+
+function validatePassword(password) {
+  if (password.length < PASSWORD_MIN_LENGTH) return `Password must be at least ${PASSWORD_MIN_LENGTH} characters.`;
+  if (!/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/\d/.test(password) || !/[^A-Za-z\d]/.test(password)) {
+    return "Password must include uppercase, lowercase, a number, and a symbol.";
+  }
+  return "";
+}
+
+export default function AuthScreen({ onAuth, initialMode = "login", onPasswordUpdated }) {
   const [phase,setPhase]               = useState(0);
   const [logoProgress,setLogoProgress] = useState(0);
-  const [mode,setMode]                 = useState("login");
+  const [mode,setMode]                 = useState(initialMode);
   const [email,setEmail]               = useState("");
   const [password,setPassword]         = useState("");
+  const [confirmPassword,setConfirmPassword] = useState("");
+  const [mfaCode,setMfaCode]           = useState("");
+  const [mfaFactorId,setMfaFactorId]   = useState(null);
   const [loading,setLoading]           = useState(false);
   const [error,setError]               = useState("");
   const accent = "#c9a84c";
@@ -126,18 +139,78 @@ export default function AuthScreen({ onAuth }) {
   },[]);
 
   async function submit(){
+    if (mode === "recover") {
+      if (!email.trim()) { setError("Email is required."); return; }
+      setLoading(true); setError("");
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+          redirectTo: window.location.origin,
+        });
+        if (error) throw error;
+        setError("If an account exists for that email, a password reset link is on its way.");
+      } catch (e) { setError(e.message || "Unable to send reset email."); }
+      setLoading(false);
+      return;
+    }
+
+    if (mode === "update") {
+      const passwordError = validatePassword(password);
+      if (passwordError) { setError(passwordError); return; }
+      if (password !== confirmPassword) { setError("Passwords do not match."); return; }
+      setLoading(true); setError("");
+      try {
+        const { error } = await supabase.auth.updateUser({ password });
+        if (error) throw error;
+        setPassword(""); setConfirmPassword("");
+        onPasswordUpdated?.();
+      } catch (e) { setError(e.message || "Unable to update password."); }
+      setLoading(false);
+      return;
+    }
+
+    if (mode === "mfa") {
+      if (!/^\d{6}$/.test(mfaCode)) { setError("Enter the 6-digit code from your authenticator app."); return; }
+      setLoading(true); setError("");
+      try {
+        const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId: mfaFactorId, code: mfaCode });
+        if (error) throw error;
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) throw new Error("MFA verification did not create a session.");
+        onAuth(session.user);
+      } catch (e) { setError(e.message || "MFA verification failed."); }
+      setLoading(false);
+      return;
+    }
+
     if(!email.trim()||!password.trim()){setError("Email and password required.");return;}
+    if (mode === "register") {
+      const passwordError = validatePassword(password);
+      if (passwordError) { setError(passwordError); return; }
+      if (password !== confirmPassword) { setError("Passwords do not match."); return; }
+    }
     setLoading(true);setError("");
     try{
       if(mode==="register"){
-        const{data,error}=await supabase.auth.signUp({email:email.trim(),password});
+        const{data,error}=await supabase.auth.signUp({
+          email: email.trim(),
+          password,
+          options: { emailRedirectTo: window.location.origin },
+        });
         if(error)throw error;
-        if(data.session)onAuth(data.session.user);
-        else setError("Check your email to confirm your account, then sign in.");
+        if(data.session) onAuth(data.session.user);
+        else setError("Account created. Check your email to confirm your account, then sign in.");
       }else{
         const{data,error}=await supabase.auth.signInWithPassword({email:email.trim(),password});
         if(error)throw error;
-        onAuth(data.user);
+        const { data: aal, error: aalError } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+        if (aalError) throw aalError;
+        if (aal.currentLevel !== "aal2" && aal.nextLevel === "aal2") {
+          const { data: factors, error: factorsError } = await supabase.auth.mfa.listFactors();
+          if (factorsError) throw factorsError;
+          const factor = factors.totp?.find(item => item.status === "verified");
+          if (!factor) throw new Error("Your MFA factor needs to be re-enrolled.");
+          setMfaFactorId(factor.id); setMfaCode(""); setMode("mfa");
+        } else onAuth(data.user);
       }
     }catch(e){setError(e.message||"Authentication failed.");}
     setLoading(false);
@@ -191,31 +264,44 @@ export default function AuthScreen({ onAuth }) {
               BUILD BETTER HABITS
             </div>
             <div style={{ background:"rgba(6,6,15,0.75)",border:`1px solid ${accent}20`,borderRadius:12,padding:"28px 24px",backdropFilter:"blur(20px)",boxShadow:`0 32px 64px rgba(0,0,0,0.6),0 0 0 1px ${accent}10,inset 0 1px 0 ${accent}15`,animation:"loginSlideUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s both" }}>
-              <div style={{ display:"flex",marginBottom:24,border:`1px solid ${accent}20`,borderRadius:7,overflow:"hidden",background:"rgba(0,0,0,0.3)" }}>
+              {mode !== "recover" && mode !== "update" && mode !== "mfa" && <div style={{ display:"flex",marginBottom:24,border:`1px solid ${accent}20`,borderRadius:7,overflow:"hidden",background:"rgba(0,0,0,0.3)" }}>
                 {["login","register"].map(m=>(
                   <button key={m} onClick={()=>{setMode(m);setError("");}} style={{ flex:1,padding:"10px",background:mode===m?`${accent}15`:"transparent",border:"none",color:mode===m?accent:T.dim,fontFamily:"var(--font-ui)",fontSize:9,letterSpacing:3,cursor:"pointer",transition:"all 0.2s",textTransform:"uppercase",borderBottom:mode===m?`1px solid ${accent}`:"1px solid transparent" }}>
                     {m==="login"?"Sign In":"Register"}
                   </button>
                 ))}
+              </div>}
+              <div style={{ fontFamily:"var(--font-ui)",fontSize:mode === "mfa" ? 12 : 9,letterSpacing:mode === "mfa" ? 1 : 3,color:accent,marginBottom:16 }}>
+                {mode === "recover" ? "RESET PASSWORD" : mode === "update" ? "SET A NEW PASSWORD" : mode === "mfa" ? "TWO-FACTOR VERIFICATION" : ""}
               </div>
-              <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" type="email" style={inp}
+              {mode !== "update" && mode !== "mfa" && <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" type="email" autoComplete="email" style={inp}
                 onFocus={e=>e.target.style.borderColor=accent} onBlur={e=>e.target.style.borderColor=`${accent}30`}
-                onKeyDown={e=>e.key==="Enter"&&submit()}/>
-              <input value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password" type="password" style={inp}
+                onKeyDown={e=>e.key==="Enter"&&submit()}/>} 
+              {mode === "mfa" && <>
+                <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.dim,lineHeight:1.6,textAlign:"left",marginBottom:12 }}>Enter the 6-digit code from your authenticator app.</div>
+                <input value={mfaCode} onChange={e=>setMfaCode(e.target.value.replace(/\D/g,"").slice(0,6))} placeholder="000000" type="text" inputMode="numeric" autoComplete="one-time-code" maxLength={6} style={inp}
+                  onKeyDown={e=>e.key==="Enter"&&submit()}/>
+              </>}
+              {mode !== "recover" && mode !== "mfa" && <input value={password} onChange={e=>setPassword(e.target.value)} placeholder={mode === "update" ? "New password" : "Password"} type="password" autoComplete={mode === "register" ? "new-password" : "current-password"} style={inp}
                 onFocus={e=>e.target.style.borderColor=accent} onBlur={e=>e.target.style.borderColor=`${accent}30`}
-                onKeyDown={e=>e.key==="Enter"&&submit()}/>
+                onKeyDown={e=>e.key==="Enter"&&submit()}/>} 
+              {(mode === "register" || mode === "update") && <input value={confirmPassword} onChange={e=>setConfirmPassword(e.target.value)} placeholder="Confirm password" type="password" autoComplete="new-password" style={inp}
+                onFocus={e=>e.target.style.borderColor=accent} onBlur={e=>e.target.style.borderColor=`${accent}30`}
+                onKeyDown={e=>e.key==="Enter"&&submit()}/>} 
               {error&&<div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.danger,marginBottom:12,textAlign:"left",lineHeight:1.5 }}>{error}</div>}
               <button onClick={submit} disabled={loading} style={{ width:"100%",padding:"14px",background:`linear-gradient(135deg,${accent}18,${accent}08)`,border:`1px solid ${accent}50`,borderRadius:7,color:accent,fontFamily:"var(--font-ui)",fontSize:10,letterSpacing:4,cursor:loading?"not-allowed":"pointer",transition:"all 0.3s",boxShadow:`0 0 30px ${accent}15`,opacity:loading?0.6:1 }}
                 onMouseEnter={e=>{if(!loading)e.currentTarget.style.background=`linear-gradient(135deg,${accent}28,${accent}18)`;}}
                 onMouseLeave={e=>{e.currentTarget.style.background=`linear-gradient(135deg,${accent}18,${accent}08)`;}}>
-                {loading?"...":(mode==="login"?"SIGN IN":"CREATE ACCOUNT")}
+                {loading?"...":(mode==="login"?"SIGN IN":mode==="register"?"CREATE ACCOUNT":mode==="recover"?"SEND RESET LINK":mode==="update"?"UPDATE PASSWORD":"VERIFY CODE")}
               </button>
+              {mode === "register" && <div style={{fontFamily:"var(--font-ui)",fontSize:8,color:T.dim,textAlign:"left",marginTop:10,lineHeight:1.6}}>Use at least 12 characters with uppercase, lowercase, a number, and a symbol.</div>}
               <div style={{ fontFamily:"var(--font-ui)",fontSize:9,color:T.dim,marginTop:16,lineHeight:1.7 }}>
-                {mode==="login"?"No account? ":"Already registered? "}
+                {mode==="login"?"No account? ":mode==="register"?"Already registered? ":""}
                 <button onClick={()=>{setMode(mode==="login"?"register":"login");setError("");}} style={{ background:"none",border:"none",color:accent,fontFamily:"var(--font-ui)",fontSize:9,cursor:"pointer",textDecoration:"underline" }}>
-                  {mode==="login"?"Register here":"Sign in"}
+                  {mode==="login"?"Register here":mode==="register"?"Sign in":"Back to sign in"}
                 </button>
               </div>
+              {mode === "login" && <button onClick={()=>{setMode("recover");setError("");}} style={{marginTop:8,background:"none",border:"none",color:T.dim,fontFamily:"var(--font-ui)",fontSize:8,cursor:"pointer",textDecoration:"underline"}}>Forgot password?</button>}
             </div>
             <div style={{ marginTop:24,fontFamily:"var(--font-ui)",fontSize:7,letterSpacing:3,color:T.dim,opacity:0.5,animation:"fadeIn 1.2s ease 1s both" }}>
               © XCURSION STUDIOS

@@ -1,4 +1,4 @@
-import { AI_PROXY_URL, ANON_KEY } from "./supabase.js";
+import { AI_PROXY_URL, ANON_KEY, supabase } from "./supabase.js";
 import { getLevel, getClass, TODAY } from "./gameLogic.js";
 import { STATS } from "../constants/gameData.js";
 
@@ -43,11 +43,15 @@ Rules:
 }
 
 export async function callAIProxy(systemPrompt, userMessage, history = []) {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.access_token) throw new Error("You must be signed in to use the AI coach.");
+
   const res = await fetch(AI_PROXY_URL, {
     method: "POST",
     headers: {
       "Content-Type":  "application/json",
-      "Authorization": `Bearer ${ANON_KEY}`,
+      "Authorization": `Bearer ${session.access_token}`,
+      "apikey": ANON_KEY,
     },
     body: JSON.stringify({ systemPrompt, userMessage, history }),
   });

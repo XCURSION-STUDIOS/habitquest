@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { getLevel, getXPInLevel, getXPForLevel, rolloverDay, TODAY, getMultipliers, getClass } from "../lib/gameLogic.js";
+import { supabase } from "../lib/supabase.js";
 import { T, FONTS, THEMES } from "../constants/theme.js";
 import { Card, SecTitle, Btn } from "../components/ui/index.jsx";
 import OnboardingModal from "./OnboardingModal.jsx";
@@ -15,12 +16,57 @@ export default function OptionsScreen({ game, update, th, showToast, onSignOut }
   const [dragStart,  setDragStart]  = useState(null);
   const fileInputRef  = useRef(null);
   const [showReview, setShowReview] = useState(false);
+  const [mfaFactors, setMfaFactors] = useState([]);
+  const [mfaSetup, setMfaSetup] = useState(null);
+  const [mfaCode, setMfaCode] = useState("");
+  const [mfaMessage, setMfaMessage] = useState("");
+  const [mfaLoading, setMfaLoading] = useState(false);
   const [charForm,   setCharForm]   = useState(game.char);
   const inp = { width:"100%",background:"var(--bg2)",border:"1px solid var(--bg3)",borderRadius:6,color:"var(--text)",padding:"9px 12px",fontFamily:"var(--font-ui)",fontSize:12,outline:"none",marginBottom:8,boxSizing:"border-box" };
 
   const lastReview = game.lastReviewDate
     ? new Date(game.lastReviewDate).toLocaleDateString()
     : "Never";
+
+  useEffect(() => {
+    let active = true;
+    supabase.auth.mfa.listFactors().then(({ data, error }) => {
+      if (active && !error) setMfaFactors(data?.totp?.filter(factor => factor.status === "verified") || []);
+    });
+    return () => { active = false; };
+  }, []);
+
+  async function enrollMfa() {
+    setMfaLoading(true); setMfaMessage("");
+    const { data, error } = await supabase.auth.mfa.enroll({ factorType: "totp", friendlyName: "HabitQuest authenticator" });
+    if (error) setMfaMessage(error.message);
+    else setMfaSetup(data);
+    setMfaLoading(false);
+  }
+
+  async function verifyMfa() {
+    if (!/^\d{6}$/.test(mfaCode)) { setMfaMessage("Enter the 6-digit code from your authenticator app."); return; }
+    setMfaLoading(true); setMfaMessage("");
+    const { data: challenge, error: challengeError } = await supabase.auth.mfa.challenge({ factorId: mfaSetup.id });
+    if (challengeError) { setMfaMessage(challengeError.message); setMfaLoading(false); return; }
+    const { error } = await supabase.auth.mfa.verify({ factorId: mfaSetup.id, challengeId: challenge.id, code: mfaCode });
+    if (error) setMfaMessage(error.message);
+    else {
+      setMfaFactors([mfaSetup]); setMfaSetup(null); setMfaCode("");
+      setMfaMessage("Authenticator enabled. You will use a code when signing in.");
+    }
+    setMfaLoading(false);
+  }
+
+  async function removeMfa(factorId) {
+    if (!window.confirm("Remove MFA from this account?")) return;
+    setMfaLoading(true); setMfaMessage("");
+    const { error } = await supabase.auth.mfa.unenroll({ factorId });
+    if (error) setMfaMessage(error.message);
+    else { setMfaFactors(factors => factors.filter(factor => factor.id !== factorId)); setMfaMessage("Authenticator removed."); }
+    setMfaLoading(false);
+  }
+
   return (
     <div>
       {showGuide  && <OnboardingModal onClose={()=>setShowGuide(false)} th={th}/>}
@@ -135,6 +181,24 @@ export default function OptionsScreen({ game, update, th, showToast, onSignOut }
       })()}
 
       {/* Account */}
+      <Card style={{ marginBottom:14 }}>
+        <SecTitle col={th.accent}>Two-Factor Authentication</SecTitle>
+        <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.dim,marginBottom:12,lineHeight:1.6 }}>
+          Add an authenticator app as a second sign-in step. This is optional, but strongly recommended.
+        </div>
+        {mfaFactors.length > 0 && !mfaSetup && <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.sg,marginBottom:10 }}>Authenticator enabled</div>}
+        {mfaSetup && <div style={{ marginBottom:12 }}>
+          <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.dim,lineHeight:1.6,marginBottom:8 }}>Scan this QR code with an authenticator app, then enter the 6-digit code.</div>
+          <img src={mfaSetup.totp.qr_code} alt="Authenticator setup QR code" style={{ width:180,height:180,background:"white",padding:8,display:"block",margin:"0 auto 10px" }}/>
+          <div style={{ fontFamily:"var(--font-ui)",fontSize:8,color:T.dim,wordBreak:"break-all",marginBottom:8 }}>Manual setup key: {mfaSetup.totp.secret}</div>
+          <input value={mfaCode} onChange={e=>setMfaCode(e.target.value.replace(/\D/g,"").slice(0,6))} placeholder="6-digit code" inputMode="numeric" autoComplete="one-time-code" maxLength={6} style={inp}/>
+          <Btn full onClick={verifyMfa} disabled={mfaLoading}>{mfaLoading ? "VERIFYING..." : "VERIFY & ENABLE MFA"}</Btn>
+        </div>}
+        {!mfaSetup && mfaFactors.length === 0 && <Btn full onClick={enrollMfa} disabled={mfaLoading}>{mfaLoading ? "LOADING..." : "ENABLE MFA"}</Btn>}
+        {!mfaSetup && mfaFactors.map(factor => <Btn key={factor.id} full danger onClick={()=>removeMfa(factor.id)} disabled={mfaLoading}>REMOVE AUTHENTICATOR</Btn>)}
+        {mfaMessage && <div style={{ fontFamily:"var(--font-ui)",fontSize:9,color:mfaMessage.includes("enabled")||mfaMessage.includes("removed")?T.sg:T.danger,marginTop:10,lineHeight:1.5 }}>{mfaMessage}</div>}
+      </Card>
+
       <Card style={{ marginBottom:14 }}>
         <SecTitle col={th.accent}>Account</SecTitle>
         <div style={{ fontFamily:"var(--font-ui)",fontSize:10,color:T.dim,marginBottom:12,lineHeight:1.6 }}>
