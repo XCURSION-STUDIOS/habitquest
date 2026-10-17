@@ -32,7 +32,9 @@ function json(body: unknown, status: number, origin: string | null) {
 
 serve(async (req) => {
   const origin = req.headers.get("origin");
-  if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: headersFor(origin) });
+  // Return a normal successful response for preflight. This avoids runtimes
+  // rejecting a 204 response with a body before CORS headers are applied.
+  if (req.method === "OPTIONS") return new Response("ok", { status: 200, headers: headersFor(origin) });
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405, origin);
 
   try {
