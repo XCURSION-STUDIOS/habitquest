@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { getLevel, getXPInLevel, getXPForLevel, rolloverDay, TODAY, getMultipliers, getClass } from "../lib/gameLogic.js";
 import { supabase } from "../lib/supabase.js";
 import { T, FONTS, THEMES } from "../constants/theme.js";
